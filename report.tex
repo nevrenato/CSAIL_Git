@@ -1,0 +1,287 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[portuguese]{babel}
+\usepackage{xspace}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage[pdftex]{graphicx}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\newcommand{\mc}{$\mu$CRL2}
+\lstset{
+	basicstyle=\footnotesize,
+	frame=shadowbox,
+	backgroundcolor=\color{white}
+}
+
+\begin{document}
+
+\title{  Exploração do \(\mu\)CRL2 \\ Sea Buoy - Modelação e verificação  }
+
+\author{Renato Neves, \\ Universidade do Minho}
+\date{\today}
+\maketitle
+\pagebreak
+
+
+\section{Introdução}
+Este projecto tem como objectivo, modelar e verificar um sistema, através do \mc. O trabalho 
+foca-se não no sistema \emph{per si}, mas, na exploração da ferramenta, de modo a que
+se possa fazer uma observação o mais completa possível à sua utilidade e potencialidades. \par
+\mc\xspace é uma linguagem de especificação formal com um conjunto de ferramentas associadas 
+\cite{ref1}. Desenvolvido na Universidade de Eindhoven, 
+permite ao utilizador modelar, validar e verificar sistemas concorrentes e reactivos. \par  
+
+\section{Sistema}
+
+\subsection{Descrição} 
+
+Sea Buoy foi o caso de estudo escolhido para este projecto. Consiste num problema de gestão de 
+sensores instalados numa bóia. Estes sensores recolhem informações
+do ambiente, havendo casos em que se enviam essas informações periodicamente, ou a pedido. 
+\par A arquitectura inerente a este sistema deve permitir integração dos sensores no 
+sistema de forma simples, facilitando ao mesmo tempo a sua modificação.  
+
+\subsection{Padrão arquitectural }
+
+A arquitectura sugerida no enunciado do problema foi a BlackBoard. 
+Nesta arquitectura existe uma estrutura central, onde os processos podem partilhar informação. 
+A partir dessa informação construída cooperativamente, cada processo toma as
+suas próprias decisões. 
+Estes não interagem directamente uns com os outros, nem existe 
+uma sequência de actividades determinada à partida. \par
+A arquitectura Blackboard é adequada para o tipo de problema, pois, 
+como diz no enunciado \emph {"This pattern 
+suits situations that require the integration of loosely-coupled and 
+heterogeneous components that may be replaced over time" } \cite{ref4}, que é o caso do sistema
+a modelar. 
+
+\begin{figure}[htb]
+\includegraphics[scale=0.40]{Blackboard.png}
+\centering
+\caption{Diagrama representativo do padrão Blackboard}
+\end{figure}
+
+\pagebreak
+
+\section{ Linguagem \mc}
+
+\subsection{Introdução}
+
+De seguida, apresentam-se alguns exemplos do uso de \mc{} para modelar o 
+sistema em questão, tentado-se não descrever a linguagem mas evidenciar propriedades 
+interessantes e algumas restrições encontradas.
+\par Deve-se antes de tudo referir que sendo esta uma linguagem baseada 
+em álgebra de processos, podemos usar todo um conjunto de regras algébricas 
+que facilitam a análise e manipulação do modelo. \par
+
+\subsection {Descrição básica de processos}
+Um dos processos mais importantes deste sistema é o de \emph{Sos}. Em qualquer momento, 
+alguém pode activar o botão de Sos e a bóia irá emitir sinal de socorro até ordem 
+em contrário.
+
+\lstset{caption={Descrição processo Sos}}
+\begin{lstlisting}
+	Sos 	= send_sos.Sos + tau;
+	
+	%AltSos  = tau + send_sos.Sos;	
+\end{lstlisting}
+
+No código apresentado, é definido um processo \emph{Sos}. 
+É recursivo, definindo como o caso de terminação o $\tau$ 
+Graças às regras algébricas referidas, podemos 
+dizer que \emph{Sos} é equivalente a \emph{AltSos}, pois, o operador \emph{+} é
+comutativo. Temos aqui então um exemplo (muito simples) da utilidade 
+das propriedades algébricas, que têm o 
+potencial de ajudar a simplicar e falar sobre a especificação do sistema.
+
+% Por mais ??
+
+\subsection{ Funções e condições }
+
+\mc{} suporta funções, tendo estas, sido usadas para 
+representar a componente de decisão usada pelos processos colectores. Esta decisão, consiste apenas em 
+saber qual a etapa do processo a executar. \par 
+A função usa estruturas condicionais para saber o que fazer conforme o argumento de entrada.
+
+\lstset{caption={Descrição exemplo de uma função}}
+\begin{lstlisting}
+map choice : Pos -> Pos;
+var n : Pos;
+eqn 	(n == 3) -> choice(n) = 1;
+	(n != 3) -> choice(n) = n+1;
+\end{lstlisting}
+
+A assinatura de uma função é representada por \emph{map} e neste caso 
+temos uma assinatura de uma função com o nome \emph{choice} que recebe um número positivo
+e retorna um número positivo.\par Ora se a linguagem suporta estas propriedades 
+(funções, condições e estruturas de dados),
+torna-se mais que uma linguagem de 
+especificação de processos e passa a entrar na família das linguagens funcionais. \par 
+
+
+\subsection{Concorrência entre processos}
+
+É importante referir, que nesta linguagem, não existe uma noção de estado, 
+no sentido em que não se pode criar um estrutura de dados e esta ser partilhada
+pelos vários processos. Por outras palavras, não é possível definir variáveis globais. É uma 
+limitação das linguagens funcionais. É possível sim, 
+passar a informação a um outro processo se o anterior o invocar,
+mas isso viola a arquitectura previamente definida, pois, ela diz que 
+processos não podem interagir directamente.
+Apesar disso, este entrave não é crítico, pois, neste modelo 
+pretende-se abstrair o que os processos fazem à estrutura, sendo, sim, 
+relevante a maneira como estes interagem entre si. \par
+Dito isto, no modelo deve estar presente a especificação do gestor de concorrência 
+entre os processos. Para este efeito, 
+foi criado o processo \emph{Locker} que corre durante o tempo de vida do sistema. 
+A função deste processo, é decidir através de prioridades estabelecidas, qual o 
+processo a tomar posse da estrutura de dados partilhada. \par 
+Apenas o \emph{Sos} e o \emph{SendData} têm uma prioridade mais alta que os restantes. 
+O \emph{Sos} tem a prioridade mais alta. \par
+
+\lstset{basicstyle=\footnotesize,caption={Descrição do processo \emph{Locker}}}
+\begin{lstlisting}
+Locker(p : Bool, x : Bool)		
+ = (p == true ) -> 
+     upS.downS.( sum p' : Bool. sum x' : Bool. Locker(p',x')) <>
+   (x == true ) -> 
+     upI.downI.( sum p' : Bool. sum x' : Bool. Locker(p',x')) <>
+     up.down.( sum p' : Bool. sum x' : Bool. Locker(p', x')); 
+	
+\end{lstlisting}
+
+Os argumentos que o \emph{Locker} recebe representam os processos 
+que pretendem correr, sendo o \emph{p} o \emph{Sos} e o \emph{x} o de envio de informação periódico.
+Surge aqui um caso onde é usado o \emph{sum}, que é apenas uma forma compacta de dizer, que existem \emph{n} casos possíveis de acontecer onde o \emph{n}
+é o número de valores possíveis que o tipo da variável coberto pelo \emph{sum} tem. Claro está, para tipos como o Natural tem que haver uma limitação, caso contrário
+existiriam infinitas alternativas. Isso apesar de poder acontecer na vida real, é para o \mc{} impossível de computar.
+A tabela seguinte traduz para a forma extensa a linha 3 da tabela anterior. 
+
+\lstset{basicstyle=\small,caption={Descrição de \emph{sum}}}
+\begin{lstlisting}
+upS.downS.(Locker(False,False) + Locker(True,False) + 
+	   Locker(False,True) + Locker(True,True)) <>
+\end{lstlisting}
+
+Uma alternativa muito mais interessante, intuitiva e facilitadora na integração de novos processos que a sugestão apresentada 
+seria uma em que o \emph{Locker} recebia um conjunto de processos, onde de seguida se verificava, se
+algum dos processos relevantes estava contido nesse conjunto.
+
+\lstset{basicstyle=\footnotesize,caption={Alternativa à tabela 3}}
+\begin{lstlisting}
+sort Procs = struct ProcSos | SendInfo; 
+Locker(p : Set(Procs)) = 
+   (ProcSos in p) -> 
+	upS.downS.( sum p' : Set(Procs). Locker(p')) <>
+   (SendInfo in p) ->	
+ 	upI.downI.( sum p' : Set(Procs). Locker(p')) <>
+	up.down.( sum p' : Set(Procs). Locker(p')); 
+
+\end{lstlisting}
+
+No entanto, o \mc{} não suporta a enumeração de conjuntos que o \emph{sum} exige. Assim, esta hipótese, apesar de introduzir um  código melhor 
+no modelo, tem que ser descartada. 
+
+\subsection{Sincronização e bloqueio de actividades}
+
+Só com o que foi feito o processo \emph{Locker} não consegue impedir processos de não executar. 
+o que destrói toda a noção de concorrência para este sistema. É preciso arranjar uma forma de dizer que apenas o processo invocado por \emph{Locker}
+pode correr.\par
+O operador de sincronização |, especifica que duas actividades decorrem ao mesmo tempo. 
+Com ele, podemos definir a sincronização entre o processo \emph{Locker} e outro processo qualquer.
+Apesar disso, as actividades de um processo ainda podem ocorrer singularmente. Se especificarmos \emph{a} | \emph{b}, \emph{a} 
+pode ainda ocorrer sem \emph{b} e vice-versa. Ou seja não resolvemos o problema. \par Nesta linguagem é 
+permitido bloquear actividades de ocorrerem, podendo-se bloquear \emph{a} e \emph{b} deixando apenas \emph{a}|\emph{b} ocorrer.
+
+\lstset{basicstyle=\footnotesize,caption={Sincronização entre o processo}}
+\begin{lstlisting}
+allow {	
+	...
+	send_sos,lock,unlock,SosOn,SosOff,SendInfoOn,SendInfoOff
+  },
+comm { 
+	start|up -> lock, stop|down -> unlock, 
+	startS|upS -> SosOn, stopS|downS -> SosOff, 
+	startI|upI -> SendInfoOn, stopI|downI -> SendInfoOff  
+  }
+\end{lstlisting}
+
+O conjunto \emph{allow} permite apenas às actividades listadas ocorrerem, enquanto que o conjunto \emph{comm} permite renomear certas actividades. 
+Naturalmente não aparece no primeiro nenhuma das actividades especificadas em \emph{comm}, caso contrário o problema de gestão de concorrência iria continuar
+\par Finalmente, foi usado outro operador || para representar a paralelização de processos. A sua definição é interessante.   
+
+\lstset{basicstyle=\small,caption={Definição do operador '||'}}
+\begin{lstlisting}
+(a || b) = a.b + b.a + a | b 
+\end{lstlisting}
+
+Vê-se que é preciso ter precaução a usar este operador, pois, pode originar uma explosão de estados no modelo. Para comprovar isso, basta apenas ver
+a definição de \emph{ a.b} || \emph{c.d} \cite{ref3}. \par
+Apesar disso, com este operador consegue-se definir facilmente, a execução em paralelo dos sensores instalados na bóia.  
+
+\lstset{basicstyle=\scriptsize,caption={Especificação da execução em paralelo de processos}}
+\begin{lstlisting}
+(sum p : Bool. sum x : Bool.Locker(p,x)) || SosON || SendData 
+|| WindInfoCollector(choice(3)) || AirInfoCollector(choice(3)) || 
+WaterInfoCollector(choice(3)) || LocationInfoCollector(choice(3))
+
+\end{lstlisting}
+
+\section{Verificação do modelo}
+
+Depois de feita a especifição do sistema, precisamos de conseguir fazer a sua verificação.
+Pois, nada impede que a especificação até agora feita, seja totalmente diferente
+da prevista. Por exemplo, ao especifiicar o sistema, queremos definir que o \emph{Sos} pode 
+sempre ocorrer, mas, pode acontecer que acabemos por definir o contrário. Se não houvesse
+verificação, esse problema criado poderia passar despercebido, e só ser detectado em
+fases mais tardias da implementação, ou até nunca!\par
+Nesta secção, tal como na anterior, tenta-se não descrever as ferramentas de verificção mas,
+sim, dar uma perspectiva do seu potencial e limitações, através deste caso de estudo. 
+
+\subsection{Labeled Transition System}
+
+Uma vez o sistema modelado, podemos fazer a sua tradução para LTS. 
+Verificar o sistema neste formato tem a vantagem de, existir um suporte de álgebra de processos
+e lógicas, que facilitam a verificação do sistema. Mais, para casos simples a sua descrição
+é bastante intuitiva. \par
+
+A má notícia é que a tradução nem sempre é bem sucedida. Podem existir casos onde a tradução não é feita
+em tempo útil, ou então, não existe memória suficiente para esse processo. \par
+
+No caso do modelo base do SeaBuoy que se limita a cumprir os requisitos pedidos no enunciado. A tradução
+é bem sucedida criando um LTS com 2431 estados. Mas vamos agora imaginar que 
+é necessário instalar 4 novo sensores coletores que irão correr em paralelo como os anteriores.
+A tradução deste novo sistema, quando falhou, ia em 77000 estados! 
+É razoável pensar que a um nível industrial a tradução iria em muitos casos ser impraticavel. \par
+
+Dito isto, existem várias ferramentas para análise de modelos LTS.
+Quando existem poucos estados a ferramenta LTSGraph permite uma visão do sistema
+bastante intuitiva, facilitando a percepção de erros ou incoerências. Mas perde a sua utilidade quando o sistema
+começa a ter mais q algumas dezenas de estados. \par 
+
+Existe também o LTSView que permite visualizar sistemas e simulá-lo passo a passo, permitindo uma análise
+fácil de sistemas de alguma complexidade. Pelo menos maiores que o LTSGraph.
+
+Diagraphica e o LTSCompare. Transformação LTS's
+
+\subsection{$\mu$-Calculus}
+
+Fòrmulas para verificar, vários tipos de fórmulas 
+
+\section{Conclusões}
+
+
+\begin{thebibliography}{4}
+
+\bibitem{ref1} \mc{} \emph { "http://www.mcrl2.org/release/user\_manual/index.html" }.
+\bibitem{ref2} Padrão BlackBoard \emph { "http://www.vico.org/pages/Patronsdisseny/Pattern\%20Blackboard/"}.
+\bibitem{ref3} Manual Linguagem \\ \emph{"http://www.mcrl2.org/mcrl2/wiki/index.php/Language\_reference/Processes"}.
+\bibitem{ref4} Enunciado do problema
+\end{thebibliography}
+
+\end{document}
