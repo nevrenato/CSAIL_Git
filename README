@@ -1,4 +1,4 @@
-itle: 
+i1e: 
 		Modelling Git with Alloy
 
 Authors: 	
@@ -12,7 +12,7 @@ Supervisors :
 
 Description :
 		This projects aims to model the Git core system with Alloy, trying 
-		with it, to find properties that Git satisfies or not.
+		with it, find properties that Git satisfies or not.
 
 Date :
 		29 March 2012
