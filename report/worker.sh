@@ -1,6 +1,5 @@
 #!/bin/bash
 # Escravo para limpar e construir coisas por mim
-# Renato Neves
 
 while getopts "cb" opt; do
 	
@@ -10,7 +9,9 @@ while getopts "cb" opt; do
 	    	rm *.aux  *.log *.out;;
 
 	b)  	echo "I will build the tex file and open it for you :)";
-	  	pdflatex report && open report.pdf ;; 	
+			pdflatex report.tex && bibtex report && pdflatex report.tex &&
+			pdflatex report.tex &&
+			rm *.aux *.log *.out *.bbl *.blg *.toc && open report.pdf ;; 	
 	\?) echo "wrong options" ;;
 	
 	esac
