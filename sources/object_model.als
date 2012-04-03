@@ -1,12 +1,65 @@
-// store file data
-sig Blob {}
+sig Sha{ }
+
+// An object in git
+abstract sig Object {
+	namedBy : one Sha
+}
+
+// stores file data
+sig Blob extends Object{}
+
 
 // directory 
-sig Tree {}
+sig Tree extends Object {
+	
+	references : set (Tree+Blob)
+}
+
 
 // points to a single tree, marking it as what the project looked like
 // at a certain point in time
-sig Commit {}
+sig Commit extends Object{
 
-// way to mark a specific commit as special  in some way
-sig Tag {}
+	points : one Tree
+}
+
+
+// way to mark a specific commit as special in some way
+sig Tag extends Object{
+
+	marks : one Commit
+}
+
+
+// a directory cannot reference itself
+fact {
+
+	// pw 
+	//all t : Tree | t not in t.^references
+
+	// pf
+ 	^references & iden  = (none->none)
+
+	// smart pf 
+	no ^references & iden 
+
+}
+
+// two objects cannot have same sha
+fact {
+
+	// pw 
+	//all disjoint o,o' : Object | o.namedBy != o'.namedBy
+	
+	// pf 
+	//(namedBy.~namedBy in iden)  
+
+}
+
+//two trees have the same name iff they have the same content
+fact{
+		(references.~references)  = namedBy.~namedBy & (Tree->Tree)
+}
+
+
+run {}
