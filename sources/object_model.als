@@ -47,7 +47,7 @@ fact {
 }
 
 //two trees have the same name iff they have the same content
-fact{fact{
+fact{
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
 	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy
 	no (namedBy.~namedBy) & Commit -> Commit

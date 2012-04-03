@@ -30,9 +30,14 @@ fact {
 
 fact{
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
+	namedBy in Object lone -> Sha
 	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy
 	no (namedBy.~namedBy) & Commit -> Commit
 	no (namedBy.~namedBy) & Tag -> Tag
 }
 
-run {} for 6
+fact{
+
+}
+
+run {}
