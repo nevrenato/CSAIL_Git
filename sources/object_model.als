@@ -53,6 +53,5 @@ fact{fact{
 	no (namedBy.~namedBy) & Commit -> Commit
 	no (namedBy.~namedBy) & Tag -> Tag
 }
-}
 
 run {}
