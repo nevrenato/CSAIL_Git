@@ -19,24 +19,27 @@ sig Tag extends Object{
 }
 
 fact {
- 	^references & iden  = (none->none)
 	no ^references & iden
 }
 
-fact {
-	//all disjoint o,o' : Object | o.namedBy != o'.namedBy
-	//(namedBy.~namedBy in iden)  
-}
 
 fact{
+
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
-	namedBy in Object lone -> Sha
+	 
+	// se gostares da outra versao podes tirar esta !
 	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy
+	
+	//alternativa
+	 //namedBy.~namedBy in (Tree->Tree)+(Blob->Blob)+(Commit->Commit)+(Tag->Tag)
+	
+
+  // se gostares da outra versao podes tirar esta !
 	no (namedBy.~namedBy) & Commit -> Commit
 	no (namedBy.~namedBy) & Tag -> Tag
-}
 
-fact{
+	// alternativa
+	//namedBy.~namedBy & (Commit+Tag)->(Commit+Tag) in iden
 
 }
 

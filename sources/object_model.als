@@ -30,28 +30,32 @@ fact {
 	//all t : Tree | t not in t.^references
 
 	// pf
- 	^references & iden  = (none->none)
+ 	//^references & iden  = (none->none)
 
 	// smart pf 
 	no ^references & iden
 }
 
-// two objects cannot have same sha
-fact {
-	// pw 
-	//all disjoint o,o' : Object | o.namedBy != o'.namedBy
-	
-	// pf 
-	//(namedBy.~namedBy in iden)  
 
-}
-
-//two trees have the same name iff they have the same content
 fact{
+	
+	//two trees have the same name iff they have the same content
+	// not pf :(
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
-	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy
-	no (namedBy.~namedBy) & Commit -> Commit
-	no (namedBy.~namedBy) & Tag -> Tag
+
+	//	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy 
+	// Talvez mais bonito assim ?	
+	    namedBy.~namedBy in (Tree->Tree)+(Blob->Blob)+(Commit->Commit)+(Tag->Tag)
+
+
+	// Commits and Tags have always uniques sha's 
+	//no (namedBy.~namedBy) & (Commit -> Commit)
+	//no (namedBy.~namedBy) & (Tag -> Tag)
+		// em cima estas a dizer que os commits e as tags nao podem ter sha !!!
+		namedBy.~namedBy & (Commit+Tag)->(Commit+Tag) in iden
+		
 }
 
-run {}
+run { 
+	// debug
+	#Commit > 0 }  
