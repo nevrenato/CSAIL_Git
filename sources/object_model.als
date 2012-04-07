@@ -20,6 +20,8 @@ sig Commit extends Object{
   	parent : set Commit
 }
 
+sig RootCommit extends Commit{}
+
 
 // way to mark a specific commit as special in some way
 sig Tag extends Object{
@@ -64,6 +66,10 @@ fact {
 fact {	
 	// A commit cannot be an ancestor of itself
   	no ^parent & iden
+	//RootCommit don't have a parent
+	no RootCommit.parent
+	//All Commits descend from a RootCommit
+	Commit - RootCommit in ^parent.RootCommit
 }
 
 run {
