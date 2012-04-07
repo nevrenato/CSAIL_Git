@@ -22,25 +22,10 @@ fact {
 	no ^references & iden
 }
 
-
 fact{
 
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
-	 
-	// se gostares da outra versao podes tirar esta !
-	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy
-	
-	//alternativa
-	 //namedBy.~namedBy in (Tree->Tree)+(Blob->Blob)+(Commit->Commit)+(Tag->Tag)
-	
-
-  // se gostares da outra versao podes tirar esta !
-	no (namedBy.~namedBy) & Commit -> Commit
-	no (namedBy.~namedBy) & Tag -> Tag
-
-	// alternativa
-	//namedBy.~namedBy & (Commit+Tag)->(Commit+Tag) in iden
-
+	namedBy.~namedBy - (Tree->Tree) in iden
 }
 
 run {}

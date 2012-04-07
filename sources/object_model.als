@@ -45,15 +45,17 @@ fact{
 
 	//	no Tree.namedBy & Commit.namedBy + Tree.namedBy & Blob.namedBy + Tree.namedBy & Tag.namedBy + Commit.namedBy &Tag.namedBy + Commit.namedBy & Blob.namedBy 
 	// Talvez mais bonito assim ?	
-	    namedBy.~namedBy in (Tree->Tree)+(Blob->Blob)+(Commit->Commit)+(Tag->Tag)
+	  //  namedBy.~namedBy in (Tree->Tree)+(Blob->Blob)+(Commit->Commit)+(Tag->Tag)
 
 
 	// Commits and Tags have always uniques sha's 
 	//no (namedBy.~namedBy) & (Commit -> Commit)
 	//no (namedBy.~namedBy) & (Tag -> Tag)
 		// em cima estas a dizer que os commits e as tags nao podem ter sha !!!
-		namedBy.~namedBy & (Commit+Tag)->(Commit+Tag) in iden
+	  //	namedBy.~namedBy & (Commit+Tag)->(Commit+Tag) in iden
 		
+		// even better
+	  namedBy.~namedBy - (Tree->Tree) in iden
 }
 
 run { 
