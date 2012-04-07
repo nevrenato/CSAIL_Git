@@ -1,0 +1,99 @@
+\section{Modelling Git Object Model}
+
+For each part of a textual 
+specification we will associate an Alloy specification.
+The specification comes from \cite{gitComm}. \par
+
+%%%
+"All the information needed to represent the history
+of a project is stored in files referenced by a 
+40-digit "object name"...."
+
+
+\begin{lstlisting}
+sig Sha{}
+\end{lstlisting}
+%%%%
+
+"..and there are four different types of objects: "blob",
+"tree", "commit", and "tag"."
+
+\begin{lstlisting}
+abstract sig Object {
+	namedBy : one Sha
+}
+
+sig Blob extends Object{}
+
+sig Tree extends Object {}
+
+sig Commit extends Object{}
+
+sig Tag extends Object{}
+\end{lstlisting}
+
+%%%%
+"A "blob" is used to store file data - it is generally
+a file."
+
+\begin{lstlisting}
+sig Blob extends Object{}
+\end{lstlisting}
+
+%%%%
+"A "tree" is basically like a directory - it references a bunch
+of other trees and/or blobs..."
+
+\begin{lstlisting}
+sig Tree extends Object {
+	references : set (Tree+Blob)
+}
+\end{lstlisting}
+
+%%%%
+
+"A "commit" points to a single tree...."
+
+\begin{lstlisting}
+sig Commit extends Object{
+	points : one Tree
+}
+
+\end{lstlisting}
+%%%%
+
+"A "tag" is a way to mark a specific commit..."
+
+\begin{lstlisting}
+sig Tag extends Object{
+	marks : one Commit
+}
+\end{lstlisting}
+
+%%%%
+
+Next, as the book \cite{gitComm} says, a "tree" acts
+like a directory, so it or it's descendents cannot point
+to itself.
+
+\begin{lstlisting}
+no ^references & iden 
+\end{lstlisting}
+
+"...two "trees" have the same SHA1 name if and only if their
+contents (including, recursively, the contents of all subdirectories)
+are identical."
+
+\begin{lstlisting}
+all t,t' : Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
+\end{lstlisting}
+
+%%%%
+"What that means to us is that is virtually impossible to find to 
+different objects with the same name"
+
+\begin{lstlisting}
+namedBy.~namedBy - (Tree->Tree) in iden
+\end{lstlisting}
+
+
