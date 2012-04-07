@@ -15,7 +15,7 @@ sig Commit extends Object{
   	parent : set Commit
 }
 
-sig RootCommit extends Commit{}
+some sig RootCommit extends Commit{}
 
 sig Tag extends Object{
 	marks : one Commit

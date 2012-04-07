@@ -20,7 +20,7 @@ sig Commit extends Object{
   	parent : set Commit
 }
 
-sig RootCommit extends Commit{}
+some sig RootCommit extends Commit{}
 
 
 // way to mark a specific commit as special in some way

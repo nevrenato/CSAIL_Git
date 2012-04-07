@@ -103,8 +103,12 @@ sig Commit extends Object{
   points : one Tree,
   parent : set Commit
 }
+some sig RootCommit extends Commit{}
 fact {
   no ^parent & iden
+  no RootCommit.parent
+  Commit - RootCommit in ^parent.RootCommit
+
 }
 
 \end{lstlisting}
