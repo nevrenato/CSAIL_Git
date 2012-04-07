@@ -15,6 +15,8 @@ sig Commit extends Object{
   	parent : set Commit
 }
 
+sig RootCommit extends Commit{}
+
 sig Tag extends Object{
 	marks : one Commit
 }
@@ -42,6 +44,14 @@ fact {
 
 fact {	
   	no ^parent & iden
+	no RootCommit.parent
+	Commit - RootCommit in ^parent.RootCommit
 }
 
-run {} for exactly 6 Object, 6 Sha
+assert TreeAndBlobFromCommit{
+	Tree+Blob in (Commit.points).*references
+}
+
+check TreeAndBlobFromCommit
+
+run {} for 6
