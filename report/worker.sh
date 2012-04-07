@@ -11,7 +11,7 @@ while getopts "cb" opt; do
 	b)  	echo "I will build the tex file and open it for you :)";
 			pdflatex report.tex && bibtex report && pdflatex report.tex &&
 			pdflatex report.tex &&
-			rm *.aux *.log *.out *.bbl *.blg *.toc && open report.pdf ;; 	
+			rm *.aux *.log *.out *.bbl *.blg  && open report.pdf ;; 	
 	\?) echo "wrong options" ;;
 	
 	esac
