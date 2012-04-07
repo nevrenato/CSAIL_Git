@@ -28,4 +28,12 @@ fact{
 	namedBy.~namedBy - (Tree->Tree) in iden
 }
 
-run {}
+assert orphanBlobs {
+	Blob in Tree.references
+}
+
+assert orphanTrees {
+	Tree in Tree.references
+}
+
+check orphanTrees

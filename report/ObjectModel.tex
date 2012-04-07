@@ -1,5 +1,7 @@
 \section{Modelling Git Object Model}
 
+\subsection{What says in the book \cite{gitComm}}
+
 For each part of a textual 
 specification we will associate an Alloy specification.
 The specification comes from \cite{gitComm}. \par
@@ -96,4 +98,28 @@ different objects with the same name"
 namedBy.~namedBy - (Tree->Tree) in iden
 \end{lstlisting}
 
+%%%%
 
+
+\subsection{What we assume...}
+
+Blobs must have at least one parent
+
+\begin{lstlisting}
+Blob in Tree.references
+\end{lstlisting}
+
+A root tree can only have one parent commit
+\begin{lstlisting}
+points.~points in iden 
+\end{lstlisting}
+
+A tree or is root or must have a parent
+\begin{lstlisting}
+Tree in Tree.references + Commit.points
+\end{lstlisting}
+
+There are no models with sha's alone
+\begin{lstlisting}
+Sha in Object.namedBy
+\end{lstlisting}

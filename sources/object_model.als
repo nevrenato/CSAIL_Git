@@ -39,6 +39,22 @@ fact{
 	 namedBy.~namedBy - (Tree->Tree) in iden
 }
 
-run { 
-	// debug
-	#Commit > 0 }  
+
+
+// Assumptions
+fact {
+	
+	// A blob must have a parent
+	Blob in Tree.references
+ 
+	// A tree must have a parent tree unless it's root
+	Tree in Tree.references + Commit.points 	
+
+	// There are no models with sha's alone
+	Sha in Object.namedBy
+
+	// A root tree can only be pointed by One commit
+  points.~points in iden
+
+}
+
