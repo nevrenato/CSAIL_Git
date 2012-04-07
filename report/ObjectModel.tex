@@ -1,50 +1,38 @@
 \section{Modelling Git Object Model}
 
-\subsection{What says in the book \cite{gitComm}}
+In this section we will show the specification in Alloy of the
+git object model. This will be mostly based on the textual
+specification present in \cite{gitComm}. \par
+Thus, we will divide this section in conditions that are specified 
+in \cite{gitComm} and conditions that we didn't found explicity
+in the book but that are needed for the proper functioning of
+git.
 
-For each part of a textual 
-specification we will associate an Alloy specification.
-The specification comes from \cite{gitComm}. \par
+\subsection{Explicit specifications}
 
-%%%
 "All the information needed to represent the history
 of a project is stored in files referenced by a 
-40-digit "object name"...."
-
+40-digit {\bf "object name"}..." (page 7)
 
 \begin{lstlisting}
 sig Sha{}
 \end{lstlisting}
-%%%%
 
-"..and there are four different types of objects: "blob",
-"tree", "commit", and "tag"."
+"...and there are four different types of objects: "blob",
+"tree", "commit", and "tag". " (page 7)
 
 \begin{lstlisting}
 abstract sig Object {
 	namedBy : one Sha
 }
-
 sig Blob extends Object{}
-
 sig Tree extends Object {}
-
 sig Commit extends Object{}
-
 sig Tag extends Object{}
 \end{lstlisting}
 
-%%%%
-"A "blob" is used to store file data - it is generally
-a file."
-
-\begin{lstlisting}
-sig Blob extends Object{}
-\end{lstlisting}
-
-%%%%
-"A "tree" is basically like a directory - it references a bunch
-of other trees and/or blobs..."
+"A "tree" is basically like a directory - {\bf it references a bunch
+of other trees and/or blobs}..." (page 8)
 
 \begin{lstlisting}
 sig Tree extends Object {
@@ -52,19 +40,15 @@ sig Tree extends Object {
 }
 \end{lstlisting}
 
-%%%%
-
-"A "commit" points to a single tree...."
+"A "commit" {\bf points to a single tree}...." (page 8)
 
 \begin{lstlisting}
 sig Commit extends Object{
 	points : one Tree
 }
-
 \end{lstlisting}
-%%%%
 
-"A "tag" is a way to mark a specific commit..."
+"A "tag" is a way to { \bf mark a specific commit}..." (page 8)
 
 \begin{lstlisting}
 sig Tag extends Object{
@@ -72,54 +56,95 @@ sig Tag extends Object{
 }
 \end{lstlisting}
 
-%%%%
-
-Next, as the book \cite{gitComm} says, a "tree" acts
-like a directory, so it or it's descendents cannot point
-to itself.
-
+As the book \cite{gitComm} says, a "tree" acts
+like a directory, so we know that it or it's 
+descendents cannot point to itself.
 \begin{lstlisting}
 no ^references & iden 
 \end{lstlisting}
 
-"...two "trees" have the same SHA1 name if and only if their
+"...two "trees" have the { \bf same SHA1 name if and only if their
 contents (including, recursively, the contents of all subdirectories)
-are identical."
+are identical.} " (page 11)
 
 \begin{lstlisting}
-all t,t' : Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
+all t,t' : Tree | 
+   t.namedBy = t'.namedBy <=> t.references = t'.references
 \end{lstlisting}
 
-%%%%
-"What that means to us is that is virtually impossible to find to 
-different objects with the same name"
+"What that means to us is that is virtually {\bf impossible to find to 
+different objects with the same name}". (page 7) \par
+We know that there is an exception. That is,
+there are cases (defined above)
+that allow different trees to have same name. 
 
 \begin{lstlisting}
 namedBy.~namedBy - (Tree->Tree) in iden
 \end{lstlisting}
 
-%%%%
 
+\subsubsection{Commit structure}
 
-\subsection{What we assume...}
+Again from \cite{gitComm}. \par 
+"As you can see,a commit is defined by :
+... \par
+parent(s) : {\bf The SHA1 name of some number of commits wich
+represent the immediately previous step(s) in the 
+history of the project}. The example above has one parent;
+merge commits may have more than one. A commit with no 
+parents is called a "root" commit, and represents the 
+initial revision of a project. {\bf Each project must have at
+least one root. A project can also have multiple roots,
+though that isn't common (or necessarily a good ideia)}. (page 12)
 
-Blobs must have at least one parent
+\begin{lstlisting}
 
+sig Commit extends Object{
+  points : one Tree,
+  parent : set Commit
+}
+fact {
+  no ^parent & iden
+}
+
+\end{lstlisting}
+
+\subsection{What we assume for the proper functioning of git}
+
+A commit must point only root trees, unless we want
+losses of information.
+\begin{lstlisting}
+no Commit.points & Tree.references    
+\end{lstlisting}
+
+We can't have orphan Blobs, or else, 
+there is the possibility for garbage data.
 \begin{lstlisting}
 Blob in Tree.references
 \end{lstlisting}
 
-A root tree can only have one parent commit
-\begin{lstlisting}
-points.~points in iden 
-\end{lstlisting}
-
-A tree or is root or must have a parent
+The same for Trees.
 \begin{lstlisting}
 Tree in Tree.references + Commit.points
 \end{lstlisting}
 
-There are no models with sha's alone
+This is only appears because we don't need
+names that don't belong to someone, in the git
+system.
 \begin{lstlisting}
 Sha in Object.namedBy
 \end{lstlisting}
+
+We can't have the same tree shared by commits. Git
+doesn't work that way ("it stores a snapshot of what all 
+the files in your project looks like..." \cite{gitComm} (page 7)).
+\begin{lstlisting}
+points.~points in iden 
+\end{lstlisting}
+
+A tree has at most one parent. If this is not true there 
+is inconsistency in the git "filesystem".
+\begin{lstlisting}
+references.(iden & (Tree->Tree)).~references  in iden
+\end{lstlisting}
+
