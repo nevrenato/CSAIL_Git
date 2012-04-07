@@ -17,10 +17,8 @@ sig Tree extends Object {
 // at a certain point in time
 sig Commit extends Object{
 	points : one Tree,
-  parent : set Commit
+  	parent : set Commit
 }
-
-one sig RootCommit extends Commit {}
 
 
 // way to mark a specific commit as special in some way
@@ -33,21 +31,12 @@ fact {
 	no ^references & iden
 }
 
-
 fact{
-	
 	//two trees have the same name iff they have the same content
 	// not pf :(
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
 	//only Trees can share names
 	 namedBy.~namedBy - (Tree->Tree) in iden
-}
-
-
-fact {
-
-	// A non root tree cannot be pointed by a commit
-  no Commit.points & Tree.references    
 }
 
 // Assumptions
@@ -57,25 +46,24 @@ fact {
 	Blob in Tree.references
  
 	// A tree must have a parent tree unless it's root
-	Tree in Tree.references + Commit.points 	
+	Tree in Tree.references + Commit.points
 
 	// There are no models with sha's alone
 	Sha in Object.namedBy
 
 	// A root tree can only be pointed by One commit
-  points.~points in iden
+  	points.~points in iden
 
 	// A tree can only have one parent
-  references.(iden & (Tree->Tree)).~references  in iden 
+  	references.(iden & (Tree->Tree)).~references  in iden 
+
+	// A non root tree cannot be pointed by a commit
+  	no Commit.points & Tree.references  
 }
 
-
-fact {
-  // All commits except the root must have an ancestor
-  no RootCommit.parent
-	some (Commit - RootCommit).parent
+fact {	
 	// A commit cannot be an ancestor of itself
-  no ^parent & iden
+  	no ^parent & iden
 }
 
 run {
