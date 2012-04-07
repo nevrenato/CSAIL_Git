@@ -11,7 +11,8 @@ sig Tree extends Object {
 }
 
 sig Commit extends Object{
-	points : one Tree
+	points : one Tree,
+  	parent : set Commit
 }
 
 sig Tag extends Object{
@@ -22,18 +23,25 @@ fact {
 	no ^references & iden
 }
 
+//namedBy
 fact{
-
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
 	namedBy.~namedBy - (Tree->Tree) in iden
 }
 
-assert orphanBlobs {
+// Assumptions
+fact {
 	Blob in Tree.references
+	Tree in Tree.references + Commit.points
+	Sha in Object.namedBy
+
+  	points.~points in iden
+  	references.(iden & (Tree->Tree)).~references  in iden
+  	no Commit.points & Tree.references
 }
 
-assert orphanTrees {
-	Tree in Tree.references
+fact {	
+  	no ^parent & iden
 }
 
-check orphanTrees
+run {} for exactly 6 Object, 6 Sha
