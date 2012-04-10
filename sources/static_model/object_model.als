@@ -16,7 +16,7 @@ sig Tree extends Object {
 // points to a single tree, marking it as what the project looked like
 // at a certain point in time
 sig Commit extends Object{
-	points : one Tree,
+   	points : one Tree,
   	parent : set Commit
 }
 
@@ -54,10 +54,11 @@ fact {
 	Sha in Object.namedBy
 
 	// A root tree can only be pointed by One commit
-  	points.~points in iden
+  points.~points in iden
 
 	// A tree can only have one parent
-  	references.(iden & (Tree->Tree)).~references  in iden 
+  references.(iden & (Tree->Tree)).~references  in iden 
+
 
 	// A non root tree cannot be pointed by a commit
   	no Commit.points & Tree.references  
@@ -72,6 +73,4 @@ fact {
 	Commit - RootCommit in ^parent.RootCommit
 }
 
-run {
-
-} for exactly 6 Object, 6 Sha
+run {} for 6
