@@ -1,3 +1,4 @@
+///
 sig Sha{ }
 
 // An object in git
