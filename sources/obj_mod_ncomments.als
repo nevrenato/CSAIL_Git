@@ -46,10 +46,6 @@ fact {
 	Commit - RootCommit in ^parent.RootCommit
 }
 
-assert TreeAndBlobFromCommit{
-	Tree+Blob in (Commit.points).*references
-}
 
-check TreeAndBlobFromCommit
 
 run {} for 6
