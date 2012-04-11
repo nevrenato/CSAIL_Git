@@ -1,4 +1,4 @@
-sig Sha{ }
+sig Sha{}
 
 // An object in git
 abstract sig Object {
