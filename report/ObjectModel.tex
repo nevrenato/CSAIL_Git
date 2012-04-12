@@ -1,7 +1,5 @@
 \section{Modelling Git Static Object Model}
 
-% Nao temos a certeza se uma arvore pode ser partilhada por mais que um 
-%commit (Ver isso)
 In this section we will show the specification in Alloy of the
 git object model. This will be mostly based on the textual
 specification present in \cite{gitComm}. \par
@@ -97,7 +95,7 @@ merge commits may have more than one. A commit with no
 parents is called a "root" commit, and represents the 
 initial revision of a project. {\bf Each project must have at
 least one root. A project can also have multiple roots,
-though that isn't common (or necessarily a good ideia)}. (page 12)
+though that isn't common (or necessarily a good ideia)}". (page 12)
 
 \begin{lstlisting}
 

@@ -1,5 +1,89 @@
 \section {Modelling Git Dynamic Object Model}
-The static object model is not very usefull, so it is needed
-to check the dynamic model, thus in this we will
-show the Alloy model that tries to represent this 
-type of model.
+The static object model, only by itself, 
+is not very usefull. And so
+the model would be much more interesting if we specify 
+the most important git operations. That said in this
+section we will focus on modelling the most important
+and critical of them. \par
+
+In order to understand them, the definition
+of the git Working Directory and git Index is in debt.
+
+\subsection{Working Directory and Index}
+
+The definition of Working Directory comes as follows:
+"... simply a {\bf temporary checkout place} where you can 
+modify the files {\bf until your next commit}."
+\cite{gitComm} (pag 17). \par
+
+To complement the definition above, git will only
+track files that existed in the last commit, thus
+new ones will not appear in this directory. \par 
+So,
+the Working Directory, does nothing more than telling
+us wich files have been modified since the last commit.
+
+\begin{lstlisting}
+sig File{}
+sig WorkingD {
+	contents : set File
+}
+\end{lstlisting}
+
+Now for the definition of Index:
+"...staging area between your working directory and your
+repository. You can use the index to {\bf build up a set of 
+changes that you want to commit together}. When you create
+a commit, {\bf what is committed is what is currently in the
+index, not what is in your working directory.}"
+\cite{gitComm} (page 17). So, the Index, in a certain
+manner, points to a subset
+of files that are present in the Working Directory, and
+is this subset of files that wil be commited. 
+
+\begin{lstlisting}
+sig Index {
+	toCommit : set File
+}
+\end{lstlisting}
+
+However
+there will be a few exceptions!(present in the last parapgrah of the sections
+git add command and git rm command)\par
+
+We can see  
+that a commit depends on the contents of git Index, as the
+last depends on the Working Directory. So it will be important
+to add those definitions to our model when defining the commit operation
+.But, a question arises.
+What is the pratical difference between the Index and the Working
+Directory? Shouldn't all that we modify in the repository be 
+commited? We will see that next. 
+
+\subsubsection{The git add command}
+
+This command is one of the most used in git. \cite{gitComm} (page 26)
+tells us that
+"git add is {\bf used both for new and newly modified files},
+and in both cases it takes a snapshot of the given files
+and {\bf stages that content in the index, ready for inclusion
+in the next commit}." \par 
+When doing a git add of a newly
+added file, that
+addition will not appear in the Working Directory, only in the
+Index. 
+\subsubsection{The git rm command}
+
+This one is generally less used. It's usefullness can be
+seen in the following : \cite{Chacon:2009:PG:1618548}
+(page 21) says "To remove a file from Git, you have to remove it
+from your tracked files (more accurately, {\bf remove it from your
+staging area}) and them commit. The {\bf git rm command does that
+and also removes the file from your working directory}...". \par
+Note that the working directory refered in the citation is not
+the git Working Directory, it's the directory of the filesystem itself.
+In other words a 'rm <file>' is present inside the 'git rm <file>'. \par
+When using git rm
+that modification will only appear in the Index. Unless, before
+the git rm we delete the file from the filesystem (e.g. rm ). \par
+
