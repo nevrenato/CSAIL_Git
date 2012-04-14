@@ -10,15 +10,24 @@ In order to understand them, the definition
 of the git Working Directory and git Index is in debt.
 
 \subsection{Introducing branches}
-Definition of branch: "A branch in Git is {\bf simply a lightweight movable pointer to one of these commits}." \cite{progit} (pag 39)\\
-A branch in git, is a pointer for a commit. We are always working on a certain branch, and all the commits made on that branch are independent from the others branch until we make a merge. A new branch can be created using \emph{git branch branch\_name}. The special pointer called Header points to the branch we are working on. We can go to another branch using \emph{git checkout branch\_name}.\\
+Definition of branch: "A branch in Git is {\bf simply a 
+lightweight movable pointer to one of these commits}." \cite{progit} 
+(pag 39)\\
+
+A branch in git, is a pointer for a commit. We are always 
+working on a certain branch, and all the commits made on 
+that branch are independent from the others branch until we 
+make a merge. A new branch can be created using 
+\emph{git branch branch\_name}. The special pointer called Header 
+points to the branch we are working on. We can go to another 
+branch using \emph{git checkout branch\_name}.\\
 
 
 
 Trying to understand branches using git:
 \begin{itemize}
-   \item if we modify a tracked file, we cannot change branch if we do not add that file to the index;
-   \item if we add a tracked and modified file to the index and we change branch, that file will be presented as it was on the other branch;
+   \item if we modify a tracked file, we cannot change branch if we do not add that file to the index and commit it;
+%   \item if we add a tracked and modified file to the index and we change branch, that file will be presented on the working directory;
    \item if we create a new file on a branch and then we change branch (without adding the file to the index) that file will be present;
    \item if we create a new file, add it to the index, change branch, commit, go back to the other branch, that file will not be visible;
    \item master branch can be deleted;

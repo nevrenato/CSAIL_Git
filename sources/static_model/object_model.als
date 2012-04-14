@@ -21,12 +21,12 @@ sig Tag extends Object{
 	marks : Commit
 }
 
-sig branch{
+sig Branch{
 	on: Commit
 }
 
-one sig head{
-	current: branch
+one sig Head{
+	current: Branch
 }
 
 //general
@@ -45,27 +45,20 @@ fact {
 
 // Assumptions
 fact {
-	
 	// A blob must have a parent
 	Blob in Tree.references
- 
 	// A tree must have a parent or it is pointed by a commit
 	Tree in Tree.references + Commit.points
-
 	// There are no models with sha's alone
 	Sha in Object.namedBy
-
 	// A root tree can only be pointed by One commit
   	points.~points in iden
-
 	// A tree can only have one parent
   	//references.(iden & (Tree->Tree)).~references  in iden
 	all t:Tree | lone references.t
-
 	// A non root tree cannot be pointed by a commit
   	no Commit.points & Tree.references
 }
-
 
 //commits
 fact {	
@@ -74,7 +67,7 @@ fact {
 	//RootCommit don't have a parent
 	no RootCommit.parent
 	//All Commits descend from a RootCommit
-	Commit - RootCommit in ^parent.RootCommit
+	Commit in *parent.RootCommit
 }
 
 run {} for 6
