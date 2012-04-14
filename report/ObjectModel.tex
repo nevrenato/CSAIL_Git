@@ -23,7 +23,7 @@ sig Sha{}
 
 \begin{lstlisting}
 abstract sig Object {
-	namedBy : one Sha
+	namedBy : Sha
 }
 sig Blob extends Object{}
 sig Tree extends Object {}
@@ -44,7 +44,7 @@ sig Tree extends Object {
 
 \begin{lstlisting}
 sig Commit extends Object{
-	points : one Tree
+	points : Tree
 }
 \end{lstlisting}
 
@@ -52,7 +52,7 @@ sig Commit extends Object{
 
 \begin{lstlisting}
 sig Tag extends Object{
-	marks : one Commit
+	marks : Commit
 }
 \end{lstlisting}
 
@@ -100,7 +100,7 @@ though that isn't common (or necessarily a good ideia)}". (page 12)
 \begin{lstlisting}
 
 sig Commit extends Object{
-  points : one Tree,
+  points : Tree,
   parent : set Commit
 }
 some sig RootCommit extends Commit{}
@@ -147,8 +147,9 @@ points.~points in iden
 \end{lstlisting}
 
 A tree has at most one parent. If this is not true there 
-is inconsistency in the git "filesystem".
+is inconsistency in the git "filesystem". In this case the navigational style is more compact than the relation style.
 \begin{lstlisting}
-references.(iden & (Tree->Tree)).~references  in iden
+//references.(iden & (Tree->Tree)).~references  in iden
+all t:Tree | lone references.t
 \end{lstlisting}
 

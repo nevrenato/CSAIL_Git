@@ -2,7 +2,7 @@ sig Sha{}
 
 // An object in git
 abstract sig Object {
-	namedBy : one Sha
+	namedBy : Sha
 }
 
 // stores file data
@@ -16,7 +16,7 @@ sig Tree extends Object {
 // points to a single tree, marking it as what the project looked like
 // at a certain point in time
 sig Commit extends Object{
-   	points : one Tree,
+   	points : Tree,
   	parent : set Commit
 }
 
@@ -25,7 +25,7 @@ some sig RootCommit extends Commit{}
 
 // way to mark a specific commit as special in some way
 sig Tag extends Object{
-	marks : one Commit
+	marks : Commit
 }
 
 // a directory cannot reference itself
@@ -54,14 +54,14 @@ fact {
 	Sha in Object.namedBy
 
 	// A root tree can only be pointed by One commit
-  points.~points in iden
+  	points.~points in iden
 
 	// A tree can only have one parent
-  references.(iden & (Tree->Tree)).~references  in iden 
-
+  	//references.(iden & (Tree->Tree)).~references  in iden
+	all t:Tree | lone references.t
 
 	// A non root tree cannot be pointed by a commit
-  	no Commit.points & Tree.references  
+  	no Commit.points & Tree.references
 }
 
 fact {	
@@ -73,4 +73,5 @@ fact {
 	Commit - RootCommit in ^parent.RootCommit
 }
 
-run {} for 6
+run {
+} for 6

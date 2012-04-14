@@ -1,7 +1,7 @@
 sig Sha{ }
 
 abstract sig Object {
-	namedBy : one Sha
+	namedBy :  Sha
 }
 
 sig Blob extends Object{}
@@ -11,14 +11,14 @@ sig Tree extends Object {
 }
 
 sig Commit extends Object{
-	points : one Tree,
-  parent : set Commit
+	points : Tree,
+  	parent : set Commit
 }
 
 some sig RootCommit extends Commit{}
 
 sig Tag extends Object{
-	marks : one Commit
+	marks : Commit
 }
 
 fact {
@@ -35,13 +35,13 @@ fact {
 	Tree in Tree.references + Commit.points
 	Sha in Object.namedBy
 
-  points.~points in iden
-  references.(iden & (Tree->Tree)).~references  in iden
-  no Commit.points & Tree.references
+  	points.~points in iden
+  	all t:Tree | lone references.t
+  	no Commit.points & Tree.references
 }
 
 fact {	
-  no ^parent & iden
+  	no ^parent & iden
 	no RootCommit.parent
 	Commit - RootCommit in ^parent.RootCommit
 }
