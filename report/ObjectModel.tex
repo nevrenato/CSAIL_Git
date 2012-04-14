@@ -58,7 +58,7 @@ sig Tag extends Object{
 
 As the book \cite{gitComm} says, a "tree" acts
 like a directory, so we know that it or it's 
-descendents cannot point to itself.
+descendants cannot point to itself.
 \begin{lstlisting}
 no ^references & iden 
 \end{lstlisting}
@@ -88,14 +88,14 @@ namedBy.~namedBy - (Tree->Tree) in iden
 Again from \cite{gitComm}. \par 
 "As you can see,a commit is defined by :
 ... \par
-parent(s) : {\bf The SHA1 name of some number of commits wich
+parent(s) : {\bf The SHA1 name of some number of commits which
 represent the immediately previous step(s) in the 
 history of the project}. The example above has one parent;
 merge commits may have more than one. A commit with no 
 parents is called a "root" commit, and represents the 
 initial revision of a project. {\bf Each project must have at
 least one root. A project can also have multiple roots,
-though that isn't common (or necessarily a good ideia)}". (page 12)
+though that isn't common (or necessarily a good idea)}". (page 12)
 
 \begin{lstlisting}
 
