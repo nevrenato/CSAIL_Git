@@ -107,8 +107,7 @@ some sig RootCommit extends Commit{}
 fact {
   no ^parent & iden
   no RootCommit.parent
-  Commit - RootCommit in ^parent.RootCommit
-
+  Commit in *parent.RootCommit
 }
 
 \end{lstlisting}
@@ -121,8 +120,8 @@ losses of information.
 no Commit.points & Tree.references    
 \end{lstlisting}
 
-We can't have orphan Blobs, or else, 
-there is the possibility for garbage data.
+\sout{We can't have orphan Blobs, or else, 
+there is the possibility for garbage data.} Maybe in the future we can define Blob in Tree.references + Index.stage
 \begin{lstlisting}
 Blob in Tree.references
 \end{lstlisting}

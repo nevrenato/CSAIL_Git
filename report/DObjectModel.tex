@@ -1,26 +1,41 @@
 \section {Modelling Git Dynamic Object Model}
 The static object model, only by itself, 
-is not very usefull. And so
+is not very useful. And so
 the model would be much more interesting if we specify 
 the most important git operations. That said in this
 section we will focus on modelling the most important
 and critical of them. \par
 
 In order to understand them, the definition
-of the git Working Directory and git Index is in debt.
+of the git Working Directory and git Index is in debt,
+but first we give a small the notion of branch.
 
 \subsection{Introducing branches}
 Definition of branch: "A branch in Git is {\bf simply a 
 lightweight movable pointer to one of these commits}." \cite{progit} 
 (pag 39)\\
 
+\begin{lstlisting}
+sig Branch{
+   on: Commit
+}
+\end{lstlisting}
+
 A branch in git, is a pointer for a commit. We are always 
 working on a certain branch, and all the commits made on 
 that branch are independent from the others branch until we 
 make a merge. A new branch can be created using 
 \emph{git branch branch\_name}. The special pointer called Header 
-points to the branch we are working on. We can go to another 
-branch using \emph{git checkout branch\_name}.\\
+points to the branch we are working on. \cite{progit} (pag 40)
+
+\begin{lstlisting}
+one sig Head{
+   current: Branch
+}
+\end{lstlisting}
+
+We can navigate by different branches using 
+\emph{git checkout branch\_name}.\\
 
 
 
@@ -36,9 +51,35 @@ Trying to understand branches using git:
 We can conclude that the index is not connected to a branch. It is something is common to all branches.
 
 
+
+------------------------------------
+\subsection{Working Directory}
+The definition of Working Directory comes as follows:
+"The Git 'working directory' is the directory that holds 
+the current checkout of the files you are working on.".\\
+
+The working directory is basically what we see in our file 
+system. When we change to a certain branch, the files from the 
+working directory are replaced by the files from the commit 
+corresponding to that branch. So, a working directory is 
+composed by: last commit + added files - removed files.\\
+
+
+\subsection{Index}
+"The Git index is used as a staging area between your working directory and your repository." \cite{gitComm} (pag 17)\\
+"The index is a binary file (generally kept in .git/index) containing a sorted list of path names, each with permissions and the
+SHA1 of a blob object" \cite{gitComm} (pag 120)\\
+\begin{lstlisting}
+sig PathName{}
+one sig Index{
+   stage: PathName -> one Blob
+}
+\end{lstlisting}
+
+-----------------------------------------
+
+
 \subsection{Working Directory and Index}
-
-
 The definition of Working Directory comes as follows:
 "... simply a {\bf temporary checkout place} where you can 
 modify the files {\bf until your next commit}."
@@ -74,6 +115,7 @@ fact {
  not Add in (WorkingD.contents).diff
 }
 \end{lstlisting}
+
 Now for the definition of Index:
 "...staging area between your working directory and your
 repository. You can use the index to {\bf build up a set of 

@@ -29,6 +29,11 @@ one sig Head{
 	current: Branch
 }
 
+sig PathName{}
+one sig Index{
+	stage: PathName -> one Blob
+}
+
 //general
 fact{
 	//only Trees can share names
@@ -45,8 +50,8 @@ fact {
 
 // Assumptions
 fact {
-	// A blob must have a parent
-	Blob in Tree.references
+	// A blob must have a parent - NO! - (gitComm pag 120) a blob sha may exist on index, so the blob must exist
+	//Blob in Tree.references 
 	// A tree must have a parent or it is pointed by a commit
 	Tree in Tree.references + Commit.points
 	// There are no models with sha's alone
@@ -70,4 +75,6 @@ fact {
 	Commit in *parent.RootCommit
 }
 
-run {} for 6
+run {some Blob
+#stage>3
+#PathName.(Index.stage)>1} for 6
