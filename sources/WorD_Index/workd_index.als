@@ -51,9 +51,10 @@ pred add [s,s' : State, f : File] {
 
   -- when we add a mod file, that change must already appear in the WorkD
   Mod in f.diff implies f in s.workD.contents   
-  
-	s'.workD = s.workD
-	s'.index.toCommit = s.index.toCommit + f 
+  --(s'.index.toCommit).Mod in (s'.workD.contents).Mod
+ 
+ s'.workD = s.workD
+ s'.index.toCommit = s.index.toCommit + f 
 }
 
 

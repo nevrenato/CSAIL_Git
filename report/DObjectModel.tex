@@ -25,37 +25,54 @@ Trying to understand branches using git:
 \end{itemize}
 
 We can conclude that the index is not connected to a branch. It is something is common to all branches.
+
+
 \subsection{Working Directory and Index}
+
 
 The definition of Working Directory comes as follows:
 "... simply a {\bf temporary checkout place} where you can 
 modify the files {\bf until your next commit}."
 \cite{gitComm} (pag 17). \par
-
-To complement the definition above, git will only
-track files that existed in the last commit, thus
-new ones will not appear in this directory. \par 
 So,
 the Working Directory, does nothing more than telling
 us wich files have been modified since the last commit.
 
 \begin{lstlisting}
-sig File{}
 sig WorkingD {
 	contents : set File
 }
 \end{lstlisting}
 
+\begin{lstlisting}
+abstract sig Type {}
+one sig Mod,Add,Del extends Type {}
+
+sig File{
+	diff : some Type	
+}
+\end{lstlisting}
+
+To complement the definition above, git will only
+track files that existed in the last commit, thus
+new ones will not appear in this directory. \par 
+That said, in the Working Directory can only appear
+modified ou deleted files. \par
+
+\begin{lstlisting}
+fact {
+
+ not Add in (WorkingD.contents).diff
+}
+\end{lstlisting}
 Now for the definition of Index:
 "...staging area between your working directory and your
 repository. You can use the index to {\bf build up a set of 
 changes that you want to commit together}. When you create
 a commit, {\bf what is committed is what is currently in the
 index, not what is in your working directory.}"
-\cite{gitComm} (page 17). So, the Index, in a certain
-manner, points to a subset
-of files that are present in the Working Directory, and
-is this subset of files that wil be commited. 
+\cite{gitComm} (page 17). So, the Index simply refers the files
+that will be commited.
 
 \begin{lstlisting}
 sig Index {
@@ -63,18 +80,9 @@ sig Index {
 }
 \end{lstlisting}
 
-However
-there will be a few exceptions!(present in the last parapgrah of the sections
-git add command and git rm command)\par
-
-We can see  
-that a commit depends on the contents of git Index, as the
-last depends on the Working Directory. So it will be important
-to add those definitions to our model when defining the commit operation
-.But, a question arises.
 What is the pratical difference between the Index and the Working
-Directory? Shouldn't all that we modify in the repository be 
-commited? We will see that next. 
+Directory? The simple answer is that there can be cases when we don't want
+to commit something, previously changed.
 
 \subsubsection{The git add command}
 
@@ -84,10 +92,28 @@ tells us that
 and in both cases it takes a snapshot of the given files
 and {\bf stages that content in the index, ready for inclusion
 in the next commit}." \par 
-When doing a git add of a newly
-added file, that
-addition will not appear in the Working Directory, only in the
-Index. 
+As already said above a newly modified file, it's tracked by
+the Working Directory, so all references to modified files in
+the Index must also appear in the Working Directory. For newly
+added files that is not the case.
+\begin{lstlisting}
+pred add [s,s' : State, f : File] {
+  
+    f.diff in (Add+Mod) 
+    s'.workD = s.workD
+    s'.index.toCommit = s.index.toCommit + f 
+    (s'.index.toCommit).Mod in (s'.workD.contents).Mod
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}
+sig State {
+  workD : WorkingD,
+  index : Index
+}
+\end{lstlisting}
+
 \subsubsection{The git rm command}
 
 This one is generally less used. It's usefullness can be
