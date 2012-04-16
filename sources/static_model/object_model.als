@@ -29,10 +29,10 @@ one sig Head{
 	current: Branch
 }
 
-sig PathName{}
-one sig Index{
-	stage: PathName -> one Blob
-}
+//sig PathName{}
+//one sig Index{
+//	stage: PathName -> one Blob
+//}
 
 //general
 fact{
@@ -75,6 +75,4 @@ fact {
 	Commit in *parent.RootCommit
 }
 
-run {some Blob
-#stage>3
-#PathName.(Index.stage)>1} for 6
+run {}
