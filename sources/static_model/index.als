@@ -8,6 +8,7 @@ one sig Index{
 fact{
 	//all Sha in entry name a Blob
 	namedBy.(Index.entry.File) in Blob
+	
 }
 
 run{
