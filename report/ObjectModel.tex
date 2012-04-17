@@ -58,7 +58,7 @@ sig Tag extends Object{
 
 As the book \cite{gitComm} says, a "tree" acts
 like a directory, so we know that it or it's 
-descendants cannot point to itself.
+descendants cannot point to themselves.
 \begin{lstlisting}
 no ^references & iden 
 \end{lstlisting}
@@ -74,8 +74,8 @@ all t,t' : Tree |
 
 "What that means to us is that is virtually {\bf impossible to find to 
 different objects with the same name}". (page 7) \par
-We know that there is an exception. That is,
-there are cases (defined above)
+However we know that there is an exception. 
+There are cases (defined above)
 that allow different trees to have same name. 
 
 \begin{lstlisting}
@@ -107,6 +107,7 @@ some sig RootCommit extends Commit{}
 fact {
   no ^parent & iden
   no RootCommit.parent
+  % Check the line below
   Commit in *parent.RootCommit
 }
 
@@ -120,8 +121,9 @@ losses of information.
 no Commit.points & Tree.references    
 \end{lstlisting}
 
-\sout{We can't have orphan Blobs, or else, 
-there is the possibility for garbage data.} Maybe in the future we can define Blob in Tree.references + Index.stage
+\sout{\sout{We can't have orphan Blobs, or else, 
+there is the possibility for garbage data.} Maybe in the future we can define Blob in Tree.references + Index.stage}
+In the object model we don't have orphan Blobs. 
 \begin{lstlisting}
 Blob in Tree.references
 \end{lstlisting}
@@ -131,9 +133,7 @@ The same for Trees.
 Tree in Tree.references + Commit.points
 \end{lstlisting}
 
-This is only appears because we don't need
-names that don't belong to someone, in the git
-system.
+Sha's that don't point to anywhere are useless.
 \begin{lstlisting}
 Sha in Object.namedBy
 \end{lstlisting}
@@ -145,8 +145,9 @@ the files in your project looks like..." \cite{gitComm} (page 7)).
 points.~points in iden 
 \end{lstlisting}
 
-A tree has at most one parent. If this is not true there 
-is inconsistency in the git "filesystem". In this case the navigational style is more compact than the relation style.
+A tree has at most one parent. If this is not true, than there 
+is inconsistency in the git "filesystem". \sout{In this case the 
+navigational style is more compact than the relation style.}
 \begin{lstlisting}
 //references.(iden & (Tree->Tree)).~references  in iden
 all t:Tree | lone references.t

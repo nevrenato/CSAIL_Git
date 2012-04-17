@@ -9,9 +9,13 @@ while getopts "cb" opt; do
 	    	rm *.aux  *.log *.out;;
 
 	b)  	echo "I will build the tex file and open it for you :)";
-			pdflatex report.tex && bibtex report && pdflatex report.tex &&
+			pdflatex report.tex && 
+			makeglossaries report.glo &&
+			makeindex report.glo -s report.ist -t report.glg -o report.gls &&
+			bibtex report && pdflatex report.tex &&
 			pdflatex report.tex &&
-			rm *.aux *.log *.out *.bbl *.blg  && open report.pdf ;; 	
+			rm *.aux *.log *.out *.bbl *.blg  *.gls *.glo *.ist *.glg && 
+			open report.pdf ;; 	
 	\?) echo "wrong options" ;;
 	
 	esac
