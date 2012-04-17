@@ -1,27 +1,28 @@
-sig State{}
+open util/ordering[StateWD]
+
+sig StateWD{}
 abstract sig WDObject{
-	parent: Dir lone-> State,
-	wdobjects: set State
+	wdparent: Dir lone-> StateWD,
+	wdobjects: set StateWD
 }
 sig File, Dir extends WDObject{}
 
 one sig Root extends Dir{}
 
-pred inv[s:State]{
+pred inv[s:StateWD]{
 	//objects from parent on a state s, belongs to that state
-	parent.s in wdobjects.s -> wdobjects.s
-	//a WDObject cannot desdend from itself
-	no ^(parent.s) & iden
-	//all WDObjects desdends from a root
-	wdobjects.s in *(parent.s).(Root & wdobjects.s)
+	wdparent.s in wdobjects.s -> wdobjects.s
+	//a Object cannot desdend from itself
+	no ^(wdparent.s) & iden
+	//all Objects desdends from a root
+	wdobjects.s in *(wdparent.s).(Root & wdobjects.s)
 }
 
 fact{
-	all s:State | inv[s]
+	all s:StateWD | inv[s]
 	//avoid objects not on the system
-	WDObject in wdobjects.State
+	WDObject in wdobjects.StateWD
 }
 
 run{
-	//some s,s':State, f:File | rm[s,s',f]
-} for 3 but exactly 2 State
+} for 3 but 1 StateWD
