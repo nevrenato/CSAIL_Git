@@ -1,37 +1,37 @@
-open util/ordering [State]
-sig State{}
+open util/ordering [StateOM]
+sig StateOM{}
 
 sig Sha{
-	shas: set State
+	shas: set StateOM
 }
 
 abstract sig Object {
-	namedBy : Sha one -> State,
-	objects: set State
+	namedBy : Sha one -> StateOM,
+	objects: set StateOM
 }
 sig Blob extends Object{}
 sig Tree extends Object {
-	references : (Tree+Blob) set -> State
+	references : (Tree+Blob) set -> StateOM
 }
 
 sig Commit extends Object{
-   	points : Tree one -> State,
-  	parent : Commit set -> State
+   	points : Tree one -> StateOM,
+  	parent : Commit set -> StateOM
 }
 some sig RootCommit extends Commit{}
 
 sig Tag extends Object{
-	marks : Commit -> State
+	marks : Commit -> StateOM
 }
 
 //general
-pred inv[s:State]{
+pred inv[s:StateOM]{
 	//only Trees can share names
 	namedBy.s.~(namedBy.s) - (Tree & objects.s) -> (Tree & objects.s) in iden
 }
 
 //trees
-pred invTrees[s:State] {
+pred invTrees[s:StateOM] {
 	// a tree cannot reference itself
 	no ^(references.s) & iden
 	//two trees have the same name iff they have the same content (pag 11)
@@ -39,7 +39,7 @@ pred invTrees[s:State] {
 }
 
 // Assumptions
-pred assumptions[s:State] {
+pred assumptions[s:StateOM] {
 	// A blob must have a parent - NO! - (gitComm pag 120) a blob sha may exist on index, so the blob must exist
 	//Blob in Tree.references 
 	// A tree must have a parent or it is pointed by a commit
@@ -56,7 +56,7 @@ pred assumptions[s:State] {
 }
 
 //commits
-pred invCommits[s:State]{	
+pred invCommits[s:StateOM]{	
 	// A commit cannot be an ancestor of itself
   	no ^(parent.s) & iden
 	//RootCommit don't have a parent
@@ -66,9 +66,9 @@ pred invCommits[s:State]{
 }
 
 fact{
-	all s:State | inv[s] && invTrees[s] && assumptions[s] && invCommits[s]
+	all s:StateOM | inv[s] && invTrees[s] && assumptions[s] && invCommits[s]
 	//everything on a state, belongs to that states
-	all s:State |{	(parent.s) in (objects.s + Commit) -> (objects.s + Commit) 
+	all s:StateOM |{	(parent.s) in (objects.s + Commit) -> (objects.s + Commit) 
 						(references.s) in objects.s -> objects.s
 						(points.s) in (objects.s + Commit) -> (objects.s & Tree)
 						(namedBy.s) in objects.s -> shas.s
@@ -78,4 +78,4 @@ fact{
 run {
 	#Commit > 1
 	#references > 1
-} for 6 but 1 State
+} for 6 but 1 StateOM

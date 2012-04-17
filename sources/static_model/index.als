@@ -14,9 +14,15 @@ sig Index{
 
 fact{
 	//all Sha in stage name a Blob
-	(namedBy.last).(Index.stage.File) in Blob
+	Index.containShas in Blob.namedBy.StateOM
+}
+
+pred add[i,i':Index, s:Sha, f:File]{
+	f in wdparent.last.(Root & wdobjects.last)
+	i'.stage = i.stage - (Sha -> f) + (s -> f)
 }
 
 run{
-
-} for 3 but 1 Index, 1 working_directory/State, 1 object_model/State
+	//some i,i':Index, s:Sha, f:File | i.stage != i'.stage && add[i,i',s,f]
+	some f:File | f not in Index.containFiles
+} for 3 but 1 Index, 1 StateWD, 1 StateOM
