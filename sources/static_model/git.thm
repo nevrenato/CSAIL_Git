@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<projection> <type name="working_directory/State"/> </projection>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Index"/>
+   <type name="Int"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="object_model/Object"/>
+   <type name="object_model/RootCommit"/>
+   <type name="object_model/Sha"/>
+   <type name="object_model/Tag"/>
+   <type name="seq/Int"/>
+   <type name="working_directory/Dir"/>
+   <type name="working_directory/State"/>
+   <type name="working_directory/WDObject"/>
+   <set name="wdobjects" type="working_directory/WDObject"/>
+</node>
+
+<node color="Black">
+   <type name="object_model/Head"/>
+   <type name="working_directory/Root"/>
+</node>
+
+<node color="Blue">
+   <type name="object_model/Commit"/>
+</node>
+
+<node color="Gray">
+   <type name="object_model/Branch"/>
+</node>
+
+<node color="Green">
+   <type name="object_model/Tree"/>
+</node>
+
+<node color="Red">
+   <type name="object_model/Blob"/>
+</node>
+
+<node style="Bold" color="Red">
+   <type name="working_directory/File"/>
+</node>
+
+<edge layout="yes">
+   <relation name="parent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> </relation>
+   <relation name="parent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> <type name="working_directory/State"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="namedBy"> <type name="object_model/Object"/> <type name="object_model/Sha"/> </relation>
+   <relation name="wdobjects"> <type name="working_directory/WDObject"/> <type name="working_directory/State"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
