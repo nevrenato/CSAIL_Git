@@ -3,7 +3,7 @@
 
 <view>
 
-<projection> <type name="working_directory/State"/> </projection>
+<projection> <type name="Index"/> <type name="object_model/State"/> <type name="working_directory/State"/> </projection>
 
 <defaultnode/>
 
@@ -17,25 +17,34 @@
    <type name="object_model/Object"/>
    <type name="object_model/RootCommit"/>
    <type name="object_model/Sha"/>
+   <type name="object_model/State"/>
    <type name="object_model/Tag"/>
+   <type name="ordering/Ord"/>
    <type name="seq/Int"/>
    <type name="working_directory/Dir"/>
    <type name="working_directory/State"/>
    <type name="working_directory/WDObject"/>
+   <type name="object_model/ordering/Ord"/>
+   <type name="working_directory/ordering/Ord"/>
+   <set name="containFiles" type="working_directory/File"/>
+   <set name="containShas" type="object_model/Sha"/>
+   <set name="First" type="ordering/Ord"/>
+   <set name="First" type="object_model/ordering/Ord"/>
+   <set name="First" type="working_directory/ordering/Ord"/>
+   <set name="Next" type="ordering/Ord"/>
+   <set name="Next" type="object_model/ordering/Ord"/>
+   <set name="Next" type="working_directory/ordering/Ord"/>
+   <set name="objects" type="object_model/Object"/>
+   <set name="shas" type="object_model/Sha"/>
    <set name="wdobjects" type="working_directory/WDObject"/>
 </node>
 
 <node color="Black">
-   <type name="object_model/Head"/>
    <type name="working_directory/Root"/>
 </node>
 
 <node color="Blue">
    <type name="object_model/Commit"/>
-</node>
-
-<node color="Gray">
-   <type name="object_model/Branch"/>
 </node>
 
 <node color="Green">
@@ -51,13 +60,12 @@
 </node>
 
 <edge layout="yes">
+   <relation name="parent"> <type name="object_model/Commit"/> <type name="object_model/Commit"/> </relation>
    <relation name="parent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> </relation>
-   <relation name="parent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> <type name="working_directory/State"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
    <relation name="namedBy"> <type name="object_model/Object"/> <type name="object_model/Sha"/> </relation>
-   <relation name="wdobjects"> <type name="working_directory/WDObject"/> <type name="working_directory/State"/> </relation>
 </edge>
 
 </view>

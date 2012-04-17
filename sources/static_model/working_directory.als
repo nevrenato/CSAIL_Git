@@ -1,3 +1,5 @@
+open util/ordering[State]
+
 sig State{}
 abstract sig WDObject{
 	parent: Dir lone-> State,
@@ -10,9 +12,9 @@ one sig Root extends Dir{}
 pred inv[s:State]{
 	//objects from parent on a state s, belongs to that state
 	parent.s in wdobjects.s -> wdobjects.s
-	//a WDObject cannot desdend from itself
+	//a Object cannot desdend from itself
 	no ^(parent.s) & iden
-	//all WDObjects desdends from a root
+	//all Objects desdends from a root
 	wdobjects.s in *(parent.s).(Root & wdobjects.s)
 }
 
@@ -23,5 +25,5 @@ fact{
 }
 
 run{
-	//some s,s':State, f:File | rm[s,s',f]
-} for 3 but exactly 2 State
+
+} for 3
