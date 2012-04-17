@@ -22,19 +22,6 @@ fact{
 	WDObject in wdobjects.State
 }
 
-pred touch[s,s':State, f:File, d:Dir]{
-	f not in wdobjects.s
-	d in wdobjects.s
-	parent.s' = parent.s + f -> d
-	wdobjects.s' = wdobjects.s + f
-}
-
-pred rm[s,s':State,f:File]{
-	f in wdobjects.s
-	parent.s' = parent.s - f -> Dir
-	wdobjects.s' = wdobjects.s - f
-}
-
 run{
-	some s,s':State, f:File | rm[s,s',f]
+	//some s,s':State, f:File | rm[s,s',f]
 } for 3 but exactly 2 State
