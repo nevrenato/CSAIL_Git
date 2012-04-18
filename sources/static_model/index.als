@@ -17,6 +17,11 @@ fact{
 	Index.containShas in Blob.namedBy.StateOM
 }
 
+pred init[i:Index]{
+	no stage
+	
+}
+
 pred add[i,i':Index, s:Sha, f:File]{
 	f in wdparent.last.(Root & wdobjects.last)
 	i'.stage = i.stage - (Sha -> f) + (s -> f)
