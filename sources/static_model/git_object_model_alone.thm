@@ -3,7 +3,7 @@
 
 <view>
 
-<projection> <type name="State"/> </projection>
+<projection> <type name="state/State"/> </projection>
 
 <defaultnode/>
 
@@ -14,18 +14,16 @@
    <type name="Object"/>
    <type name="RootCommit"/>
    <type name="Sha"/>
-   <type name="State"/>
    <type name="String"/>
    <type name="Tag"/>
    <type name="univ"/>
-   <type name="ordering/Ord"/>
    <type name="seq/Int"/>
+   <type name="state/State"/>
+   <set name="blobs" type="Blob"/>
    <set name="commits" type="Commit"/>
-   <set name="First" type="ordering/Ord"/>
-   <set name="Next" type="ordering/Ord"/>
-   <set name="objects" type="Object"/>
    <set name="shas" type="Sha"/>
    <set name="tags" type="Tag"/>
+   <set name="trees" type="Tree"/>
 </node>
 
 <node color="Blue">
@@ -39,10 +37,6 @@
 <node color="Red">
    <type name="Blob"/>
 </node>
-
-<edge layout="yes">
-   <relation name="parent"> <type name="Commit"/> <type name="Commit"/> </relation>
-</edge>
 
 <edge visible="no" attribute="yes">
    <relation name="namedBy"> <type name="Object"/> <type name="Sha"/> </relation>

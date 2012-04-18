@@ -1,7 +1,3 @@
-open object_model
+open index
 
-pred add[i,i':Index,p:PathName]{
-	//we have to model the content also
-}
-
-run{}
+pred add

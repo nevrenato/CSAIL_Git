@@ -1,41 +1,40 @@
-open util/ordering [StateOM]
-sig StateOM{}
+open state
 
 sig Sha{
-	shas: set StateOM
+	shas: set State
 }
 
 abstract sig Object {
-	namedBy : Sha one -> StateOM
+	namedBy : Sha one -> State
 }
 sig Blob extends Object{
-	blobs: set StateOM
+	blobs: set State
 }
 sig Tree extends Object {
-	references : (Tree+Blob) set -> StateOM,
-	trees: set StateOM
+	references : (Tree+Blob) set -> State,
+	trees: set State
 }
 
 sig Commit extends Object{
-   	points : Tree one -> StateOM,
-  	parent : Commit set -> StateOM,
-	commits: set StateOM
+   	points : Tree one -> State,
+  	parent : Commit set -> State,
+	commits: set State
 }
-some sig RootCommit extends Commit{}
+sig RootCommit extends Commit{}
 
 sig Tag extends Object{
-	marks : Commit -> StateOM,
-	tags: set StateOM
+	marks : Commit -> State,
+	tags: set State
 }
 
 //general
-pred inv[s:StateOM]{
+pred inv[s:State]{
 	//only Trees can share names
 	namedBy.s.~(namedBy.s) - (trees.s) -> (trees.s) in iden
 }
 
 //trees
-pred invTrees[s:StateOM] {
+pred invTrees[s:State] {
 	// a tree cannot reference itself
 	no ^(references.s) & iden
 	//two trees have the same name iff they have the same content (pag 11)
@@ -43,7 +42,7 @@ pred invTrees[s:StateOM] {
 }
 
 // Assumptions
-pred assumptions[s:StateOM] {
+pred assumptions[s:State] {
 	// A blob must have a parent - NO! - (gitComm pag 120) a blob sha may exist on index, so the blob must exist
 	//Blob in Tree.references 
 	// A tree must have a parent or it is pointed by a commit
@@ -53,6 +52,8 @@ pred assumptions[s:StateOM] {
 	all t:trees.s | lone (references.s).t
 	// There are no models with sha's alone
 	shas.s in (blobs + trees + commits + tags).s.(namedBy.s)
+	//tags, always marks some commit
+	tags.s in (marks.s).(commits.s)
 	// A root tree can only be pointed by One commit
   	points.s.~(points.s) in iden
 	// A non root tree cannot be pointed by a commit
@@ -60,7 +61,7 @@ pred assumptions[s:StateOM] {
 }
 
 //commits
-pred invCommits[s:StateOM]{	
+pred invCommits[s:State]{	
 	// A commit cannot be an ancestor of itself
   	no ^(parent.s) & iden
 	//RootCommit don't have a parent
@@ -70,15 +71,18 @@ pred invCommits[s:StateOM]{
 }
 
 fact{
-	all s:StateOM | inv[s] && invTrees[s] && assumptions[s] && invCommits[s]
+	all s:State | inv[s] && invTrees[s] && assumptions[s] && invCommits[s]
 	//everything on a state, belongs to that states
-	all s:StateOM |{	(parent.s) in (commits.s) -> (commits.s) 
+	all s:State |{	(parent.s) in (commits.s) -> (commits.s) 
 							(references.s) in trees.s -> (trees + blobs).s
 							(points.s) in (commits.s) -> (trees.s)
 							(namedBy.s) in (blobs + trees + commits + tags).s -> shas.s
-						}
+					}
+	
+	//all objects belong to a state
+	Object in (trees + blobs + commits + tags).State
 }
 
 run {
-	no Commit
-} for 3 but 1 StateOM
+	some Tree -> Blob
+} for 3
