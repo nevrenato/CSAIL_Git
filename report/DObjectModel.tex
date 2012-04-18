@@ -7,24 +7,17 @@ section we will focus on modelling the most important
 and critical of them. \par
 
 In order to understand them, the definition
-of the git Working Directory and git Index is in debt,
+of the git Working Directory and git Index is in debt. \par
 
 
 \subsection{Working Directory}
 The definition of Working Directory comes as follows:
 "... simply a {\bf temporary checkout place} where you can 
 modify the files {\bf until your next commit}."
-\cite{gitComm} (pag 17). \par
-Also : "The Git 'working directory' is {\bf the directory that holds 
-the current \gls{checkout} of the files you are working on}."\par
-% Falta um quote 
-Thus, we can say the Working Directory is just another
-name for the current content of the repository.
-\sout{The working directory is basically what we see in our file
-system. When we change to a certain branch, the files from the 
-working directory are replaced by the files from the commit 
-corresponding to that branch. So, a working directory is 
-composed by: last commit + added files - removed files.\\}
+\par
+"The Git 'working directory' is {\bf the directory that holds 
+the current \gls{checkout} of the files you are working on}.
+"\cite{gitComm} (pag 17)\par
 
 \subsection{Index}
 Now for the definition of Index:
@@ -77,48 +70,46 @@ When using git rm
 that modification will only appear in the Index. Unless, before
 the git rm we delete the file from the filesystem (e.g. rm ). \par
 
-\subsection{Introducing branches}
-Definition of branch: "A branch in Git is {\bf simply a 
-lightweight movable pointer to one of these commits}." \cite{progit} 
-(pag 39)\\
-
-\begin{lstlisting}
-sig Branch{
-   on: Commit
-}
-\end{lstlisting}
-
-A branch in git, is a pointer for a commit. We are always 
-working on a certain branch, and all the commits made on 
-that branch are independent from the others branch until we 
-make a merge. A new branch can be created using 
-\emph{git branch branch\_name}. The special pointer called Header 
-points to the branch we are working on. \cite{progit} (pag 40)
-% Especifica qual é o quote 
-
-\begin{lstlisting}
-one sig Head{
-   current: Branch
-}
-\end{lstlisting}
-
-We can navigate by different branches using 
-\emph{git checkout branch\_name}.\\
+%\subsection{Introducing branches}
+%Definition of branch: "A branch in Git is {\bf simply a 
+%lightweight movable pointer to one of these commits}." \cite{progit} 
+%(pag 39)\\
+%
+%\begin{lstlisting}
+%sig Branch{
+%   on: Commit
+%}
+%\end{lstlisting}
+%
+%A branch in git, is a pointer for a commit. We are always 
+%working on a certain branch, and all the commits made on 
+%that branch are independent from the others branch until we 
+%make a merge. A new branch can be created using 
+%\emph{git branch branch\_name}. The special pointer called Header 
+%points to the branch we are working on. \cite{progit} (pag 40)
+%% Especifica qual é o quote 
+%
+%\begin{lstlisting}
+%one sig Head{
+%   current: Branch
+%}
+%\end{lstlisting}
+%
+%We can navigate by different branches using 
+%\emph{git checkout branch\_name}.\\
 
 
 %Some rules
-Trying to understand branches using git:
-\begin{itemize}
-   \item if we modify a tracked file, we cannot change branch if we do not add that file to the index and commit it;
-%   \item if we add a tracked and modified file to the index and we change branch, that file will be presented on the working directory;
-   % Nao percebo esta de baixo
-   \item if we create a new file on a branch and then we change branch (without adding the file to the index) that file will be present;
-   \item if we create a new file, add it to the index, change branch, commit, go back to the other branch, that file will not be visible;
-   \item master branch can be deleted;
-\end{itemize}
-
-% Entao como é q constroi a árvore ?
-% Hum talvez podiamos passar isto dos branches para baixo, pq estas a falar de index e ainda nao
-% demos a sua definicao
-We can conclude that the index is not connected to a branch. It is something is common to all branches.
+%Trying to understand branches using git:
+%\begin{itemize}
+%   \item if we modify a tracked file, we cannot change branch if we do not add that file to the index and commit it;
+%%   \item if we add a tracked and modified file to the index and we change branch, that file will be presented on the working directory;
+%   % Nao percebo esta de baixo
+%   \item if we create a new file on a branch and then we change branch (without adding the file to the index) that file will be present;
+%   \item if we create a new file, add it to the index, change branch, commit, go back to the other branch, that file will not be visible;
+%   \item master branch can be deleted;
+%\end{itemize}
+%
+%% Entao como é q constroi a árvore ?
+%We can conclude that the index is not connected to a branch. It is something is common to all branches.
 

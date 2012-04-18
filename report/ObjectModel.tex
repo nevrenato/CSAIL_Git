@@ -107,7 +107,6 @@ some sig RootCommit extends Commit{}
 fact {
   no ^parent & iden
   no RootCommit.parent
-  % Check the line below
   Commit in *parent.RootCommit
 }
 
@@ -121,8 +120,6 @@ losses of information.
 no Commit.points & Tree.references    
 \end{lstlisting}
 
-\sout{\sout{We can't have orphan Blobs, or else, 
-there is the possibility for garbage data.} Maybe in the future we can define Blob in Tree.references + Index.stage}
 In the object model we don't have orphan Blobs. 
 \begin{lstlisting}
 Blob in Tree.references
@@ -146,10 +143,8 @@ points.~points in iden
 \end{lstlisting}
 
 A tree has at most one parent. If this is not true, than there 
-is inconsistency in the git "filesystem". \sout{In this case the 
-navigational style is more compact than the relation style.}
+is inconsistency in the git "filesystem".
 \begin{lstlisting}
-//references.(iden & (Tree->Tree)).~references  in iden
 all t:Tree | lone references.t
 \end{lstlisting}
 
