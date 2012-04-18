@@ -31,6 +31,6 @@ pred add[i,i':Index, s:Sha, f:File]{
 }
 
 run{
-	//some i,i':Index, s:Sha, f:File | i.stage != i'.stage && add[i,i',s,f]
+	some i,i':Index, s:Sha, f:File | i.stage != i'.stage && add[i,i',s,f]
 	//some f:File | f not in Index.containFiles
-} for 3 but 1 Index, 1 StateWD, 1 StateOM
+} for 3 but 2 Index, 1 StateWD, 1 StateOM

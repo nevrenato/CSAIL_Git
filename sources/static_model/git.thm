@@ -3,7 +3,7 @@
 
 <view>
 
-<projection> <type name="Index"/> <type name="object_model/State"/> <type name="working_directory/State"/> </projection>
+<projection> <type name="object_model/StateOM"/> <type name="working_directory/StateWD"/> </projection>
 
 <defaultnode/>
 
@@ -17,25 +17,24 @@
    <type name="object_model/Object"/>
    <type name="object_model/RootCommit"/>
    <type name="object_model/Sha"/>
-   <type name="object_model/State"/>
+   <type name="object_model/StateOM"/>
    <type name="object_model/Tag"/>
    <type name="ordering/Ord"/>
    <type name="seq/Int"/>
    <type name="working_directory/Dir"/>
-   <type name="working_directory/State"/>
+   <type name="working_directory/StateWD"/>
    <type name="working_directory/WDObject"/>
    <type name="object_model/ordering/Ord"/>
    <type name="working_directory/ordering/Ord"/>
-   <set name="containFiles" type="working_directory/File"/>
-   <set name="containShas" type="object_model/Sha"/>
-   <set name="First" type="ordering/Ord"/>
+   <set name="blobs" type="object_model/Blob"/>
+   <set name="commits" type="object_model/Commit"/>
    <set name="First" type="object_model/ordering/Ord"/>
    <set name="First" type="working_directory/ordering/Ord"/>
-   <set name="Next" type="ordering/Ord"/>
    <set name="Next" type="object_model/ordering/Ord"/>
    <set name="Next" type="working_directory/ordering/Ord"/>
-   <set name="objects" type="object_model/Object"/>
    <set name="shas" type="object_model/Sha"/>
+   <set name="tags" type="object_model/Tag"/>
+   <set name="trees" type="object_model/Tree"/>
    <set name="wdobjects" type="working_directory/WDObject"/>
 </node>
 
@@ -60,8 +59,8 @@
 </node>
 
 <edge layout="yes">
-   <relation name="parent"> <type name="object_model/Commit"/> <type name="object_model/Commit"/> </relation>
-   <relation name="parent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> </relation>
+   <relation name="namedBy"> <type name="object_model/Object"/> <type name="object_model/Sha"/> <type name="object_model/StateOM"/> </relation>
+   <relation name="wdparent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
