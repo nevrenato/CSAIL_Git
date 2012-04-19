@@ -1,3 +1,0 @@
-sig State{}
-
-run{}
