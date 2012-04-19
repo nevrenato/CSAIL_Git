@@ -1,0 +1,3 @@
+open index
+
+pred add

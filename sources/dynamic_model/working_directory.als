@@ -1,26 +1,31 @@
+open state
+
 abstract sig WDObject{
-	wdparent: lone Dir
+	wdparent: Dir lone -> State,
+  	wdobjects: set State
 }
 
 sig File, Dir extends WDObject{}
 
 one sig Root extends Dir{}
 
-pred inv[]{
+pred inv[s:State]{
 	//objects from parent on a state s, belongs to that state
-	wdparent  in WDObject -> Dir
+	wdparent.s  in wdobjects.s -> wdobjects.s
 	//a Object cannot ascend from itself
-	no ^wdparent & iden
+	no ^(wdparent.s) & iden
 	//all Objects desdends from a root
   	//wdobjects.s in *(wdparent.s).(Root & wdobjects.s)
- 	WDObject in ^wdparent.WDObject + Root
+ 	wdobjects.s in ^(wdparent.s).(WDObject) + Root
 }
 
 fact{
-	 inv[]
+	all s:State | inv[s]
 	// debug purposes
+	//avoid objects not on the system
+	WDObject in wdobjects.State
 }
 
 
 run{
-} for 3
+} for 4 but 1 State

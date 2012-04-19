@@ -19,6 +19,10 @@ modify the files {\bf until your next commit}."
 the current \gls{checkout} of the files you are working on}.
 "\cite{gitComm} (pag 17)\par
 
+\begin{lstlisting}
+
+\end{lstlisting}
+
 \subsection{Index}
 Now for the definition of Index:
 "...staging area between your working directory and your
@@ -35,9 +39,9 @@ SHA1 of a blob object" \cite{gitComm} (pag 120).
 Also : ``The index {\bf contains all the information necessary to generate a single
 (uniquely determined) tree object}'' \cite{gitComm} (pag 121). \par
 
-What is the pratical difference between the Index and the Working
+What is the practical difference between the Index and the Working
 Directory? Well, the Working Directory is simply the root folder of a repository,
-that we work on. When we want to save something in a commit, we have to explicitely 
+that we work on. When we want to save something in a commit, we have to explicitly 
 tell git to add that to the Index. Once added, it
 will be saved in the git database at the next commit. If we don't want to save
 something in a commit, we  don't add it to the Index.

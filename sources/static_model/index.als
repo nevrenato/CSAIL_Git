@@ -2,20 +2,16 @@ open working_directory
 open object_model
 
 one sig Index{
-	stage: Sha one -> File -> State,
-	entries: set State
+	stage: Sha one -> File
 }
 
-pred invIndex[s:State]{
-	stage.s in entries.s -> shas.s -> wdobjects.s
-	(entries.s).(stage.s).File in (blobs.s).namedBy.s
+pred invIndex[]{
+	Index.stage.File in Blob.namedBy
 }
 
 fact{
-	all s:State | invIndex[s]
-
-	Index in entries.State
+	invIndex[]
 }
 
 run{
-} for 3 but 1 State
+} for 3

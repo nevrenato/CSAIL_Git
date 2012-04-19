@@ -1,0 +1,3 @@
+sig State{}
+
+run{}

@@ -1,88 +1,72 @@
-open state
-
 sig Sha{
-	shas: set State
 }
 
 abstract sig Object {
-	namedBy : Sha one -> State
+	namedBy : Sha
 }
 sig Blob extends Object{
-	blobs: set State
 }
 sig Tree extends Object {
-	references : (Tree+Blob) set -> State,
-	trees: set State
+	references : set (Tree+Blob)
 }
 
 sig Commit extends Object{
-   	points : Tree one -> State,
-  	parent : Commit set -> State,
-	commits: set State
+   	points : Tree,
+  	parent : set Commit
 }
 sig RootCommit extends Commit{}
 
 sig Tag extends Object{
-	marks : Commit -> State,
-	tags: set State
+	marks : Commit
 }
 
 //general
-pred inv[s:State]{
+pred inv[]{
 	//only Trees can share names
-	namedBy.s.~(namedBy.s) - (trees.s) -> (trees.s) in iden
+	namedBy.~namedBy - Tree -> Tree in iden
 }
 
 //trees
-pred invTrees[s:State] {
+pred invTrees[] {
 	// a tree cannot reference itself
-	no ^(references.s) & iden
+	no ^references & iden
 	//two trees have the same name iff they have the same content (pag 11)
-	all t,t':trees.s | t.namedBy.s = t'.namedBy.s <=> t.references.s = t'.references.s
+	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
 }
 
 // Assumptions
-pred assumptions[s:State] {
+pred assumptions[] {
 	// A blob must have a parent - NO! - (gitComm pag 120) a blob sha may exist on index, so the blob must exist
-	//Blob in Tree.references 
+	Blob in Tree.references 
 	// A tree must have a parent or it is pointed by a commit
-	trees.s in (trees.s).references.s + (commits.s).points.s
+	Tree in Tree.references + Commit.points
 	// A tree can have at most one parent
   	//references.(iden & (Tree->Tree)).~references  in iden
-	all t:trees.s | lone (references.s).t
+	all t:Tree | lone references.t
 	// There are no models with sha's alone
-	shas.s in (blobs + trees + commits + tags).s.(namedBy.s)
+	Sha in Object.namedBy
 	//tags, always marks some commit
-	tags.s in (marks.s).(commits.s)
+	Tag in marks.Commit
 	// A root tree can only be pointed by One commit
-  	points.s.~(points.s) in iden
+  	points.~points in iden
 	// A non root tree cannot be pointed by a commit
-  	no (commits.s).(points.s) & (trees.s).(references.s)
+  	no Commit.points & Tree.references
 }
 
 //commits
-pred invCommits[s:State]{	
+pred invCommits[]{	
 	// A commit cannot be an ancestor of itself
-  	no ^(parent.s) & iden
+  	no ^parent & iden
 	//RootCommit don't have a parent
-	no RootCommit.(parent.s)
+	no RootCommit.parent
 	//All Commits descend from a RootCommit
-	commits.s in *(parent.s).(commits.s & RootCommit)
+	Commit in *parent.(Commit & RootCommit)
 }
 
 fact{
-	all s:State | inv[s] && invTrees[s] && assumptions[s] && invCommits[s]
+	inv[] && invTrees[] && assumptions[] && invCommits[]
 	//everything on a state, belongs to that states
-	all s:State |{	(parent.s) in (commits.s) -> (commits.s) 
-							(references.s) in trees.s -> (trees + blobs).s
-							(points.s) in (commits.s) -> (trees.s)
-							(namedBy.s) in (blobs + trees + commits + tags).s -> shas.s
-					}
-	
-	//all objects belong to a state
-	Object in (trees + blobs + commits + tags).State
 }
 
 run {
-	some Tree -> Blob
-} for 3
+} for 4
