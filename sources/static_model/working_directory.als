@@ -14,7 +14,6 @@ pred inv[]{
 
 	//all Objects descend from a root
  	WDObject in *wdparent.Root
-
 }
 
 fact{

@@ -9,7 +9,7 @@ sig Blob extends Object{
 }
 
 sig Tree extends Object {
-	references : set (Tree+Blob)
+	references : some (Tree+Blob)
 }
 
 sig Commit extends Object{
@@ -38,9 +38,6 @@ pred invTrees[] {
 	
  	//two trees have the same name iff they have the same content
 	all t,t':Tree | t.namedBy = t'.namedBy <=> t.references = t'.references
-
-	//all trees must have at least one son
-	all t : Tree | some t.references
 }
 
 // Assumptions

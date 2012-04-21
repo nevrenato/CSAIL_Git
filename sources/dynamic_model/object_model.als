@@ -11,7 +11,7 @@ sig Blob extends Object{
 	blobs: set State
 }
 sig Tree extends Object {
-	references : (Tree+Blob) set -> State,
+	references : (Tree+Blob) some -> State,
 	trees: set State
 }
 
@@ -39,6 +39,8 @@ pred invTrees[s:State] {
 	no ^(references.s) & iden
 	//two trees have the same name iff they have the same content (pag 11)
 	all t,t':trees.s | t.namedBy.s = t'.namedBy.s <=> t.references.s = t'.references.s
+	//all trees must have at least one son
+	all t : Tree | some t.references
 }
 
 // Assumptions
