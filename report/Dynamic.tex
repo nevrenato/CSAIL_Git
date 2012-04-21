@@ -1,0 +1,38 @@
+\section {Modelling Git Dynamic Object Model}
+
+The static object model, only by itself, 
+is not very useful. And so
+the model would be much more interesting if we specify 
+the most important git operations. That said in this
+section we will focus on modelling the most important
+and critical of them. \par
+
+
+\subsubsection{The git add command}
+
+This command is one of the most used in git. \cite{gitComm} (page 26)
+tells us that
+"git add is {\bf used both for new and newly modified files},
+and in both cases it takes a snapshot of the given files
+and {\bf stages that content in the index, ready for inclusion
+in the next commit}." \par 
+As already said above a newly modified file, it's tracked by
+the Working Directory, so all references to modified files in
+the Index must also appear in the Working Directory. For newly
+added files that is not the case.
+
+\subsubsection{The git rm command}
+
+This one is generally less used. It's usefullness can be
+seen in the following : \cite{progit}
+(page 21) says "To remove a file from Git, you have to remove it
+from your tracked files (more accurately, {\bf remove it from your
+staging area}) and them commit. The {\bf git rm command does that
+and also removes the file from your working directory}...". \par
+Note that the working directory refered in the citation is not
+the git Working Directory, it's the directory of the filesystem itself.
+In other words a 'rm <file>' is present inside the 'git rm <file>'. \par
+When using git rm
+that modification will only appear in the Index. Unless, before
+the git rm we delete the file from the filesystem (e.g. rm ). \par
+

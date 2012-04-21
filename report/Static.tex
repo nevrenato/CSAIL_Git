@@ -1,4 +1,4 @@
-\section{Modelling Git Static Object Model}
+\section{Git Static Object Model}
 
 In this section we will show the specification in Alloy of the
 git object model. This will be mostly based on the textual
@@ -112,7 +112,7 @@ fact {
 
 \end{lstlisting}
 
-\subsection{What we assume for the proper functioning of git}
+\subsection{Implicit specifications}
 
 A commit must point only root trees, unless we want
 losses of information.
@@ -147,4 +147,78 @@ is inconsistency in the git "filesystem".
 \begin{lstlisting}
 all t:Tree | lone references.t
 \end{lstlisting}
+
+\section{Working Directory}
+
+\subsection{Explicit specifications}
+
+The definition of Working Directory comes as follows:
+"... simply a {\bf temporary checkout place} where you can 
+modify the files {\bf until your next commit}."
+\par
+"The Git 'working directory' is {\bf the directory that holds 
+the current \gls{checkout} of the files you are working on}.
+"\cite{gitComm} (pag 17)\par
+We can learn from these definitions that the Working Directory
+is a subset of the FileSystem. That subset being a repository 
+of git.
+
+\begin{lstlisting}
+abstract sig WDObject{
+	wdparent: lone Dir
+}
+sig File, Dir extends WDObject{}
+one sig Root extends Dir{}
+\end{lstlisting}
+
+\subsection{Implicit specifications}
+
+Being a subset of the FileSystem the Working Directory must respect
+the following conditions :
+	\begin{enumerate}
+		\item A WDObject cannot have an ascendent that it's itself
+		\item All Objects descend from the root directory
+	\end{enumerate}
+
+\begin{lstlisting}
+	no ^wdparent & iden
+	WDObject in *wdparent.Root
+\end{lstlisting}
+
+
+\section{Index}
+
+\subsection{Explicit specifications}
+
+Now for the definition of Index:
+"...staging area between your working directory and your
+repository. You can use the index to {\bf build up a set of 
+changes that you want to commit together}. When you create
+a commit, {\bf what is committed is what is currently in the
+index, not what is in your working directory.}"
+\cite{gitComm} (page 17). \par
+
+"The index is a binary file (generally kept in .git/index) 
+{\bf containing a sorted list of path names}, each with permissions and the
+SHA1 of a blob object" \cite{gitComm} (pag 120). \par 
+
+\begin{lstlisting}
+one sig Index{	
+  stage: Sha one -> File
+}{
+  Index.stage.File in Blob.namedBy
+}
+\end{lstlisting}
+
+Also : ``The index {\bf contains all the information necessary to generate a single
+(uniquely determined) tree object}'' \cite{gitComm} (pag 121). \par
+This description tells us that the index saves a snapshot of the system,
+not the differences !
+
+What is the practical difference between the Index and the Working
+Directory? The Working Directory is just the root folder of a repository,
+that we work on. When we want to save something in a commit, we have to explicitly 
+tell git to add that to the Index. Once added, it
+will be saved in the git database at the next commit. If we don't want to save
+something in a commit, we simply don't add it to the Index.
 
