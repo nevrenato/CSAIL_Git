@@ -13,15 +13,15 @@
    <type name="Int"/>
    <type name="Object"/>
    <type name="RootCommit"/>
-   <type name="Sha"/>
    <type name="String"/>
    <type name="Tag"/>
    <type name="univ"/>
    <type name="seq/Int"/>
+   <type name="sha/Sha"/>
    <type name="state/State"/>
    <set name="blobs" type="Blob"/>
    <set name="commits" type="Commit"/>
-   <set name="shas" type="Sha"/>
+   <set name="shas" type="sha/Sha"/>
    <set name="tags" type="Tag"/>
    <set name="trees" type="Tree"/>
 </node>
@@ -38,8 +38,8 @@
    <type name="Blob"/>
 </node>
 
-<edge visible="no" attribute="yes">
-   <relation name="namedBy"> <type name="Object"/> <type name="Sha"/> </relation>
+<edge visible="no" layout="no" attribute="yes">
+   <relation name="namedBy"> <type name="Object"/> <type name="sha/Sha"/> </relation>
 </edge>
 
 </view>

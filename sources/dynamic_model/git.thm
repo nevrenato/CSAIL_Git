@@ -16,16 +16,16 @@
    <type name="univ"/>
    <type name="object_model/Object"/>
    <type name="object_model/RootCommit"/>
-   <type name="object_model/Sha"/>
    <type name="object_model/Tag"/>
    <type name="seq/Int"/>
    <type name="working_directory/Root"/>
    <type name="working_directory/WDObject"/>
+   <type name="object_model/sha/Sha"/>
    <type name="object_model/state/State"/>
    <set name="blobs" type="object_model/Blob"/>
    <set name="commits" type="object_model/Commit"/>
-   <set name="entries" type="Index"/>
-   <set name="shas" type="object_model/Sha"/>
+   <set name="indexes" type="Index"/>
+   <set name="shas" type="object_model/sha/Sha"/>
    <set name="tags" type="object_model/Tag"/>
    <set name="trees" type="object_model/Tree"/>
    <set name="wdobjects" type="working_directory/WDObject"/>
@@ -55,8 +55,8 @@
    <relation name="wdparent"> <type name="working_directory/WDObject"/> <type name="working_directory/Dir"/> </relation>
 </edge>
 
-<edge visible="no" attribute="yes">
-   <relation name="namedBy"> <type name="object_model/Object"/> <type name="object_model/Sha"/> </relation>
+<edge visible="no" layout="no" attribute="yes">
+   <relation name="namedBy"> <type name="object_model/Object"/> <type name="object_model/sha/Sha"/> </relation>
 </edge>
 
 </view>

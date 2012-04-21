@@ -1,8 +1,5 @@
 open state
-
-sig Sha{
-	shas: set State
-}
+open sha
 
 abstract sig Object {
 	namedBy : Sha one -> State
@@ -86,5 +83,4 @@ fact{
 }
 
 run {
-	some Tree -> Blob
-} for 3
+} for 5 but 1 State

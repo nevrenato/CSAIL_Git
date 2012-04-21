@@ -1,3 +1,7 @@
 open index
 
-pred add
+pred init[s,s':State]{
+
+}
+
+run{}

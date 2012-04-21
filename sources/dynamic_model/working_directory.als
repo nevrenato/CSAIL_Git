@@ -1,11 +1,16 @@
 open state
+open sha
 
 abstract sig WDObject{
 	wdparent: Dir lone -> State,
   	wdobjects: set State
 }
 
-sig File, Dir extends WDObject{}
+sig File extends WDObject{
+	content: Sha
+}
+
+sig Dir extends WDObject{}
 
 one sig Root extends Dir{}
 

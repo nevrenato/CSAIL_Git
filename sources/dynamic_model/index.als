@@ -20,4 +20,4 @@ fact{
 }
 
 run{
-} for 3 but 1 State
+} for 3 but exactly 2 State

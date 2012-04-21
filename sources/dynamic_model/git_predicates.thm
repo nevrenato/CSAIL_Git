@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<projection> <type name="index/object_model/state/State"/> </projection>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Int"/>
+   <type name="String"/>
+   <type name="Univ"/>
+   <type name="univ"/>
+   <type name="index/Index"/>
+   <type name="seq/Int"/>
+   <type name="index/object_model/Object"/>
+   <type name="index/object_model/RootCommit"/>
+   <type name="index/object_model/Tag"/>
+   <type name="index/object_model/Tree"/>
+   <type name="index/working_directory/Root"/>
+   <type name="index/working_directory/WDObject"/>
+   <type name="index/object_model/sha/Sha"/>
+   <type name="index/object_model/state/State"/>
+   <set name="blobs" type="index/object_model/Blob"/>
+   <set name="commits" type="index/object_model/Commit"/>
+   <set name="indexes" type="index/Index"/>
+   <set name="shas" type="index/object_model/sha/Sha"/>
+   <set name="tags" type="index/object_model/Tag"/>
+   <set name="trees" type="index/object_model/Tree"/>
+   <set name="wdobjects" type="index/working_directory/WDObject"/>
+</node>
+
+<node color="Green">
+   <type name="index/object_model/Commit"/>
+</node>
+
+<node color="Red">
+   <type name="index/object_model/Blob"/>
+</node>
+
+<node shape="House" color="Blue">
+   <type name="index/working_directory/Dir"/>
+</node>
+
+<node shape="House" color="Red">
+   <type name="index/working_directory/File"/>
+</node>
+
+</view>
+
+</alloy>
