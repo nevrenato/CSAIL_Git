@@ -1,13 +1,18 @@
+open sha
+
 abstract sig WDObject{
-	
 	wdparent: lone Dir
 }
 
-sig File, Dir extends WDObject{}
+sig File extends WDObject{
+	content: Sha 
+}
+
+sig Dir extends WDObject{}
 
 one sig Root extends Dir{}
 
-pred inv[]{
+pred invWD[]{
 
 	//a Object cannot ascend from itself
 	no ^wdparent & iden
@@ -17,7 +22,7 @@ pred inv[]{
 }
 
 fact{
-	 inv[]
+	 invWD[]
 
 }
 

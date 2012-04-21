@@ -1,5 +1,4 @@
-sig Sha{
-}
+open sha
 
 abstract sig Object {
 	namedBy : Sha
