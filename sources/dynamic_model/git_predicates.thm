@@ -24,6 +24,9 @@
    <type name="index/working_directory/WDObject"/>
    <type name="index/object_model/sha/Sha"/>
    <type name="index/object_model/state/State"/>
+   <set name="$f" type="index/working_directory/File"/>
+   <set name="$s" type="index/object_model/state/State"/>
+   <set name="$s&apos;" type="index/object_model/state/State"/>
    <set name="blobs" type="index/object_model/Blob"/>
    <set name="commits" type="index/object_model/Commit"/>
    <set name="indexes" type="index/Index"/>
@@ -48,6 +51,14 @@
 <node shape="House" color="Red">
    <type name="index/working_directory/File"/>
 </node>
+
+<edge layout="yes">
+   <relation name="wdparent"> <type name="index/working_directory/WDObject"/> <type name="index/working_directory/Dir"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="namedBy"> <type name="index/object_model/Object"/> <type name="index/object_model/sha/Sha"/> </relation>
+</edge>
 
 </view>
 
