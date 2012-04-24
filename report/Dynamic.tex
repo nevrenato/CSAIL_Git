@@ -6,9 +6,11 @@ the model would be much more interesting if we specify
 the most important git operations. That said in this
 section we will focus on modelling the most important
 and critical of them. \par
+For this purpose, we will associate a State to each relation
+with potential to change it's content. Thus, this way a relation
+can change it's content over time.
 
-
-\subsubsection{The git add command}
+\subsection{add}
 
 This command is one of the most used in git. \cite{gitComm} (page 26)
 tells us that
@@ -21,18 +23,24 @@ the Working Directory, so all references to modified files in
 the Index must also appear in the Working Directory. For newly
 added files that is not the case.
 
-\subsubsection{The git rm command}
+\subsection{rm}
 
 This one is generally less used. It's usefullness can be
-seen in the following : \cite{progit}
+seen in the following \cite{progit}
 (page 21) says "To remove a file from Git, you have to remove it
 from your tracked files (more accurately, {\bf remove it from your
 staging area}) and them commit. The {\bf git rm command does that
 and also removes the file from your working directory}...". \par
 Note that the working directory refered in the citation is not
 the git Working Directory, it's the directory of the filesystem itself.
-In other words a 'rm <file>' is present inside the 'git rm <file>'. \par
+In other words a 'rm <file>' is used inside the 'git rm <file>'. \par
 When using git rm
 that modification will only appear in the Index. Unless, before
 the git rm we delete the file from the filesystem (e.g. rm ). \par
+Another restriction that git imposes is that, when a git rm is used, the
+content of the file to remove must be equal to the current commit. \par
 
+
+\subsection{commit}
+
+\subsection{merge}

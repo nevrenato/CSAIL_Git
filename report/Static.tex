@@ -222,3 +222,24 @@ tell git to add that to the Index. Once added, it
 will be saved in the git database at the next commit. If we don't want to save
 something in a commit, we simply don't add it to the Index.
 
+
+\subsection{Branches}
+Definition of branch: "A branch in Git is {\bf simply a 
+lightweight movable pointer to one of these commits}." \cite{progit} 
+(pag 39)
+
+\begin{lstlisting}
+ sig Branch{
+   on: Commit
+ }
+\end{lstlisting}
+
+``The special pointer called Header 
+points to the branch we are working on''. \cite{progit} (pag 40)
+
+\begin{lstlisting}
+  one sig Head{
+   	current: Branch
+  }
+\end{lstlisting}
+
