@@ -3,7 +3,7 @@ abstract sig Object {}
 sig Blob extends Object {}
 
 sig Tree extends Object {
-		contains : Name  ->  (Tree+Blob) 
+		contains : Name -> one (Tree+Blob) 
 }
 
 

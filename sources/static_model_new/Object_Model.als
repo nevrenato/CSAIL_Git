@@ -20,6 +20,9 @@ fact {
 
 	// RootCommits don't have a parent
 	no RootCommit.parent
+
+	// All commits (except RootCommit) need to have at least one parent
+	all c : Commit - RootCommit | some c.parent
 }
 
 run {
