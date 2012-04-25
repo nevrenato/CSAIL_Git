@@ -31,13 +31,4 @@ fact {
 		// two paths with the same parent can't have the same name
 		all disj p,p' : Path | p.parent = p'.parent implies p.name != p'.name
 }
-
-
-
-run {
-#File = 1
-#State = 2
-#Tree = 0
-#parent = 2
-	
-} for 4
+ 

@@ -21,8 +21,3 @@ fact {
 	// RootCommits don't have a parent
 	no RootCommit.parent
 }
-
-run {
-	# Commit > 0
-
-} for 5
