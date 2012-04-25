@@ -22,9 +22,8 @@ fact {
 		// pathname is injective
 		pathname.~pathname in iden
 
-		// two path's at the same level can't have the same name 
-   	no (name.~name - iden) & (parent.~parent - iden)
-		all disj p,p' : Path | no p.parent + p'.parent implies p.name != p'.name
+		// two paths with the same parent can't have the same name
+		all disj p,p' : Path | p.parent = p'.parent implies p.name != p'.name
 	
 		// The name of a file has to be always in a leaf
 		no (Path.parent) & (File.pathname)

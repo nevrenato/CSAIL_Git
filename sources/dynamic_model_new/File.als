@@ -1,5 +1,6 @@
 open Objects
 open Name
+open State
 
 sig Path {
 
@@ -9,8 +10,8 @@ sig Path {
 }
 sig File {
 
-	blob : Blob,
-	pathname : Path 
+	blob : State -> one Blob,
+	pathname : State -> one Path 
 
 }
 
@@ -19,17 +20,24 @@ fact {
 		// no cycles
 		no ^parent & iden
 
-		// pathname is injective
-		pathname.~pathname in iden
+		let r = {f : File, p : Path | some s : State | f->s->p in pathname } {
+				// pathname is injective
+				r.~r in iden
 
-		// two path's at the same level can't have the same name 
-   	no (name.~name - iden) & (parent.~parent - iden)
-		all disj p,p' : Path | no p.parent + p'.parent implies p.name != p'.name
-	
-		// The name of a file has to be always in a leaf
-		no (Path.parent) & (File.pathname)
+				// The name of a file has to be always in a leaf
+				no (Path.parent) & (File.r)
+		}
+
+		// two paths with the same parent can't have the same name
+		all disj p,p' : Path | p.parent = p'.parent implies p.name != p'.name
 }
 
-run {
 
-} for 8
+
+run {
+#File = 1
+#State = 2
+#Tree = 0
+#parent = 2
+	
+} for 4

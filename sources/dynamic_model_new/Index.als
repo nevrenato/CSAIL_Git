@@ -1,5 +1,5 @@
 open file
 
 one sig Index {
-	staged : set File
+	staged : State -> set File
 } 
