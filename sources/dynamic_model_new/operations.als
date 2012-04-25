@@ -14,11 +14,19 @@ pred rm[s,s' : State, f : File ] {
 
 pred commit[s,s' : State] {
 			s != s'
-			
+			some c : Commit  {
+					
+					// the parent of the new commit is the last commit
+					s'.(c.parent) = s.(Head.pointsToLast)
+					// the new commit cannot be in the last state
+					no s.(c.parent) 
+				 	// Head points to the new commit
+					s'.(Head.pointsToLast) = c
+			}
 }
 run { 
 
 			some s,s' : State | commit[s,s']
+			#State = 2
 
-
-} for 3
+} for 5

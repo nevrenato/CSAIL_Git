@@ -8,9 +8,9 @@ sig Commit extends Object {
 	parent : set Commit
 }
 
+one sig Head extends Object {
+	pointsToLast : Commit
 
-sig Tag extends Object {
-	marks : Commit
 }
 
 
