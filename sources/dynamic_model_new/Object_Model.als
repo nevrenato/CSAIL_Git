@@ -26,6 +26,7 @@ fact {
 			no RootCommit.r
 
 			// All commits (except RootCommit) need to have at least one parent
+			// for now it's needs to be commented
 			//all c : Commit - RootCommit | some c.r
       }
 	}
