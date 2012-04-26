@@ -148,44 +148,6 @@ is inconsistency in the git "filesystem".
 all t:Tree | lone references.t
 \end{lstlisting}
 
-\section{Working Directory}
-
-\subsection{Explicit specifications}
-
-The definition of Working Directory comes as follows:
-"... simply a {\bf temporary checkout place} where you can 
-modify the files {\bf until your next commit}."
-\par
-"The Git 'working directory' is {\bf the directory that holds 
-the current \gls{checkout} of the files you are working on}.
-"\cite{gitComm} (pag 17)\par
-We can learn from these definitions that the Working Directory
-is a subset of the FileSystem. That subset being a repository 
-of git.
-
-\begin{lstlisting}
-abstract sig WDObject{
-	wdparent: lone Dir
-}
-sig File, Dir extends WDObject{}
-one sig Root extends Dir{}
-\end{lstlisting}
-
-\subsection{Implicit specifications}
-
-Being a subset of the FileSystem the Working Directory must respect
-the following conditions :
-	\begin{enumerate}
-		\item A WDObject cannot have an ascendent that it's itself
-		\item All Objects descend from the root directory
-	\end{enumerate}
-
-\begin{lstlisting}
-	no ^wdparent & iden
-	WDObject in *wdparent.Root
-\end{lstlisting}
-
-
 \section{Index}
 
 \subsection{Explicit specifications}
@@ -223,23 +185,24 @@ will be saved in the git database at the next commit. If we don't want to save
 something in a commit, we simply don't add it to the Index.
 
 
-\subsection{Branches}
-Definition of branch: "A branch in Git is {\bf simply a 
-lightweight movable pointer to one of these commits}." \cite{progit} 
-(pag 39)
 
-\begin{lstlisting}
- sig Branch{
-   on: Commit
- }
-\end{lstlisting}
-
-``The special pointer called Header 
-points to the branch we are working on''. \cite{progit} (pag 40)
-
-\begin{lstlisting}
-  one sig Head{
-   	current: Branch
-  }
-\end{lstlisting}
-
+%\subsection{Branches}
+%Definition of branch: "A branch in Git is {\bf simply a 
+%lightweight movable pointer to one of these commits}." \cite{progit} 
+%(pag 39)
+%
+%\begin{lstlisting}
+% sig Branch{
+%   on: Commit
+% }
+%\end{lstlisting}
+%
+%``The special pointer called Header 
+%points to the branch we are working on''. \cite{progit} (pag 40)
+%
+%\begin{lstlisting}
+%  one sig Head{
+%   	current: Branch
+%  }
+%\end{lstlisting}
+%
