@@ -23,4 +23,6 @@ fact {
 		all t : Tree | lone contains.t
 }
 
-run{}
+run{
+
+} for 3 
