@@ -56,8 +56,7 @@ pred commit[s,s' : State] {
 							// The object model of the new commit (s') can only have the blobs
 							// that are staged in s
 							(root.^sons) & Blob in s.((s.(Index.staged)).blob)
-					
-
+				
 								one t : root.*sons {
 														
 											// relation name->blob in some tree									
@@ -66,7 +65,7 @@ pred commit[s,s' : State] {
 											// and for all parents of that file there must be a correspondent
 											// tree										
 											all fp : fparents |
-												one t'',t' : root.*sons |
+												one t',t'' : root.*sons |
 														some fp.parent implies s'->(fp.name->t'') in t'.contains   		
 							  }
 					   }
@@ -77,3 +76,4 @@ pred commit[s,s' : State] {
 run { 
 	some s,s':State | commit[s,s']
 } for 5 but exactly 2 State
+
