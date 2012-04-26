@@ -1,33 +1,45 @@
 open Objects
 
-some sig RootCommit extends Commit {}
+sig RootCommit extends Commit {}
 
 
 sig Commit extends Object {
-	points : Tree,
-	parent : State -> set Commit,
-
+	points : Tree one -> State,
+	parent : Commit set -> State
 }
 
-one sig Head extends Object {
-	pointsToLast : State -> one Commit
+sig Branch{
+	marks: Commit one -> State,
+	branches: set State
+}
 
+sig Head{
+	on: Branch one -> State
 }
 
 fact {
+	all s:State{
+		// A commit cannot be an ancestor of itself
+		no ^(parent.s) & iden
 
-	all s : State {
-			let r = {c : Commit, c' : Commit | c->s->c' in parent} {
+		// RootCommits don't have a parent
+		no RootCommit.parent.s
+
+		// All commits (except RootCommit) need to have at least one parent
+		all c : Commit - RootCommit | some c.parent.s
+
+
+
+//??????????????????
+		//if there is at least one commit then there is a Head
+		some on.s or no (Commit & objects.s)
+		//at most one head
+		lone on.s
+//????????????????
+		//referential integrity
+		parent.s in objects.s -> objects.s
+		marks.s in branches.s -> objects.s
 		
-			// A commit cannot be an ancestor of itself
-			no ^r & iden
-
-			// RootCommits don't have a parent
-			no RootCommit.r
-
-			// All commits (except RootCommit) need to have at least one parent
-			//all c : Commit - RootCommit | some c.r
-      }
 	}
-
 }
+run{} for 3 but exactly 1 State
