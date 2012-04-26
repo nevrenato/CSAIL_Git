@@ -31,19 +31,49 @@ pred rm[s,s' : State, f : File ] {
 }
 
 pred commit[s,s' : State] {
-		s != s'
-		some s.(Index.staged)
-		let r = {s'':s+s', t:Tree, n:Name, o:Tree + Blob | t -> s'' -> n -> o in contains} {s'.r = s.r}
-		let r = {s'':s+s', f:File, b:Blob |f -> s'' -> b in blob} {s'.r = s.r}
-		let r = {s'':s+s', f:File, p:Path | f -> s'' -> p in pathname} {s'.r = s.r}
-		let r = {s'':s+s', i:Index, f:File| i -> s'' -> f in staged} {s'.r = s.r}
-		some com:Commit{
-			s.(Head.current) = s'.(com.parent)
-			s'.(Head.current) = com
-			let r = {c:Commit, c':Commit | c ->s -> c' in parent} {com not in ^r.RootCommit}
-		}
+			s != s'
 
+			some c : Commit  {
+					
+					// the parent of the new commit is the last commit
+					s'.(c.parent) = s.(Head.pointsToLast)
+					// the new commit cannot be in the last state
+					no s.(c.parent) 
+				 	// Head points to the new commit
+					s'.(Head.pointsToLast) = c
+			
+					
+					// The Hard part
+					all f : s.(Index.staged) {
+
+						let root = c.points, 
+								fname = (s.(f.pathname)).name,
+								fparents = (s.(f.pathname)).^parent,
+								sons = 
+								{t : Tree, t' : (Tree+Blob) | some n : Name | t->s'->n->t' in contains}  {
+				
+								
+							// The object model of the new commit (s') can only have the blobs
+							// that are staged in s
+							(root.^sons) & Blob in s.((s.(Index.staged)).blob)
+					
+
+								one t : root.*sons {
+														
+											// relation name->blob in some tree									
+											fname->s.(f.blob) in s'.(t.contains)
+														
+											// and for all parents of that file there must be a correspondent
+											// tree										
+											all fp : fparents |
+												one t'',t' : root.*sons |
+														some fp.parent implies s'->(fp.name->t'') in t'.contains   		
+							  }
+					   }
+					}
+			}
 }
+
 run { 
 	some s,s':State | commit[s,s']
 } for 5 but exactly 2 State

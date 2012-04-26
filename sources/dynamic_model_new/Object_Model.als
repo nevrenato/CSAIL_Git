@@ -29,7 +29,6 @@ fact {
 		all c : Commit - RootCommit | some c.parent.s
 
 
-
 //??????????????????
 		//if there is at least one commit then there is a Head
 		some on.s or no (Commit & objects.s)
