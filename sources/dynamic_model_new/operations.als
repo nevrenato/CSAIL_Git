@@ -14,7 +14,6 @@ pred add[s,s' : State,  p: Path ] {
 		index.s' = index.s + p
 
 		//all others relations are kept
-		points.s' = points.s
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
@@ -29,7 +28,7 @@ pred rm[s,s' : State, p:Path] {
 		p in index.s
 		//the blob
 		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains},
-			 root = (Head.(on.s)).(marks.s).(points.s)
+			 root = (Head.(on.s)).(marks.s).points
 		{
 			p.blob in root.^r
 		}
@@ -41,7 +40,6 @@ pred rm[s,s' : State, p:Path] {
 		index.s' = index.s + p
 
 		//all others relations are kept
-		points.s' = points.s
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
@@ -49,9 +47,15 @@ pred rm[s,s' : State, p:Path] {
 }
 
 run { 
-	some s,s':State, p:Path | add[s,s',p] 
-	some Commit
-} for 3 but exactly 2 State
+//	some s,s':State, p:Path | add[s,s',p] 
+	one Head
+	some parent
+	one Branch
+	#Commit.points > 1
+	#Commit > 1
+	one Path
+	one index
+} for 5 but exactly 1 State
 
 pred commit[s,s' : State] {
 			s != s'

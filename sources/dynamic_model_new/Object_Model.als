@@ -4,7 +4,7 @@ sig RootCommit extends Commit {}
 
 
 sig Commit extends Object {
-	points : Tree one -> State,
+	points : one Tree,
 	parent : Commit set -> State
 }
 
@@ -28,13 +28,11 @@ fact {
 		// All commits (except RootCommit) need to have at least one parent
 		all c : Commit - RootCommit | some c.parent.s
 
-
-//??????????????????
 		//if there is at least one commit then there is a Head
 		some on.s or no (Commit & objects.s)
 		//at most one head
 		lone on.s
-//????????????????
+
 		//referential integrity
 		parent.s in objects.s -> objects.s
 		marks.s in branches.s -> objects.s
