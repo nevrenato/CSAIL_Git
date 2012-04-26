@@ -8,14 +8,13 @@ abstract sig Object {
 sig Blob extends Object {}
 
 sig Tree extends Object {
-		contains : Name  -> (Tree+Blob) one -> State
+		contains : Name  -> one (Tree+Blob)
 }
 
 
 fact {
 
-	all s:State{
-		let r = {x :Tree, y : Tree+Blob | some n : Name | x->n->y in contains.s} {
+		let r = {x :Tree, y : Tree+Blob | some n : Name | x->n->y in contains} {
 			// there shall be no cycles
 			no ^r & iden
 
@@ -23,14 +22,15 @@ fact {
 		  	all t : Tree | some t.r
 		}
 
+	all s:State{
 		// a tree must have one parent at most
-		all t : Tree | lone (contains.s).t
+		all t : Tree | lone (contains).t
 		
 		//referential integrity
-		contains.s in objects.s -> Name -> objects.s
+		contains in objects.s -> Name -> objects.s
 	}
 }
 
 run {
 
-} for 3 but 1 State
+} for 3 but exactly 1 State

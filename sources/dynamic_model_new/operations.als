@@ -1,38 +1,61 @@
-open Index
-open File
+open Path
 open Object_Model
 
-pred add[s,s' : State, f : File ] {
+pred add[s,s' : State,  p: Path ] {
 		s != s'
-		f in (pathname.Path).s
+	//pre-condition
+		//path has to be a leaf
+		no pathparent.p
+	
+	//post-condition
+		//a path is added to the set of objects
+		objects.s' = objects.s + p.blob
+		//a path is added to index
+		index.s' = index.s + p
+
+		//all others relations are kept
+		points.s' = points.s
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
 		on.s' = on.s
-		blob.s' = blob.s
-		
-		let r = {s'':s+s', c:Commit, c':Commit | c ->s'' -> c' in parent} {s'.r = s.r}
-		let r = {s'':s+s', h:Head, c:Commit | h -> s'' -> c in current} {s'.r = s.r}
-		let r = {s'':s+s', t:Tree, n:Name, o:Tree + Blob | t -> s'' -> n -> o in contains} {s'.r = s.r}
-		let r = {s'':s+s', f:File, b:Blob |f -> s'' -> b in blob} {s'.r = s.r}
-		let r = {s'':s+s', f:File, p:Path | f -> s'' -> p in pathname} {s'.r = s.r}
-		s'.(Index.staged ) = s.(Index.staged) + f
 }
 
-pred rm[s,s' : State, f : File ] {
+pred rm[s,s' : State, p:Path] {
 		s != s'
-		f in s.(Index.staged)
-		let r = {s'':s+s', c:Commit, c':Commit | c ->s'' -> c' in parent} {s'.r = s.r}
-		let r = {s'':s+s', h:Head, c:Commit | h -> s'' -> c in current} {s'.r = s.r}
-		let r = {s'':s+s', t:Tree, n:Name, o:Tree + Blob | t -> s'' -> n -> o in contains} {s'.r = s.r}
-		let r = {s'':s+s', f:File, b:Blob |f -> s'' -> b in blob} {s'.r = s.r}
-		let r = {s'':s+s', f:File, p:Path | f -> s'' -> p in pathname} {s'.r = s.r}
-		s'.(Index.staged)  = s.(Index.staged) - f
+
+	//pre-condition
+		//path is on index
+		p in index.s
+		//the blob
+		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains},
+			 root = (Head.(on.s)).(marks.s).(points.s)
+		{
+			p.blob in root.^r
+		}
+	
+	//post-condition
+		//a path is added to the set of objects
+		objects.s' = objects.s + p.blob 
+		//a path is added to index
+		index.s' = index.s + p
+
+		//all others relations are kept
+		points.s' = points.s
+		parent.s' = parent.s
+		marks.s' = marks.s
+		branches.s' = branches.s
+		on.s' = on.s
 }
+
+run { 
+	some s,s':State, p:Path | add[s,s',p] 
+	some Commit
+} for 3 but exactly 2 State
 
 pred commit[s,s' : State] {
 			s != s'
-
+/*
 			some c : Commit  {
 					
 					// the parent of the new commit is the last commit
@@ -71,9 +94,6 @@ pred commit[s,s' : State] {
 					   }
 					}
 			}
+*/
 }
-
-run { 
-	some s,s':State | commit[s,s']
-} for 5 but exactly 2 State
 
