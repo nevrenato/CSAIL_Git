@@ -8,7 +8,7 @@ abstract sig Object {
 sig Blob extends Object {}
 
 sig Tree extends Object {
-		contains : Name  -> (Tree+Blob) -> State
+		contains : Name  -> (Tree+Blob) one -> State
 }
 
 
@@ -31,4 +31,6 @@ fact {
 	}
 }
 
-run {} for 3 but 1 State
+run {
+
+} for 3 but 1 State
