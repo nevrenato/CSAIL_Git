@@ -25,8 +25,10 @@ fact {
 		// All commits (except RootCommit) need to have at least one parent
 		all c : ((Commit - RootCommit) & objects.s) | some c.parent.s
 
-		//if there is at least one commit, there is one head
-		no (Commit & objects.s) or one head.s
+		//if there is one commit, there is at least one branch
+		some (Commit & objects.s) <=> some branches.s
+		//if there is at least one Branch, there is one head
+		no branches.s or one head.s
 
 		//referential integrity
 		parent.s in objects.s -> objects.s
