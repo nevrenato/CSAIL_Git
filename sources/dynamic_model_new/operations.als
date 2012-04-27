@@ -14,11 +14,10 @@ pred add[s,s' : State,  p: Path ] {
 		index.s' = index.s + p
 
 		//all others relations are kept
-		points.s' = points.s
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
-		on.s' = on.s
+		head.s' = head.s
 }
 
 pred rm[s,s' : State, p:Path] {
@@ -28,13 +27,10 @@ pred rm[s,s' : State, p:Path] {
 		//path is on index
 		p in index.s
 		//the blob
-		let r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains},
-				root = (Head.(on.s)).(marks.s).points  {
-			
-				some t : root.^r & Tree {
-						p.name -> p.blob in t.contains 
-						some t' : root.^r & Tree| (p.parent).name->t in t'.contains
-				}
+		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains},
+			 root = (head.s).(marks.s).points
+		{
+			p.blob in root.^r
 		}
 	
 	//post-condition
@@ -44,22 +40,36 @@ pred rm[s,s' : State, p:Path] {
 		index.s' = index.s + p
 
 		//all others relations are kept
-		points.s' = points.s
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
-		on.s' = on.s
+		head.s' = head.s
 }
 
 run { 
-	some s,s':State, p:Path | add[s,s',p] 
-	some Commit
-} for 3 but exactly 2 State
+	some s,s':State | commit[s,s']
+
+//	some disj t,t':Tree,  s:State | points.t != points.t' && points.t -> points.t' in parent.s
+} for 6 but exactly 2 State
 
 pred commit[s,s' : State] {
 			s != s'
-/*
-			some c : Commit  {
+			head.s' = head.s
+			index.s' = index.s
+			branches.s' = branches.s
+			some c:Commit{
+				c	not in objects.s
+				objects.s' = objects.s + c
+				marks.s' = marks.s ++ head.s -> c
+				parent.s' = parent.s + c -> head.s.(marks.s)
+/*				let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in Head.(on.s').(marks.s').points.*contains}{
+					all p:index.s | some t: (contains.(p.blob)).name | t in Tree.*r && pai tb esta
+					
+					//all p:index.s | some o:c.points.^r | o = p.blob && all p':p.*pathparent | some o':r.o.r | o'=p'.blob
+				}*/
+			}
+
+/*			some c : Commit  {
 					
 					// the parent of the new commit is the last commit
 					s'.(c.parent) = s.(Head.pointsToLast)

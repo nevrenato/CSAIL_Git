@@ -10,11 +10,8 @@ sig Commit extends Object {
 
 sig Branch{
 	marks: Commit one -> State,
-	branches: set State
-}
-
-sig Head{
-	on: Branch one -> State
+	branches: set State,
+	head: set State
 }
 
 fact {
@@ -22,16 +19,14 @@ fact {
 		// A commit cannot be an ancestor of itself
 		no ^(parent.s) & iden
 
-		// RootCommits don't have a parent
+		// RootCommits doesn't have a parent
 		no RootCommit.parent.s
 
 		// All commits (except RootCommit) need to have at least one parent
-		all c : Commit - RootCommit | some c.parent.s
+		all c : ((Commit - RootCommit) & objects.s) | some c.parent.s
 
-		//if there is at least one commit then there is a Head
-		some on.s or no (Commit & objects.s)
-		//at most one head
-		lone on.s
+		//if there is at least one commit, there is one head
+		no (Commit & objects.s) or one head.s
 
 		//referential integrity
 		parent.s in objects.s -> objects.s
@@ -39,4 +34,5 @@ fact {
 		
 	}
 }
-run{} for 3 but exactly 1 State
+run{
+} for 4 but exactly 1 State

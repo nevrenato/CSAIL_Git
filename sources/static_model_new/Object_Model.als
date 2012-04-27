@@ -9,11 +9,8 @@ sig Commit extends Object {
 }
 
 sig Branch{
-	marks: Commit
-}
-
-sig Head{
-	on: Branch
+	marks: Commit,
+	head: Branch
 }
 
 fact {
@@ -26,13 +23,11 @@ fact {
 	// All commits (except RootCommit) need to have at least one parent
 	all c : Commit - RootCommit | some c.parent
 
-	//if there is at least one commit then there is a Head
-	some Head or no Commit
-	//at most one head
-	lone Head
+	//if there is at least one commit, there is one head
+	no Commit or one head
 }
 
 run{
-	some Head
-	no Commit
+//	one head
+//	no Commit
 } for 3
