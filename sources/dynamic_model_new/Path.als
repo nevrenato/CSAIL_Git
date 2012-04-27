@@ -14,6 +14,7 @@ fact {
 		no Path.pathparent & blob.Blob
 		
 		all s:State{
+
 			//only leafs can be on index
 			no Path.pathparent & index.s
 

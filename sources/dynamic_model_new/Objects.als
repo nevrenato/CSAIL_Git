@@ -22,6 +22,7 @@ fact {
 		  	all t : Tree | some t.r
 		}
 
+		// at most one parent
 		all t : Tree | lone contains.t
 }
 

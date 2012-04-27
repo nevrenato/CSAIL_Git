@@ -28,7 +28,7 @@ pred rm[s,s' : State, p:Path] {
 	p in index.s
 
 	let r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains},
-			root = (Head.(on.s)).(marks.s).points,
+			root = (((head.s).marks).s).points,
 			pathdown = root.*r {
 
 				some t : pathdown {
@@ -66,10 +66,16 @@ pred rm[s,s' : State, p:Path] {
 	marks.s' = marks.s
 	branches.s' = branches.s
 	head.s' = head.s
+	objects.s' = objects.s
 }
 
+pred commit[s,s' : State] {
 
+
+
+}
 run { 
-	some s,s':State, p:Path | rm[s,s',p] 
+	
+	some s,s':State, p:Path | rm[s,s',p]
 
 } for 5 but exactly 2 State

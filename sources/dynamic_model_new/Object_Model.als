@@ -9,14 +9,20 @@ sig Commit extends Object {
 }
 
 sig Branch{
+
 	marks: Commit -> State,
+
+	// In wich states exist
 	branches: set State,
+
+	// the current branch...
 	head: set State
 }
 
-sig master extends Branch{}
+lone sig master extends Branch{}
 
 fact {
+
 	all s:State{
 		// A commit cannot be an ancestor of itself
 		no ^(parent.s) & iden
@@ -27,7 +33,7 @@ fact {
 		// All commits (except RootCommit) need to have at least one parent
 		all c : ((Commit - RootCommit) & objects.s) | some c.parent.s
 
-		//if there is one commit, there is at least one branch and an head
+		//there is one commit iff there is at least one branch and an head
 		some Commit & objects.s <=> some marks.s && one head.s
 		head.s in branches.s
 	
@@ -36,8 +42,8 @@ fact {
 		marks.s in branches.s -> one objects.s
 		
 	}
+
 }
 run{
-	some s:State | one head.s
-	some s:State | no head.s
-} for 10 but exactly 2 State
+
+} for 5 but exactly 2 State
