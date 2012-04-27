@@ -47,10 +47,8 @@ pred rm[s,s' : State, p:Path] {
 }
 
 run { 
-	some s,s':State | commit[s,s'] && no head.s
-//	some disj t,t':Tree,  s:State | points.t != points.t' && points.t -> points.t' in parent.s
-//	one s:State | no head.s
-} for 10 but exactly 2 State
+	some s,s':State | commit[s,s'] && no head.s && some index.s
+} for 3 but exactly 2 State
 
 pred commit[s,s' : State] {
 			s != s'
@@ -70,12 +68,14 @@ pred commit[s,s' : State] {
 											parent.s' = parent.s + c -> head.s.(marks.s)
 									 }
 				let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}{
-
-					
 					objects.s' = objects.s  + c + c.points.*r
-					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
+					all p:index.s, p':p.^pathparent | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
+							p'.name = Tree.contains.t
+
+
+/*					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
 						all p':(index.s).^pathparent | p'.name in Tree.(contains.t)
-				//	all b: c.points.^r | some p:(blob.b).pathparent | 
+	*/		//		all o: c.points.*r | (o.contains)
 				}	
 		//all p:index.s | some o:c.points.^r | o = p.blob && all p':p.*pathparent | some o':r.o.r | o'=p'.blob
 				
