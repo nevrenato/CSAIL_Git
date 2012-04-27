@@ -14,6 +14,7 @@ pred add[s,s' : State,  p: Path ] {
 		index.s' = index.s + p
 
 		//all others relations are kept
+
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
@@ -21,65 +22,54 @@ pred add[s,s' : State,  p: Path ] {
 }
 
 pred rm[s,s' : State, p:Path] {
-		s != s'
-
-	//pre-condition
-		//path is on index
-		p in index.s
-		//the blob
-		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains},
-			 root = (head.s).(marks.s).points
-		{
-			p.blob in root.^r
-		}
 	
-	//post-condition
-		//a path is added to the set of objects
-		objects.s' = objects.s + p.blob 
-		//a path is added to index
-		index.s' = index.s + p
+	s != s'
+	//pre-condition
+	p in index.s
 
-		//all others relations are kept
-		parent.s' = parent.s
-		marks.s' = marks.s
-		branches.s' = branches.s
-		head.s' = head.s
+	let r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains},
+			root = (Head.(on.s)).(marks.s).points,
+			pathdown = root.*r {
+
+				some t : pathdown {
+					
+						// there is one tree in the commit that has the relation name->blob
+						p.name -> p.blob in t.contains 
+
+						let pathup = t.^(~r) {
+					
+								// the depth of the path tree must be equal to the path leading to the
+								// tree t
+								#p.^pathparent = #(pathup & pathdown) 
+
+								//for all parent trees there must be some correspondance to a parent
+								// path
+								all t' : (pathup & pathdown) {
+								
+									// t'' is son of t' ; p' is some parent in the path
+									some t'' : (t.*(~r) & pathdown), p' : p.^pathparent { 
+											p'.name -> t'' in t'.contains 
+											#(t.*(~r) & t'.*r) = #p'.*(~pathparent)
+									}
+							 }	
+						}
+				 }
+		 }
+
+
+	//post-condition
+	// the path is removed from the index
+	index.s' = index.s - p
+
+	//all others relations are kept
+	parent.s' = parent.s
+	marks.s' = marks.s
+	branches.s' = branches.s
+	head.s' = head.s
 }
+
 
 run { 
-	some s,s':State | commit[s,s'] && no head.s
-//	some disj t,t':Tree,  s:State | points.t != points.t' && points.t -> points.t' in parent.s
-//	one s:State | no head.s
-} for 10 but exactly 2 State
+	some s,s':State, p:Path | rm[s,s',p] 
 
-pred commit[s,s' : State] {
-			s != s'
-
-//			index.s' = index.s
-			some c:Commit{
-				c not in objects.s
-				index.s' = index.s
-				no head.s =>  {		head.s' = master
-											branches.s' = master
-											marks.s' = master -> c
-											no parent.s'
-									  }
-							   else{		head.s' = head.s
-											branches.s' = branches.s + master
-											marks.s' = marks.s ++ head.s' -> c
-											parent.s' = parent.s + c -> head.s.(marks.s)
-									 }
-				let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}{
-
-					
-					objects.s' = objects.s  + c + c.points.*r
-					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
-						all p':(index.s).^pathparent | p'.name in Tree.(contains.t)
-				//	all b: c.points.^r | some p:(blob.b).pathparent | 
-				}	
-		//all p:index.s | some o:c.points.^r | o = p.blob && all p':p.*pathparent | some o':r.o.r | o'=p'.blob
-				
-			}
-
-
-}
+} for 5 but exactly 2 State
