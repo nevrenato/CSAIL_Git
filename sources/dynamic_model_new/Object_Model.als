@@ -12,7 +12,7 @@ sig Branch{
 
 	marks: Commit -> State,
 
-	// In wich states exist
+	// In wich states it exists
 	branches: set State,
 
 	// the current branch...
