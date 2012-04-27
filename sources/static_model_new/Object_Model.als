@@ -23,10 +23,8 @@ fact {
 	// All commits (except RootCommit) need to have at least one parent
 	all c : Commit - RootCommit | some c.parent
 
-	//if there is one commit, there is at least one branch
-	some Commit <=> some Branch
-	//if there is at least one Branch, there is one head
-	no Branch or one head
+	//if there is one commit, there is at least one branch and an head
+	some Commit <=> one head
 }
 
 run{

@@ -49,64 +49,37 @@ pred rm[s,s' : State, p:Path] {
 run { 
 	some s,s':State | commit[s,s'] && no head.s
 //	some disj t,t':Tree,  s:State | points.t != points.t' && points.t -> points.t' in parent.s
+//	one s:State | no head.s
 } for 10 but exactly 2 State
 
 pred commit[s,s' : State] {
 			s != s'
-			head.s' = head.s
-			index.s' = index.s
-			branches.s' = branches.s
+
+//			index.s' = index.s
 			some c:Commit{
-				c	not in objects.s
-				objects.s' = objects.s + c
-				marks.s' = marks.s ++ head.s -> c
-				parent.s' = parent.s + c -> head.s.(marks.s)
+				c not in objects.s
+				index.s' = index.s
+				no head.s =>  {		head.s' = master
+											branches.s' = master
+											marks.s' = master -> c
+											no parent.s'
+									  }
+							   else{		head.s' = head.s
+											branches.s' = branches.s + master
+											marks.s' = marks.s ++ head.s' -> c
+											parent.s' = parent.s + c -> head.s.(marks.s)
+									 }
 				let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}{
-					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in (head.s').(marks.s').points.^r &&
-						all p':(index.s).pathparent | p'.name in Tree.(contains.t)
+
+					
+					objects.s' = objects.s  + c + c.points.*r
+					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
+						all p':(index.s).^pathparent | p'.name in Tree.(contains.t)
+				//	all b: c.points.^r | some p:(blob.b).pathparent | 
 				}	
 		//all p:index.s | some o:c.points.^r | o = p.blob && all p':p.*pathparent | some o':r.o.r | o'=p'.blob
 				
 			}
 
-/*			some c : Commit  {
-					
-					// the parent of the new commit is the last commit
-					s'.(c.parent) = s.(Head.pointsToLast)
-					// the new commit cannot be in the last state
-					no s.(c.parent) 
-				 	// Head points to the new commit
-					s'.(Head.pointsToLast) = c
-			
-					
-					// The Hard part
-					all f : s.(Index.staged) {
 
-						let root = c.points, 
-								fname = (s.(f.pathname)).name,
-								fparents = (s.(f.pathname)).^parent,
-								sons = 
-								{t : Tree, t' : (Tree+Blob) | some n : Name | t->s'->n->t' in contains}  {
-				
-								
-							// The object model of the new commit (s') can only have the blobs
-							// that are staged in s
-							(root.^sons) & Blob in s.((s.(Index.staged)).blob)
-				
-								one t : root.*sons {
-														
-											// relation name->blob in some tree									
-											fname->s.(f.blob) in s'.(t.contains)
-														
-											// and for all parents of that file there must be a correspondent
-											// tree										
-											all fp : fparents |
-												one t',t'' : root.*sons |
-														some fp.parent implies s'->(fp.name->t'') in t'.contains   		
-							  }
-					   }
-					}
-			}
-*/
 }
-

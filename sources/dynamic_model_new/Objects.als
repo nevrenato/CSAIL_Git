@@ -22,13 +22,7 @@ fact {
 		  	all t : Tree | some t.r
 		}
 
-	all s:State{
-		// a tree must have one parent at most
-		all t : Tree | lone (contains).t
-		
-		//referential integrity
-		contains in objects.s -> Name -> objects.s
-	}
+		all t : Tree | lone contains.t
 }
 
 run {

@@ -9,10 +9,12 @@ sig Commit extends Object {
 }
 
 sig Branch{
-	marks: Commit one -> State,
+	marks: Commit -> State,
 	branches: set State,
 	head: set State
 }
+
+sig master extends Branch{}
 
 fact {
 	all s:State{
@@ -25,16 +27,17 @@ fact {
 		// All commits (except RootCommit) need to have at least one parent
 		all c : ((Commit - RootCommit) & objects.s) | some c.parent.s
 
-		//if there is one commit, there is at least one branch
-		some (Commit & objects.s) <=> some branches.s
-		//if there is at least one Branch, there is one head
-		no branches.s or one head.s
-
+		//if there is one commit, there is at least one branch and an head
+		some Commit & objects.s <=> some marks.s && one head.s
+		head.s in branches.s
+	
 		//referential integrity
 		parent.s in objects.s -> objects.s
-		marks.s in branches.s -> objects.s
+		marks.s in branches.s -> one objects.s
 		
 	}
 }
 run{
-} for 4 but exactly 1 State
+	some s:State | one head.s
+	some s:State | no head.s
+} for 10 but exactly 2 State
