@@ -47,31 +47,54 @@ pred rm[s,s' : State, p:Path] {
 }
 
 run { 
-	some s,s':State | commit[s,s'] && no head.s && some index.s
-} for 3 but exactly 2 State
+	some s,s':State | commit[s,s'] && no head.s &&  some (index.s).pathparent
+	
+} for 5 but exactly 2 State
 
 pred commit[s,s' : State] {
 			s != s'
 
 //			index.s' = index.s
-			some c:Commit{
-				c not in objects.s
-				index.s' = index.s
-				no head.s =>  {		head.s' = master
-											branches.s' = master
-											marks.s' = master -> c
-											no parent.s'
-									  }
-							   else{		head.s' = head.s
-											branches.s' = branches.s + master
-											marks.s' = marks.s ++ head.s' -> c
-											parent.s' = parent.s + c -> head.s.(marks.s)
-									 }
-				let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}{
-					objects.s' = objects.s  + c + c.points.*r
-					all p:index.s, p':p.^pathparent | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
-							p'.name = Tree.contains.t
+	some c:Commit{
+		c not in objects.s
+		index.s' = index.s
+		no head.s =>  {		head.s' = master
+									branches.s' = master
+									marks.s' = master -> c
+									no parent.s'
+							  }
+					   else{		head.s' = head.s
+									branches.s' = branches.s + master
+									marks.s' = marks.s ++ head.s' -> c
+									parent.s' = parent.s + c -> head.s.(marks.s)
+							 }
+		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}{
+			objects.s' = objects.s  + c + c.points.*r
+	
+			all p:index.s | no p.pathparent => p.name -> p.blob in c.points.contains
+			all o: c.points.contains
 
+		/*	all disj p,p': index.s | (p.pathparent = p'.pathparent <=> 
+				(some t: c.points.*r | p.name -> p.blob + p.name -> p'.blob in t.contains))
+			
+			all t:c.points.*r, n: t.contains, sons:n.(t.contains) | some p:(index.s).*parent, p':p.parent 
+			
+			all p:index.s.*pathparent | 
+				some p.pathparent => 
+					(some disj t,t':c.points.*r | p.name in t.contains.(Tree + p.blob) &&  t in (p.pathparent.name).(t'.contains))
+				else p.name in (c.points).contains.(p.blob + Tree)
+*/
+/*					all p:index.s | some t: c.points.*r | p.name -> p.blob in t .contains && 
+						all p': p.^pathparent | some t',t'':c.points.*r | t + t' in ^r.t && p'.name -> t' in t''.contains
+*/
+
+/*					all t:c.points.*r | some p:index.s | t.contains in p.name -> p.blob &&
+						all t',t'':c.points.*r | some p':p.^pathparent | t''.contains in p'.name -> t'
+	*/				
+/*					all p:index.s, p':p.^pathparent |  some t: c.points.*r | p.name -> p.blob in t .contains &&
+							p'.name -> Tree
+					all o:(c.points).^r | o.
+*/
 
 /*					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
 						all p':(index.s).^pathparent | p'.name in Tree.(contains.t)
