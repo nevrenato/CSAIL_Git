@@ -14,6 +14,7 @@ pred add[s,s' : State,  p: Path ] {
 		index.s' = index.s + p
 
 		//all others relations are kept
+
 		parent.s' = parent.s
 		marks.s' = marks.s
 		branches.s' = branches.s
@@ -21,31 +22,54 @@ pred add[s,s' : State,  p: Path ] {
 }
 
 pred rm[s,s' : State, p:Path] {
-		s != s'
-
-	//pre-condition
-		//path is on index
-		p in index.s
-		//the blob
-		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains},
-			 root = (head.s).(marks.s).points
-		{
-			p.blob in root.^r
-		}
 	
-	//post-condition
-		//a path is added to the set of objects
-		objects.s' = objects.s + p.blob 
-		//a path is added to index
-		index.s' = index.s + p
+	s != s'
+	//pre-condition
+	p in index.s
 
-		//all others relations are kept
-		parent.s' = parent.s
-		marks.s' = marks.s
-		branches.s' = branches.s
-		head.s' = head.s
+	let r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains},
+			root = (((head.s).marks).s).points,
+			pathdown = root.*r {
+
+				some t : pathdown {
+					
+						// there is one tree in the commit that has the relation name->blob
+						p.name -> p.blob in t.contains 
+
+						let pathup = t.^(~r) {
+					
+								// the depth of the path tree must be equal to the path leading to the
+								// tree t
+								#p.^pathparent = #(pathup & pathdown) 
+
+								//for all parent trees there must be some correspondance to a parent
+								// path
+								all t' : (pathup & pathdown) {
+								
+									// t'' is son of t' ; p' is some parent in the path
+									some t'' : (t.*(~r) & pathdown), p' : p.^pathparent { 
+											p'.name -> t'' in t'.contains 
+											#(t.*(~r) & t'.*r) = #p'.*(~pathparent)
+									}
+							 }	
+						}
+				 }
+		 }
+
+
+	//post-condition
+	// the path is removed from the index
+	index.s' = index.s - p
+
+	//all others relations are kept
+	parent.s' = parent.s
+	marks.s' = marks.s
+	branches.s' = branches.s
+	head.s' = head.s
+	objects.s' = objects.s
 }
 
+/*
 run { 
 	some s,s':State | commit[s,s'] && no head.s &&  some (index.s).pathparent
 	
@@ -73,7 +97,7 @@ pred commit[s,s' : State] {
 	
 			all p:index.s | no p.pathparent => p.name -> p.blob in c.points.contains
 			all o: c.points.contains
-
+*/
 		/*	all disj p,p': index.s | (p.pathparent = p'.pathparent <=> 
 				(some t: c.points.*r | p.name -> p.blob + p.name -> p'.blob in t.contains))
 			
@@ -99,10 +123,82 @@ pred commit[s,s' : State] {
 /*					all p: (index.s) | some t: (contains.(p.blob)).(p.name) | t in c.points.^r &&
 						all p':(index.s).^pathparent | p'.name in Tree.(contains.t)
 	*/		//		all o: c.points.*r | (o.contains)
-				}	
+//				}	
 		//all p:index.s | some o:c.points.^r | o = p.blob && all p':p.*pathparent | some o':r.o.r | o'=p'.blob
 				
+
+pred commit[s,s' : State] {
+
+	s != s' 
+
+	some new : Commit & objects.s' {
+	//pre-conditions
+
+		let lastC = (((head.s).marks).s),
+				r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains},
+				root = new.points,
+				pathdown = root.*r,
+				r' = {t : Tree, n : Name, t' : Tree+Blob | t->n->t' in contains and t in pathdown
+																																		 and n->t' in t.contains} {
+
+				//new commit cannot have same relative to last commit
+				new.points != lastC.points
+		
+				// the number of relations to the model that new points must be equal to the index
+				#r' = #(Path & index.s').*pathparent
+
+	// post-conditions
+				//the new commit must  be son of the previous head commit, or none if none existed before
+				lastC = (new.parent).s'
+
+
+				//the branch points to the new commit and head must point to the same branch
+				new = ((head.s').marks).s' and  head.s' = head.s			
+			
+				// all files and just the files in the index must be present in the new commit
+				// (Hard)
+				all p : (index.s & blob.Blob) {
+		
+						some t : pathdown {
+					
+								// there is one tree in the commit that has the relation name->blob
+								p.name -> p.blob in t.contains 
+
+								let pathup = t.^(~r) {
+					
+										// the depth of the path tree must be equal to the path leading to the
+										// tree t
+										#p.^pathparent = #(pathup & pathdown) 
+
+										//for all parent trees there must be some correspondance to a parent
+										// path
+										all t' : (pathup & pathdown) {
+								
+										// t'' is son of t' ; p' is some parent in the path
+											some t'' : (t.*(~r) & pathdown), p' : p.^pathparent {
+													
+													(p'.name -> t'' in t'.contains)  
+													(#(t.*(~r) & t'.*r) = #p'.*(~pathparent))				
+											}
+										}
+				 				}
+		 				}
+				}
 			}
 
 
+				// all objects that  belong to the previous state must belong to new state plus the
+				// new ones
+				let r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains} |
+						let newObjs = (new.points).*r | objects.s' = objects.s + newObjs 
+		}
+	// all the rest must remain the same
+	index.s' = index.s
 }
+
+
+run { 
+	
+	some s,s':State | commit[s,s'] and #(index.s) = 2 and #(index.s).pathparent = 2
+
+} for 10 but exactly 2 State
