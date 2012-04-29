@@ -36,23 +36,20 @@ pred rm[s,s' : State, p:Path] {
 						// there is one tree in the commit that has the relation name->blob
 						p.name -> p.blob in t.contains 
 
-						let pathup = t.^(~r) {
+						let pathup = t.^(~r) |
 					
 								// the depth of the path tree must be equal to the path leading to the
 								// tree t
-								#p.^pathparent = #(pathup & pathdown) 
+								#p.^pathparent = #(pathup & pathdown) and
 
 								//for all parent trees there must be some correspondance to a parent
 								// path
-								all t' : (pathup & pathdown) {
+								all t' : (pathup & pathdown) |
 								
 									// t'' is son of t' ; p' is some parent in the path
-									some t'' : (t.*(~r) & pathdown), p' : p.^pathparent { 
-											p'.name -> t'' in t'.contains 
+									some t'' : (t.*(~r) & pathdown), p' : p.^pathparent |
+											p'.name -> t'' in t'.contains and
 											#(t.*(~r) & t'.*r) = #p'.*(~pathparent)
-									}
-							 }	
-						}
 				 }
 		 }
 
@@ -132,65 +129,55 @@ pred commit[s,s' : State] {
 	s != s' 
 
 	some new : Commit & objects.s' {
-	//pre-conditions
-
+	  
 		let lastC = (((head.s).marks).s),
 				r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains},
 				root = new.points,
 				pathdown = root.*r,
-				r' = {t : Tree, n : Name, t' : Tree+Blob | t->n->t' in contains and t in pathdown
-																																		 and n->t' in t.contains} {
-
-				//new commit cannot have same relative to last commit
+				r' = {t : Tree, n : Name, t' : Tree+Blob | t->n->t' in contains and t in pathdown} {
+	
+				//new commit cannot have same tree relative to last commit
 				new.points != lastC.points
-		
-				// the number of relations to the model that new points must be equal to the index
+			
+		// the number of relations to the model that new points must be equal to the index
 				#r' = #(Path & index.s').*pathparent
 
-	// post-conditions
 				//the new commit must  be son of the previous head commit, or none if none existed before
 				lastC = (new.parent).s'
-
 
 				//the branch points to the new commit and head must point to the same branch
 				new = ((head.s').marks).s' and  head.s' = head.s			
 			
+
+					// all objects that  belong to the previous state must belong to new state plus the
+				// new ones
+				let newObjs = (new.points).*r | objects.s' = objects.s + newObjs 
+
 				// all files and just the files in the index must be present in the new commit
 				// (Hard)
-				all p : (index.s & blob.Blob) {
+				all p : (index.s & blob.Blob) |
 		
-						some t : pathdown {
+						some t : pathdown |
 					
 								// there is one tree in the commit that has the relation name->blob
-								p.name -> p.blob in t.contains 
+								p.name -> p.blob in t.contains and
 
-								let pathup = t.^(~r) {
+								let pathup = t.^(~r) |
 					
 										// the depth of the path tree must be equal to the path leading to the
 										// tree t
-										#p.^pathparent = #(pathup & pathdown) 
-
+										#p.^pathparent = #(pathup & pathdown) and
+									
 										//for all parent trees there must be some correspondance to a parent
 										// path
-										all t' : (pathup & pathdown) {
+										all t' : (pathup & pathdown) |
 								
 										// t'' is son of t' ; p' is some parent in the path
-											some t'' : (t.*(~r) & pathdown), p' : p.^pathparent {
+											some t'' : (t.*(~r) & pathdown), p' : p.^pathparent |
 													
-													(p'.name -> t'' in t'.contains)  
-													(#(t.*(~r) & t'.*r) = #p'.*(~pathparent))				
-											}
-										}
-				 				}
-		 				}
-				}
+													(p'.name -> t'' in t'.contains)  and
+													(#(t.*(~r) & t'.*r) = #p'.*(~pathparent))
 			}
-
-
-				// all objects that  belong to the previous state must belong to new state plus the
-				// new ones
-				let r = { t : Tree, o : (Tree+Blob) | some n : Name | t->n->o in contains} |
-						let newObjs = (new.points).*r | objects.s' = objects.s + newObjs 
 		}
 	// all the rest must remain the same
 	index.s' = index.s
@@ -199,6 +186,5 @@ pred commit[s,s' : State] {
 
 run { 
 	
-	some s,s':State | commit[s,s'] and #(index.s) = 2 and #(index.s).pathparent = 2
-
+	some s,s':State | commit[s,s'] and #(index.s) > 1 and #(index.s).^pathparent > 0
 } for 10 but exactly 2 State
