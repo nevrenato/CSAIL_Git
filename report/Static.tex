@@ -17,13 +17,14 @@ of a project is stored in files referenced by a
 \begin{lstlisting}
 sig Sha{}
 \end{lstlisting}
+However Alloy has already a mechanism for naming atoms se we will
+use it instead.
 
 "...and there are four different types of objects: "blob",
 "tree", "commit", and "tag". " (page 7)
 
 \begin{lstlisting}
 abstract sig Object {
-	namedBy : Sha
 }
 sig Blob extends Object{}
 sig Tree extends Object {}
@@ -36,7 +37,7 @@ of other trees and/or blobs}..." (page 8)
 
 \begin{lstlisting}
 sig Tree extends Object {
-	references : set (Tree+Blob)
+	contains : Name -> one (Tree+Blob)
 }
 \end{lstlisting}
 
@@ -46,40 +47,6 @@ sig Tree extends Object {
 sig Commit extends Object{
 	points : Tree
 }
-\end{lstlisting}
-
-"A "tag" is a way to { \bf mark a specific commit}..." (page 8)
-
-\begin{lstlisting}
-sig Tag extends Object{
-	marks : Commit
-}
-\end{lstlisting}
-
-As the book \cite{gitComm} says, a "tree" acts
-like a directory, so we know that it or it's 
-descendants cannot point to themselves.
-\begin{lstlisting}
-no ^references & iden 
-\end{lstlisting}
-
-"...two "trees" have the { \bf same SHA1 name if and only if their
-contents (including, recursively, the contents of all subdirectories)
-are identical.} " (page 11)
-
-\begin{lstlisting}
-all t,t' : Tree | 
-   t.namedBy = t'.namedBy <=> t.references = t'.references
-\end{lstlisting}
-
-"What that means to us is that is virtually {\bf impossible to find to 
-different objects with the same name}". (page 7) \par
-However we know that there is an exception. 
-There are cases (defined above)
-that allow different trees to have same name. 
-
-\begin{lstlisting}
-namedBy.~namedBy - (Tree->Tree) in iden
 \end{lstlisting}
 
 
@@ -103,49 +70,35 @@ sig Commit extends Object{
   points : Tree,
   parent : set Commit
 }
-some sig RootCommit extends Commit{}
+
+sig RootCommit extends Commit{}
+
 fact {
   no ^parent & iden
   no RootCommit.parent
-  Commit in *parent.RootCommit
+  all c : Commit - RootCommit | some c.parent	
 }
 
 \end{lstlisting}
 
+
 \subsection{Implicit specifications}
 
-A commit must point only root trees, unless we want
-losses of information.
+As the book \cite{gitComm} says, a "tree" acts
+like a directory, so we know that it or it's 
+descendants cannot point to themselves.
+Also, in git we can't have empty folders 
+
 \begin{lstlisting}
-no Commit.points & Tree.references    
+let r = {x :Tree, y : Tree+Blob | some n : Name | x->n->y in contains} {
+	no ^r & iden
+	all t : Tree | some t.r
+}
 \end{lstlisting}
 
-In the object model we don't have orphan Blobs. 
+A tree has at most one parent.
 \begin{lstlisting}
-Blob in Tree.references
-\end{lstlisting}
-
-The same for Trees.
-\begin{lstlisting}
-Tree in Tree.references + Commit.points
-\end{lstlisting}
-
-Sha's that don't point to anywhere are useless.
-\begin{lstlisting}
-Sha in Object.namedBy
-\end{lstlisting}
-
-We can't have the same tree shared by commits. Git
-doesn't work that way ("it stores a snapshot of what all 
-the files in your project looks like..." \cite{gitComm} (page 7)).
-\begin{lstlisting}
-points.~points in iden 
-\end{lstlisting}
-
-A tree has at most one parent. If this is not true, than there 
-is inconsistency in the git "filesystem".
-\begin{lstlisting}
-all t:Tree | lone references.t
+all t:Tree | lone contains.t
 \end{lstlisting}
 
 \section{Index}
@@ -165,12 +118,15 @@ index, not what is in your working directory.}"
 SHA1 of a blob object" \cite{gitComm} (pag 120). \par 
 
 \begin{lstlisting}
-one sig Index{	
-  stage: Sha one -> File
-}{
-  Index.stage.File in Blob.namedBy
+sig Path {
+	pathparent : lone Path,
+	name : Name,
+	blob:lone Blob,
+	index: lone Path
 }
 \end{lstlisting}
+
+The index relation will define what files are in the index. \par 
 
 Also : ``The index {\bf contains all the information necessary to generate a single
 (uniquely determined) tree object}'' \cite{gitComm} (pag 121). \par
@@ -185,24 +141,17 @@ will be saved in the git database at the next commit. If we don't want to save
 something in a commit, we simply don't add it to the Index.
 
 
+\section{Branches}
+Definition of branch: "A branch in Git is {\bf simply a 
+lightweight movable pointer to one of these commits}." \par \cite{progit} 
+(pag 39)
+``The special pointer called Header 
+points to the branch we are working on''. \cite{progit} (pag 40)
 
-%\subsection{Branches}
-%Definition of branch: "A branch in Git is {\bf simply a 
-%lightweight movable pointer to one of these commits}." \cite{progit} 
-%(pag 39)
-%
-%\begin{lstlisting}
-% sig Branch{
-%   on: Commit
-% }
-%\end{lstlisting}
-%
-%``The special pointer called Header 
-%points to the branch we are working on''. \cite{progit} (pag 40)
-%
-%\begin{lstlisting}
-%  one sig Head{
-%   	current: Branch
-%  }
-%\end{lstlisting}
-%
+\begin{lstlisting}
+sig Branch {
+	mark : Commit,
+	head : lone Branch
+}
+\end{lstlisting}
+

@@ -6,11 +6,15 @@ the model would be much more interesting if we specify
 the most important git operations. That said in this
 section we will focus on modelling the most important
 and critical of them. \par
+
+\subsection{The notion of state}
 For this purpose, we will associate a State to each relation
 with potential to change it's content. Thus, this way a relation
 can change it's content over time.
 
-\subsection{add}
+\subsection{Git operations}
+
+\subsubsection{add}
 
 This command is one of the most used in git. \cite{gitComm} (page 26)
 tells us that
@@ -23,7 +27,7 @@ the Working Directory, so all references to modified files in
 the Index must also appear in the Working Directory. For newly
 added files that is not the case.
 
-\subsection{rm}
+\subsubsection{rm}
 
 This one is generally less used. It's usefullness can be
 seen in the following \cite{progit}
@@ -41,5 +45,13 @@ Another restriction that git imposes is that, when a git rm is used, the
 content of the file to remove must be equal to the current commit. \par
 
 
-\subsection{commit}
+\subsubsection{commit}
 
+"A commit is usually created by git commit, which creates a {\bf commit whose parent is 
+normally the current HEAD}, and whose {\bf tree is taken from the content currently stored
+in the index}" \cite{gitComm} (page 13).
+
+
+\subsubsection{push}
+
+\subsubsection{pull}
