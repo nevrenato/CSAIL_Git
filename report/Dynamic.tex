@@ -3,14 +3,30 @@
 The static object model, only by itself, 
 is not very useful. And so
 the model would be much more interesting if we specify 
-the most important git operations. That said in this
-section we will focus on modelling the most important
-and critical of them. \par
+the some git operations. In order to do that, we need to 
+specify in the model, that it can change over time.
 
 \subsection{The notion of state}
-For this purpose, we will associate a State to each relation
-with potential to change it's content. Thus, this way a relation
-can change it's content over time.
+
+From now on, all relations with potential to change must
+have a state associated. So, a relation
+that has some information before a remove operation, can have
+other information after it. \par
+For example :
+
+\begin{lstlisting}
+sig Commit extends Object {
+	...
+	parent : Commit set -> State
+}
+\end{lstlisting}
+
+We can see that a commit can have a determined set of parents, but, 
+after some operation it can have another set of parents. Thus the state
+will define the contents of the dynamic relations in a certain instant.
+\par
+The model, now, needs some adaptations to support the notion of state. \par
+
 
 \subsection{Git operations}
 
@@ -22,35 +38,50 @@ tells us that
 and in both cases it takes a snapshot of the given files
 and {\bf stages that content in the index, ready for inclusion
 in the next commit}." \par 
-As already said above a newly modified file, it's tracked by
-the Working Directory, so all references to modified files in
-the Index must also appear in the Working Directory. For newly
-added files that is not the case.
+Thus, we can see the add operation, only as the adition of a file 
+to the index, and nothing else can change between the two states.
+\par
+
+\begin{lstlisting}
+
+	//path needs to be a file
+	no pathparent.p
+
+	// a path is added to the index
+	objects.s' = objects.s + p.blob
+	index.s' = index.s + p
+
+	//all other things are kept
+	parent.s' = parent.s
+	marks.s' = marks.s
+	branches.s' = branches.s
+	head.s' = head.s 
+
+\end{lstlisting}
 
 \subsubsection{rm}
 
-This one is generally less used. It's usefullness can be
+The usefullness of rm can be
 seen in the following \cite{progit}
-(page 21) says "To remove a file from Git, you have to remove it
+(page 21) "To remove a file from Git, you have to remove it
 from your tracked files (more accurately, {\bf remove it from your
-staging area}) and them commit. The {\bf git rm command does that
-and also removes the file from your working directory}...". \par
-Note that the working directory refered in the citation is not
-the git Working Directory, it's the directory of the filesystem itself.
-In other words a 'rm <file>' is used inside the 'git rm <file>'. \par
-When using git rm
-that modification will only appear in the Index. Unless, before
-the git rm we delete the file from the filesystem (e.g. rm ). \par
-Another restriction that git imposes is that, when a git rm is used, the
-content of the file to remove must be equal to the current commit. \par
+staging area with git rm}) and then commit.
+An important restriction that git imposes when using git rm is used,
+it that the
+content of the file to remove must be equal to the last commit. \par
+So, we can see the rm operation as a removal operation of a file
+that is in the index, and it cannot have changed since the last
+commit. \par
 
 
 \subsubsection{commit}
 
+The commit operation is simply explained. 
 "A commit is usually created by git commit, which creates a {\bf commit whose parent is 
 normally the current HEAD}, and whose {\bf tree is taken from the content currently stored
 in the index}" \cite{gitComm} (page 13).
-
+But hard to model. The culprit is the transformation of the index into a tree that is pointed
+by the new commit.
 
 \subsubsection{push}
 

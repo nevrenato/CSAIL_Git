@@ -175,7 +175,6 @@ pred commit[s,s' : State] {
 	index.s' = index.s
 }
 
-
 run { 
 	
 	some s,s':State | commit[s,s'] and #(index.s) = 2 and some (index.s).pathparent
