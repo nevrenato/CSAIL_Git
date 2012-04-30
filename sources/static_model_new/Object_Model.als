@@ -28,4 +28,5 @@ fact {
 }
 
 run{
+	some Commit
 } for 3
