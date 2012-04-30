@@ -10,8 +10,8 @@ specify in the model, that it can change over time.
 
 From now on, all relations with potential to change must
 have a state associated. So, a relation
-that has some information before a remove operation, can have
-other information after it. \par
+that has some information before an operation, can have
+other contents after it. \par
 For example :
 
 \begin{lstlisting}
@@ -22,8 +22,8 @@ sig Commit extends Object {
 \end{lstlisting}
 
 We can see that a commit can have a determined set of parents, but, 
-after some operation it can have another set of parents. Thus the state
-will define the contents of the dynamic relations in a certain instant.
+after some operation it can have another set of parents. Thus, the state
+will define the relation contents in a certain "instant".
 \par
 The model, now, needs some adaptations to support the notion of state. \par
 

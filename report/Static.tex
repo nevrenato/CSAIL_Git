@@ -112,8 +112,8 @@ of a file's path.
 all t:Tree | lone contains.t
 \end{lstlisting} \par
 
-Only with this we already have can see some interesting example, that
-the model gives.\par
+Only with this we already have see some interesting examples, like
+the following.\par
 
 \begin{figure}[h!]
 	\caption{A simple commit}
@@ -121,7 +121,7 @@ the model gives.\par
     \includegraphics[scale=0.65]{images/image1.png}
 \end{figure}
 
-
+\pagebreak
 \section{Index}
 
 \subsection{The notion of path}
@@ -138,7 +138,7 @@ sig Path {
 }
 \end{lstlisting}
 
-With this we need some new invariants.
+With this we introduce some new invariants.
 We can't have cicles, and two paths with the same
 name as in any normal filesystem.
 Only the leafs of a path can have a file (blob) associated.
@@ -190,11 +190,13 @@ tell git to add that to the Index. Once added, it
 will be saved in the git database at the next commit. If we don't want to save
 something in a commit, we simply don't add it to the Index.
 
-Finnaly we have a complete static model of git.
+Now we can see a more complete model of git.
 
 \begin{figure}[h!]
 	\caption{A simple commit and a file}
   \centering
     \includegraphics[scale=0.65]{images/image2.png}
 \end{figure}
+
+\pagebreak
 
