@@ -14,7 +14,7 @@ of a project is stored in files referenced by a
 However Alloy has a mechanism to uniquely identify atoms, so 
 we can use it instead of the sha. \par
 
-The objects are as defined in \cite{gitComm} (page 7) 
+The objects are defined as in \cite{gitComm} (page 7) 
 "...and there are four different types of objects: "blob",
 "tree", "commit", and "tag". "
 
@@ -27,7 +27,7 @@ sig Commit extends Object{}
 sig Tag extends Object{}
 \end{lstlisting}
 
-``A ''blob`` is used to store file data - it is generally a file 
+``A ''blob`` is used to store file data - it is generally a file'' 
 \cite{gitComm} (page 8). We can abstract from it.
 
 "A "tree" is basically like a directory - {\bf it references a bunch
@@ -71,9 +71,10 @@ fact {
 
 \end{lstlisting}
 
-The branches are one of the things that differs git from 
-others version control systems. While they copy a snapshot of the 
-project when making a new branch. In git the same it's not true.
+One of the advantages of git compared to others VCS is the operation
+of creating a new branch. While in others VCS, a copy of the hole project is
+done each time we create new branch, in git, only a new pointer is created.
+
 "A branch in Git is {\bf simply a 
 lightweight movable pointer to one of these commits}." \par \cite{progit} 
 (pag 39)
@@ -93,11 +94,12 @@ sig Branch {
 \subsection{Implicit specifications}
 
 As the book \cite{gitComm} says, a "tree" acts
-like a directory, so we know that it or it's 
+like a directory, so we know that it or its 
 descendants cannot point to themselves.
-Also, only sees files and their paths. So it can't
+Also, git only sees files and their paths. So it can't
 deal with empty folders, and because of this, there cannot
 be trees without sons.
+
 \begin{lstlisting}
 let r = {x :Tree, y : Tree+Blob | 
 		some n : Name | x->n->y in contains} {
@@ -106,14 +108,14 @@ let r = {x :Tree, y : Tree+Blob |
 }
 \end{lstlisting}
 
-A tree needs to have at most one parent. Because is part
+A tree needs to have at most one parent. Because it is part
 of a file's path.
 \begin{lstlisting}
 all t:Tree | lone contains.t
 \end{lstlisting} \par
 
-Only with this we already have see some interesting examples, like
-the following.\par
+Only with this specifications we can already see some interesting examples, 
+like the next one.\par
 
 \begin{figure}[h!]
 	\caption{A simple commit}
@@ -138,9 +140,9 @@ sig Path {
 }
 \end{lstlisting}
 
-With this we introduce some new invariants.
-We can't have cicles, and two paths with the same
-name as in any normal filesystem.
+With this new information we introduce some new invariants.
+We can't have cycles and two paths with the same
+name, as in unix filesytem.
 Only the leafs of a path can have a file (blob) associated.
 
 \begin{lstlisting}
@@ -170,7 +172,8 @@ SHA1 of a blob object" \cite{gitComm} (pag 120). \par
 sig Path {
 	...
 	index: lone Path
-}{
+}
+fact{
 	no Path.parent & index.Path
 }
 \end{lstlisting}

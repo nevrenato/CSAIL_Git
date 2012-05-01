@@ -8,6 +8,7 @@
 \usepackage{graphics}
 
 \title{Understanding Git with Alloy}
+\subtitle{Milestone 1}
 \author{Cláudio Lourenço \and Renato Neves}
 \institute{University of Minho\\
 Formal Methods in Software Engineering}
@@ -46,11 +47,14 @@ Formal Methods in Software Engineering}
 \frame{
    \frametitle{The Git Object Model}
    \begin{columns}[c]
-      \column{1.5in}
+      \column{2in}
       \begin{itemize}
+         \item Sort of a filesystem
          \item Each git object is named by a sha
-         \item item2
-         \item item
+         \item Blob stores file data
+         \item Tree references a branch of others trees and blobs
+         \item Commit points to single tree
+         \item 
       \end{itemize}
       \column{2in}
       \begin{figure}
@@ -61,7 +65,7 @@ Formal Methods in Software Engineering}
 }
 
 \frame{
-   \frametitle{Git workflow }
+   \frametitle{Git simplified workflow }
    \begin{figure}
       \centering
       \includegraphics[width=0.35\textwidth]{images/data_flow_simplified.png}

@@ -66,20 +66,15 @@ pred rm[s,s' : State, p:Path] {
 	objects.s' = objects.s
 }
 
-/*
-run { 
-	some s,s':State | commit[s,s'] && no head.s &&  some (index.s).pathparent
-	
-} for 5 but exactly 2 State
+
 
 pred commit[s,s' : State] {
 			s != s'
 
-//			index.s' = index.s
+	index.s' = index.s
 	some c:Commit{
 		c not in objects.s
-		index.s' = index.s
-		no head.s =>  {		head.s' = master
+	no head.s =>  {		head.s' = master
 									branches.s' = master
 									marks.s' = master -> c
 									no parent.s'
@@ -89,12 +84,26 @@ pred commit[s,s' : State] {
 									marks.s' = marks.s ++ head.s' -> c
 									parent.s' = parent.s + c -> head.s.(marks.s)
 							 }
-		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}{
+
+		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}, root = (head.s').(marks.s').points{
 			objects.s' = objects.s  + c + c.points.*r
-	
-			all p:index.s | no p.pathparent => p.name -> p.blob in c.points.contains
-			all o: c.points.contains
-*/
+			some iso: 	(index.s).*pathparent set -> one root.*r{
+				//p is parent iff its isomorphism is a Tree MAYBE NOT NECESSARY
+ 				//all p:(index.s).*pathparent | some pathparent.p <=> some p.iso & Tree 
+				//all p that have no parent are direct descendants from root
+				all p:(index.s).*pathparent | no p.pathparent <=> (p.name -> p.iso in root.contains)
+				//
+				all p:(index.s).*pathparent | some p.pathparent <=> 
+														  p.name -> p.iso in p.pathparent.iso.contains
+			}
+		}	
+	}
+}
+
+run { 
+	some s,s':State | commit[s,s'] and #(index.s) > 1 and some p:index.s |  #p.*pathparent > 2
+} for 5 but exactly 2 State
+
 		/*	all disj p,p': index.s | (p.pathparent = p'.pathparent <=> 
 				(some t: c.points.*r | p.name -> p.blob + p.name -> p'.blob in t.contains))
 			
@@ -123,7 +132,7 @@ pred commit[s,s' : State] {
 //				}	
 		//all p:index.s | some o:c.points.^r | o = p.blob && all p':p.*pathparent | some o':r.o.r | o'=p'.blob
 				
-
+/*
 pred commit[s,s' : State] {
 
 	s != s' 
@@ -145,7 +154,7 @@ pred commit[s,s' : State] {
 				lastC = (new.parent).s'
 
 				//the branch points to the new commit and head must point to the same branch
-				new = ((head.s').marks).s' and  head.s' = head.s			
+				new = ((head.s').marks).s' and  head.s' = head.s
 
 					// all objects that  belong to the previous state must belong to new state plus the
 				// new ones
@@ -174,9 +183,4 @@ pred commit[s,s' : State] {
 
 	index.s' = index.s
 }
-
-run { 
-	
-	some s,s':State | commit[s,s'] and #(index.s) = 2 and some (index.s).pathparent
-
-} for 10 but exactly 2 State, 6 Int
+*/
