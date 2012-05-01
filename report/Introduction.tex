@@ -13,3 +13,34 @@ to verify the git robustness and safety. \par
 Finally some conclusions will be presented to the readers.
 
 \subsection{A brief explanation of git}
+
+Git is just one of many \Gls{version control system} available. 
+They are 
+distinguished by two main types: Centralized and Distributed.
+Git it's in the later. The major difference between git and any
+other VCS, is that while others save differences between files, git saves
+snapshots. \par
+A Git project usually has three main sections: Repository, Index and
+Working Directory. Where the later it's just a subset of the filesystem. \par
+Git was created in 2005 by the Linux community, 
+with the purpose of replacing BitKeeper. Some of it's
+goals are \cite{progit}: 
+
+\begin{enumerate}
+	\item Speed
+	\item Simple design
+	\item Strong support for non-linear development
+	\item Fully distributed
+	\item Able to handle large projects like the Linux Kernel 
+	efficently (speed and data size)
+\end{enumerate}
+
+\subsection{Why the verification of git is important}
+
+Nowadays, the software projects are getting bigger, and in most
+cases it is needed a version control system. Thus, git is being
+more and more used. However, can we trust in git to manage projects
+of big value ? We don't know the answer, but it's true that we can be
+more confident in git if we make some kind of verification on it. Because
+there are no known formal/semiformal verifications of git, we try to fill
+part of that hole with this project.

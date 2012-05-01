@@ -96,9 +96,9 @@ sig Branch {
 As the book \cite{gitComm} says, a "tree" acts
 like a directory, so we know that it or its 
 descendants cannot point to themselves.
-Also, git only sees files and their paths. So it can't
-deal with empty folders, and because of this, there cannot
-be trees without sons.
+
+Also, git only deals with files and their paths. Thus, git cannot have
+folders without descendants.
 
 \begin{lstlisting}
 let r = {x :Tree, y : Tree+Blob | 

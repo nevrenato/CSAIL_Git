@@ -72,8 +72,11 @@ pred commit[s,s' : State] {
 			s != s'
 
 	index.s' = index.s
+
 	some c:Commit{
+
 		c not in objects.s
+
 	no head.s =>  {		head.s' = master
 									branches.s' = master
 									marks.s' = master -> c
@@ -85,24 +88,27 @@ pred commit[s,s' : State] {
 									parent.s' = parent.s + c -> head.s.(marks.s)
 							 }
 
-		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}, root = (head.s').(marks.s').points{
-			objects.s' = objects.s  + c + c.points.*r
-			some iso: 	(index.s).*pathparent set -> one root.*r{
-				//p is parent iff its isomorphism is a Tree MAYBE NOT NECESSARY
- 				//all p:(index.s).*pathparent | some pathparent.p <=> some p.iso & Tree 
-				//all p that have no parent are direct descendants from root
-				all p:(index.s).*pathparent | no p.pathparent <=> (p.name -> p.iso in root.contains)
-				//
-				all p:(index.s).*pathparent | some p.pathparent <=> 
+
+		let r = {t:Tree, o:(Tree+Blob) | some n:Name | t -> n -> o in contains}, 
+				root = (head.s').(marks.s').points {
+
+				objects.s' = objects.s  + c + c.points.*r
+
+
+				all p:(index.s).*pathparent | some 
+				iso: (index.s).*pathparent one -> one root.^r | some
+								p.pathparent <=> (p.name -> p.iso in root.contains)
+			
+				all p:(index.s).*pathparent |  some 
+				iso: (index.s).*pathparent one -> one root.^r | some p.pathparent <=> 
 														  p.name -> p.iso in p.pathparent.iso.contains
-			}
 		}	
 	}
 }
 
 run { 
-	some s,s':State | commit[s,s'] and #(index.s) > 1 and some p:index.s |  #p.*pathparent > 2
-} for 5 but exactly 2 State
+	some s,s':State | commit[s,s'] and #(index.s) > 0 //and some p:index.s |  #p.*pathparent > 2
+} for 6 but exactly 2 State
 
 		/*	all disj p,p': index.s | (p.pathparent = p'.pathparent <=> 
 				(some t: c.points.*r | p.name -> p.blob + p.name -> p'.blob in t.contains))
