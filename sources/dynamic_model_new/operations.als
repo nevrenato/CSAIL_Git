@@ -95,6 +95,7 @@ pred commit[s,s' : State] {
 				//
 				all p:(index.s).*pathparent | some p.pathparent <=> 
 														  p.name -> p.iso in p.pathparent.iso.contains
+	//			all t:root.*r & Tree, n:t.contains.(Tree+Blob) | some pathparent.(iso.t).n
 			}
 		}	
 	}
