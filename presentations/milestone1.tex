@@ -133,8 +133,10 @@ Formal Methods in Software Engineering}
 
 \begin{frame}[fragile]
    \frametitle{First Approach - Object Model}
-   \footnotesize
-   \begin{lstlisting}
+   \tiny
+   \begin{columns}[c]
+      \column{1.5in}
+   \begin{lstlisting}[escapechar=!]
    sig Sha{}
 
    abstract sig Object {
@@ -155,13 +157,9 @@ Formal Methods in Software Engineering}
 
    sig RootCommit extends Commit{}
    \end{lstlisting}
-
-\end{frame}
-
-\begin{frame}[fragile]
-   \frametitle{First Approach - Working Directory}
-   \footnotesize
-   \begin{lstlisting}
+      \column{1.5in}
+   \color{blue}{
+   \begin{lstlisting}[escapechar=!]
    abstract sig WDObject{
       wdparent: lone Dir
    }
@@ -173,20 +171,18 @@ Formal Methods in Software Engineering}
    sig Dir extends WDObject{}
 
    one sig Root extends Dir{}
-   \end{lstlisting}
-\end{frame}
 
+   !\color{green}{ 
+   one sig Index\{}!
+      !\color{green}{stage: Sha one -> File}!
+   !\color{green}{\}}!
+   \end{lstlisting}
+   }
+   \end{columns}
+\end{frame}
 
 \begin{frame}[fragile]
    \frametitle{First Approach}
-   \begin{block}{Index}
-   \footnotesize
-   \begin{lstlisting}
-   one sig Index{
-      stage: Sha one -> File
-   }
-   \end{lstlisting}
-   \end{block}
    \begin{block}{Problems of the first approach}
       \begin{itemize}
          \item Model got too complex when adding operations
@@ -209,7 +205,9 @@ Formal Methods in Software Engineering}
 
 \begin{frame}[fragile]
    \frametitle{Second Approach - Object Model}
-   \footnotesize
+   \tiny
+   \begin{columns}[c]
+      \column{1.5in}
    \begin{lstlisting}
    sig Name {}
    sig State {}
@@ -221,49 +219,37 @@ Formal Methods in Software Engineering}
    sig Blob extends Object {}
 
    sig Tree extends Object {
-      contains : Name  -> one (Tree+Blob)
+      contains: Name -> one(Tree+Blob)
    }
-   
+
    sig RootCommit extends Commit {}
 
    sig Commit extends Object {
-      points : one Tree,
-      parent : Commit set
+      points: one Tree,
+      parent: set Commit
    }
 
    \end{lstlisting}
-%   sig Branch{
-%      marks: Commit -> State,
-%      branches: set State,
-%      head: set State
-%   }
-%
-%   lone sig master extends Branch{}
-
-\end{frame}
-
-
-\begin{frame}[fragile]
-   \frametitle{Second Approach}
-   \begin{block}{Index and Path}
-      \footnotesize
-      \begin{lstlisting}
+      \column{1.5in}
+   \color{blue}{
+   \begin{lstlisting}
    sig Path {
-      pathparent : lone Path,
-      name : Name,
+      pathparent: lone Path,
+      name: Name,
       blob:lone Blob,
       index: set State
    }
-      \end{lstlisting}
-   \end{block}
-\end{frame}
+   \end{lstlisting}
+   }
+   \end{columns}
 
+\end{frame}
 
 \frame{
    \frametitle{Instance - A single commit corresponding to an index}
    \begin{figure}
       \centering
-      \includegraphics[width=0.5\textwidth]{images/commit_with_a_parent.png}
+      \includegraphics[width=0.30\textwidth]{images/commit_index.png}
    \end{figure}
 }
 
@@ -272,7 +258,7 @@ Formal Methods in Software Engineering}
    \frametitle{Instance - Commits sharing objects}
    \begin{figure}
       \centering
-      \includegraphics[width=0.7\textwidth]{images/commits_sharing.png}
+      \includegraphics[width=0.4\textwidth]{images/commits_sharing.png}
    \end{figure}
 }
 
@@ -280,7 +266,7 @@ Formal Methods in Software Engineering}
    \frametitle{Problems we are facing}
    \begin{figure}
       \centering
-      \includegraphics[width=1\textwidth]{images/structures.png}
+      \includegraphics[width=0.9\textwidth]{images/structures.png}
    \end{figure}
 }
 
