@@ -124,7 +124,7 @@ Formal Methods in Software Engineering}
          \item Model Index
          \item Model Object Model
          \begin{itemize}
-            \item Object hash are modeled implicitly
+            \item Hash is modeled implicitly
          \end{itemize}
       \end{itemize}
    \end{block}
@@ -137,46 +137,56 @@ Formal Methods in Software Engineering}
    \begin{columns}[c]
       \column{1.5in}
    \begin{lstlisting}[escapechar=!]
-   sig Sha{}
+sig Sha{}
+sig State{}
+   
+abstract sig Object {
+   namedBy : Sha one -> State
+}
 
-   abstract sig Object {
-      namedBy : Sha
-   }
+sig Blob extends Object{
+   blobs: set State
+}
 
-   sig Blob extends Object{
-   }
+sig Tree extends Object {
+   references:(Tree+Blob) some-> State,
+   trees: set State
+}
 
-   sig Tree extends Object {
-      references : some (Tree+Blob)
-   }
+sig Commit extends Object{
+   points : Tree one -> State,
+   parent : Commit set -> State,
+   commits: set State
+}
 
-   sig Commit extends Object{
-      points : Tree,
-  	   parent : set Commit
-   }
+sig RootCommit extends Commit{}
 
-   sig RootCommit extends Commit{}
    \end{lstlisting}
       \column{1.5in}
    \color{blue}{
    \begin{lstlisting}[escapechar=!]
    abstract sig WDObject{
-      wdparent: lone Dir
+      wdparent: Dir lone -> State,
+      wdobjects: set State
    }
 
    sig File extends WDObject{
-      content: Sha 
+      content: Sha lone-> State
    }
 
    sig Dir extends WDObject{}
 
    one sig Root extends Dir{}
-
-   !\color{green}{ 
-   one sig Index\{}!
-      !\color{green}{stage: Sha one -> File}!
-   !\color{green}{\}}!
    \end{lstlisting}
+   }
+   \color{green}{
+   \begin{lstlisting}
+   one sig Index{
+      stage: Sha lone-> File -> State,
+      indexes: set State
+   }
+   \end{lstlisting}
+   
    }
    \end{columns}
 \end{frame}
@@ -187,6 +197,7 @@ Formal Methods in Software Engineering}
       \begin{itemize}
          \item Model got too complex when adding operations
          \item We need the name of the files and directories
+         \item Some relations are not dynamic
       \end{itemize}
    \end{block}
 \end{frame}
@@ -209,36 +220,36 @@ Formal Methods in Software Engineering}
    \begin{columns}[c]
       \column{1.5in}
    \begin{lstlisting}
-   sig Name {}
-   sig State {}
+sig Name {}
+sig State {}
 
-   abstract sig Object {
-      objects: set State
-   }
+abstract sig Object {
+   objects: set State
+}
 
-   sig Blob extends Object {}
+sig Blob extends Object {}
 
-   sig Tree extends Object {
-      contains: Name -> one(Tree+Blob)
-   }
+sig Tree extends Object {
+   contains: Name -> one(Tree+Blob)
+}
 
-   sig RootCommit extends Commit {}
+sig RootCommit extends Commit {}
 
-   sig Commit extends Object {
-      points: one Tree,
-      parent: set Commit
-   }
+sig Commit extends Object {
+   points: one Tree,
+   parent: set Commit
+}
 
-   \end{lstlisting}
-      \column{1.5in}
-   \color{blue}{
-   \begin{lstlisting}
-   sig Path {
-      pathparent: lone Path,
-      name: Name,
-      blob:lone Blob,
-      index: set State
-   }
+\end{lstlisting}
+   \column{1.5in}
+\color{blue}{
+\begin{lstlisting}
+sig Path {
+   pathparent: lone Path,
+   name: Name,
+   blob:lone Blob,
+   index: set State
+}
    \end{lstlisting}
    }
    \end{columns}
