@@ -227,7 +227,7 @@ Formal Methods in Software Engineering}
 
    sig Commit extends Object {
       points : one Tree,
-      parent : Commit set -> State
+      parent : Commit set
    }
 
    \end{lstlisting}
@@ -282,6 +282,18 @@ Formal Methods in Software Engineering}
       \includegraphics[width=1\textwidth]{images/structures.png}
    \end{figure}
 }
+
+\begin{frame}[fragile]
+   \frametitle{Possible Solution}
+      \footnotesize
+      \begin{lstlisting}[escapechar=!]
+      sig Commit extends Object {
+         points : one Tree,
+         parent : Commit set,
+         !\color{red}{abs: Object lone -> some Path}!
+     }
+     \end{lstlisting}
+\end{frame}
 
 \section{Future Work}
 \frame{
