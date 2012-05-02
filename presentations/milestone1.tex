@@ -6,6 +6,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{verbatim}
 \usepackage{graphics}
+\usepackage{listings}
 
 \title{Understanding Git with Alloy}
 \subtitle{Milestone 1}
@@ -24,44 +25,51 @@ Formal Methods in Software Engineering}
 }
 
 \frame{
-  \tableofcontents 
+   \frametitle{Table of contents}
+   \tableofcontents 
+}
+\section{Version Control System}
+\frame{
+   \frametitle{Version Control System}
+         \begin{block}{What is a VCS?}
+            \begin{itemize}
+               \item Records changes on files over time  %progit 2.1 
+               \item Recall old versions of files
+            \end{itemize}
+         \end{block}
+         \begin{block}{Local VCS}
+            No collaboration with others users - RCS %Revision Control System
+         \end{block}
+         \begin{block}{Centralized VCS}
+            \begin{columns}[c]
+               \column{3in}
+               All files are stored on a central server - CVS, Subversion, Perfomance
+               \column{1in}
+                  \begin{figure}
+                     \includegraphics[width=0.4\textwidth]{images/centralized.png}
+                  \end{figure}
+            \end{columns}
+         \end{block}
+         \begin{block}{Distributed VCS}
+            Each client has a mirror of the repository - Git, Mercurial, Bazaar, Darcs%progit 2.1.3
+         \end{block}
+         \begin{figure}
+            \includegraphics[width=0.1\textwidth]{images/distributed.png}
+         \end{figure}
+         
 }
 
-\section{Git in a hurry}
+\section{Git in a nutshell}
 \frame{
-   \frametitle{Introducing Git}
-   \begin{block}{Distributed Version Control System}
+   \frametitle{Git in a nutshel}
       \begin{itemize}
-         \item Records changes on files over time  %progit 2.1 
-         \item Recall old versions of files
-         \item Each client has a mirror of the repository %progit 2.1.3
+         \item It was created in 2005 by Linus Torvalds
+         \item Distributed Version Control System
+         \item Simple, Fast, Efficient
+         \item It keeps snapshots, not differences
+         \item Operations with branches are very cheap
       \end{itemize}
-   \end{block}
-   \begin{block}{Main differences with others VCS}
-      \begin{itemize}
-         \item Snapshots, Not Differences
-      \end{itemize}
-   \end{block}
-}
 
-\frame{
-   \frametitle{The Git Object Model}
-   \begin{columns}[c]
-      \column{2in}
-      \begin{itemize}
-         \item Sort of a filesystem
-         \item Each git object is named by a sha
-         \item Blob stores file data
-         \item Tree references a branch of others trees and blobs
-         \item Commit points to single tree
-         \item 
-      \end{itemize}
-      \column{2in}
-      \begin{figure}
-         \centering
-         \includegraphics[width=1\textwidth]{images/object_model.png}
-      \end{figure}
-   \end{columns}
 }
 
 \frame{
@@ -73,13 +81,34 @@ Formal Methods in Software Engineering}
    
 }
 
+\frame{
+   \frametitle{The Git Object Model}
+   \begin{columns}[c]
+      \column{2in}
+      \begin{itemize}
+         \item Similar to a filesystem
+         \item Each git object is named by a sha
+         \item Blob stores file data
+         \item Tree references a set of others trees and blobs
+         \item Commit points to a single tree
+         \item Commit can have more than one parent 
+      \end{itemize}
+      \column{2in}
+      \begin{figure}
+         \centering
+         \includegraphics[width=1\textwidth]{images/object_model.png}
+      \end{figure}
+   \end{columns}
+}
+
+
 \section{Project Goals}
 \frame{
    \frametitle{Project Goals}
    \begin{itemize}
       \item Build a precise model of how Git works
       \item Analyze the model
-      \item Check which properties the model (not) guarantee
+      \item Check which properties the model does (not) guarantee
       \item Compare to other systems
       \item Build a concise user manual based on the model
    \end{itemize}
@@ -94,40 +123,179 @@ Formal Methods in Software Engineering}
          \item Model Index
          \item Model Object Model
          \begin{itemize}
-            \item Object hash are modeled
+            \item Object hash are modeled implicitly
          \end{itemize}
       \end{itemize}
    \end{block}
-   \begin{Problem}
-      Model got too complex when adding operations
-   \end{Problem}
 }
 
-\frame{
-   \frametitle{What has been done so far}
-   INSTANCIA
-}
+
+\begin{frame}[fragile]
+   \frametitle{First Approach - Object Model}
+   \footnotesize
+   \begin{lstlisting}
+   sig Sha{}
+
+   abstract sig Object {
+      namedBy : Sha
+   }
+
+   sig Blob extends Object{
+   }
+
+   sig Tree extends Object {
+      references : some (Tree+Blob)
+   }
+
+   sig Commit extends Object{
+      points : Tree,
+  	   parent : set Commit
+   }
+
+   sig RootCommit extends Commit{}
+   \end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{First Approach - Working Directory}
+   \footnotesize
+   \begin{lstlisting}
+   abstract sig WDObject{
+      wdparent: lone Dir
+   }
+
+   sig File extends WDObject{
+      content: Sha 
+   }
+
+   sig Dir extends WDObject{}
+
+   one sig Root extends Dir{}
+   \end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+   \frametitle{First Approach}
+   \begin{block}{Index}
+   \footnotesize
+   \begin{lstlisting}
+   one sig Index{
+      stage: Sha one -> File
+   }
+   \end{lstlisting}
+   \end{block}
+   \begin{block}{Problems of the first approach}
+      \begin{itemize}
+         \item Model got too complex when adding operations
+         \item We need the name of the files and directories
+      \end{itemize}
+   \end{block}
+\end{frame}
 
 \frame{
    \frametitle{What has been done so far}
    \begin{block}{Second Approach}
       \begin{itemize}
          \item Focus on Object Model and Index
-         \item Files are just a set of paths
+         \item Files are associated with a path and a blob
          \item Object hash are the alloy atom's name
       \end{itemize}
 
    \end{block}
 }
 
+\begin{frame}[fragile]
+   \frametitle{Second Approach - Object Model}
+   \footnotesize
+   \begin{lstlisting}
+   sig Name {}
+   sig State {}
+
+   abstract sig Object {
+      objects: set State
+   }
+
+   sig Blob extends Object {}
+
+   sig Tree extends Object {
+      contains : Name  -> one (Tree+Blob)
+   }
+   
+   sig RootCommit extends Commit {}
+
+   sig Commit extends Object {
+      points : one Tree,
+      parent : Commit set -> State
+   }
+
+   \end{lstlisting}
+%   sig Branch{
+%      marks: Commit -> State,
+%      branches: set State,
+%      head: set State
+%   }
+%
+%   lone sig master extends Branch{}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+   \frametitle{Second Approach}
+   \begin{block}{Index and Path}
+      \footnotesize
+      \begin{lstlisting}
+   sig Path {
+      pathparent : lone Path,
+      name : Name,
+      blob:lone Blob,
+      index: set State
+   }
+      \end{lstlisting}
+   \end{block}
+\end{frame}
+
 
 \frame{
-   \frametitle{What has been done so far}
-   INSTANCIA
+   \frametitle{Instance - A single commit corresponding to an index}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.5\textwidth]{images/commit_with_a_parent.png}
+   \end{figure}
+}
+
+
+\frame{
+   \frametitle{Instance - Commits sharing objects}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{images/commits_sharing.png}
+   \end{figure}
+}
+
+\frame{
+   \frametitle{Problems we are facing}
+   \begin{figure}
+      \centering
+      \includegraphics[width=1\textwidth]{images/structures.png}
+   \end{figure}
+}
+
+\section{Future Work}
+\frame{
+   \frametitle{Future work}
+   \begin{itemize}
+      \item Find a solution for the current problem (Suggestions?)
+      \item Model some operations relatively to the remote repository
+      \item Check some properties
+   \end{itemize}
 }
 
 \frame{
    \titlepage
 }
+
 
 \end{document}
