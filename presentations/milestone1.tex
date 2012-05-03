@@ -285,7 +285,7 @@ sig Path {
       \begin{lstlisting}[escapechar=!]
       sig Commit extends Object {
          points : one Tree,
-         parent : Commit set,
+         parent : set Commit,
          !\color{red}{abs: Object lone -> some Path}!
      }
      \end{lstlisting}
