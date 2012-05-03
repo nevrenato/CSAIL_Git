@@ -39,7 +39,7 @@ Formal Methods in Software Engineering}
             \end{itemize}
          \end{block}
          \begin{block}{Local VCS}
-            No collaboration with others users - RCS %Revision Control System
+            No collaboration with other users - RCS %Revision Control System
          \end{block}
          \begin{block}{Centralized VCS}
             \begin{columns}[c]
@@ -52,7 +52,7 @@ Formal Methods in Software Engineering}
             \end{columns}
          \end{block}
          \begin{block}{Distributed VCS}
-            Each client has a mirror of the repository - Git, Mercurial, Bazaar, Darcs%progit 2.1.3
+            Each client has a mirror of the repository - Git, BitKeeper, Mercurial, Bazaar, Darcs%progit 2.1.3
          \end{block}
          \begin{figure}
             \includegraphics[width=0.1\textwidth]{images/distributed.png}
@@ -124,7 +124,7 @@ Formal Methods in Software Engineering}
          \item Model Index
          \item Model Object Model
          \begin{itemize}
-            \item Hash is modeled implicitly
+            \item Object's hash is modeled implicitly
          \end{itemize}
       \end{itemize}
    \end{block}
@@ -193,7 +193,7 @@ sig RootCommit extends Commit{}
 
 \begin{frame}[fragile]
    \frametitle{First Approach}
-   \begin{block}{Problems of the first approach}
+   \begin{block}{First approach problems}
       \begin{itemize}
          \item Model got too complex when adding operations
          \item We need the name of the files and directories
@@ -206,7 +206,7 @@ sig RootCommit extends Commit{}
    \frametitle{What has been done so far}
    \begin{block}{Second Approach}
       \begin{itemize}
-         \item Focus on Object Model and Index
+         \item Focus on the Object Model and Index
          \item Files are associated with a path and a blob
          \item Object hash are the alloy atom's name
       \end{itemize}
@@ -295,11 +295,11 @@ sig Path {
 
 \section{Future Work}
 \frame{
-   \frametitle{Future work}
+   \frametitle{Future work on the model}
    \begin{itemize}
       \item Find a solution for the current problem (Suggestions?)
       \item Model some operations relatively to the remote repository
-      \item Check some properties
+      \item Analyze model and check some properties
    \end{itemize}
 }
 
