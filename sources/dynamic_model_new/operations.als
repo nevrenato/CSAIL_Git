@@ -113,11 +113,14 @@ pred commit[s,s' : State] {
 }
 
 run { 
-	some s,s':State | commit[s,s'] and #(index.s) > 0 //and some p:index.s |  #p.*pathparent > 2
-	#Commit = 2 
-	some c,c' : Commit | c.points != c'.points
-	some disj t, t' : Tree | Name.(t.contains) in Name.(t'.contains)
-} for 6 but exactly 2 State
+//	some s,s':State | commit[s,s'] and #(index.s) > 0 //and some p:index.s |  #p.*pathparent > 2
+//	#Commit = 2 
+//	some c,c' : Commit | c.points != c'.points
+//	some disj t, t' : Tree | Name.(t.contains) in Name.(t'.contains)
+	some disj c,c':Commit | c.points != c'.points
+	some parent
+	some index
+} for 5 but exactly 1 State
 
 
 		/*	all disj p,p': index.s | (p.pathparent = p'.pathparent <=> 

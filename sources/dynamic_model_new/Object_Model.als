@@ -1,49 +1,42 @@
 open Objects
 
-sig RootCommit extends Commit {}
-
-
 sig Commit extends Object {
 	points : one Tree,
-	parent : Commit set -> State
+	parent : set Commit
 }
 
+sig RootCommit extends Commit {}
+
 sig Branch{
-
 	marks: Commit -> State,
-
-	// In wich states it exists
 	branches: set State,
-
-	// the current branch...
 	head: set State
 }
 
 lone sig master extends Branch{}
 
 fact {
+	//no cycles
+	no ^parent & iden //check3
 
 	all s:State{
-		// A commit cannot be an ancestor of itself
-		no ^(parent.s) & iden
-
+		all c:objects.s & Commit{
+			c.points in objects.s//check4
+			c.parent in objects.s//check5
+			c not in RootCommit => some c.parent
+			//facts about the abs goes here
+		}
 		// RootCommits doesn't have a parent
-		no RootCommit.parent.s
-
-		// All commits (except RootCommit) need to have at least one parent
-		all c : ((Commit - RootCommit) & objects.s) | some c.parent.s
+		no RootCommit.parent
 
 		//there is one commit iff there is at least one branch and an head
 		some Commit & objects.s <=> some marks.s && one head.s
 		head.s in branches.s
-	
-		//referential integrity
-		parent.s in objects.s -> objects.s
+
 		marks.s in branches.s -> one objects.s
-		
 	}
 
 }
 run{
 #Commit = 1
-} for 5 but exactly 2 State
+} for 3 but exactly 1 State
