@@ -30,7 +30,8 @@ fact{
 	//only leaves are files
 	no File.path & Path.pathparent
 	//2 different files on the same index does not share a path
-	all s : State, disj f1,f2 : index.s | f1.path != f2.path //i would say all disj f1,f2:File | f1.path != f2.path
+	all disj f1,f2:File | f1.path != f2.path
+//	all s : State, disj f1,f2 : index.s | f1.path != f2.path //i would say all disj f1,f2:File | f1.path != f2.path
 }
 
 run {
