@@ -1,8 +1,11 @@
+
 open Objects
+open Path
 
 sig Commit extends Object {
 	points : one Tree,
-	parent : set Commit
+	parent : set Commit,
+	abs: Path -> Object
 }
 
 sig RootCommit extends Commit {}
@@ -24,7 +27,12 @@ fact {
 			c.points in objects.s//check4
 			c.parent in objects.s//check5
 			c not in RootCommit => some c.parent
-			//facts about the abs goes here
+			let objs = c.points.*(contents.Name){
+				c.abs in Path some -> lone objs
+				(c.abs).(c.points) in Root
+				all p,q: (c.abs).univ | p -> q in pathparent implies q.(c.abs)  -> p.name -> p.(c.abs) in contains
+				all t,o: objs, n:Name | t -> n -> o  in contains implies some x: c.abs.o, y: c.abs.t | x -> y in pathparent and x.name = n
+			}
 		}
 		// RootCommits doesn't have a parent
 		no RootCommit.parent
@@ -37,5 +45,6 @@ fact {
 	}
 }
 run{
-#Commit = 1
+	some abs
+	some s:State | some objects.s & Commit
 } for 3 but exactly 1 State
