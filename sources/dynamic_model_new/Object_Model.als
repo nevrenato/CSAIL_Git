@@ -16,7 +16,7 @@ sig Branch{
 	head: set State
 }
 
-lone sig master extends Branch{}
+lone sig Master extends Branch{}
 
 fact {
 	//no cycles
@@ -44,6 +44,7 @@ fact {
 		marks.s in branches.s -> one objects.s
 	}
 }
+
 run{
 	some abs
 	some s:State | some objects.s & Commit
