@@ -35,7 +35,6 @@ fact {
 
 		marks.s in branches.s -> one objects.s
 	}
-
 }
 run{
 #Commit = 1
