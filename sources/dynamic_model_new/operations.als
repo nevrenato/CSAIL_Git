@@ -56,41 +56,48 @@ pred branch[s,s':State,b:Branch]{
 }
 
 pred branchDel[s,s':State, b:Branch]{
+	
 	//pre condition
 		//the branch exists
 		b in branches.s
 		//the branch is not pointed by Head
 		b not in (head.s)
+
+	 // teste
+	b.(marks.s) in ((head.s).(marks.s)).^parent
+//	b.(marks.s) != (head.s).(marks.s)
 	
 	head.s' = head.s
 	branches.s' = branches.s - b
-	marks.s' = marks.s - b -> (head.s).(marks.s)
+	marks.s' = marks.s - b -> (b.(marks.s))
 	objects.s' = objects.s
-	index.s' = index.s
+	index.s' = index.s 
+}
+
+fun comFls[b : Branch, s : State ] : set File {
+	path.(b.(marks.s).(abs.univ))
 }
 
 pred checkout[s,s':State,b:Branch]{
+	// usefull instances
+	(head.s) != b
+
 	//pre condition
 		//the branch is on s
-		b in branches.s
+	b in branches.s
+	no index.s - comFls[(head.s),s] & comFls[b,s]						
+
+	// pos condition 
+	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
 
 	head.s' = b
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
-	index.s' = index.s
+
 }
 
 run{
-	//some s,s':State | s!=s' && commit[s,s'] && no head.s && some head.s'
-	//some pathparent.pathparent 
-	//some s,s':State, f:File | s!=s' && rm[s,s',f]
-	some disj s1,s2,s3,s4,s5,s6,s7:State, disj b1:Branch, disj f1,f2:File {
-		add[s1,s2,f1]
-		commit[s2,s3]
-		branch[s3,s4,b1] && b1 != Master
-		checkout[s4,s5,b1]
-		add[s5,s6,f2]
-		commit[s6,s7]
-	}
-} for 5 but 8 State
+	some disj s,s' : State, b : Branch | checkout[s,s',b]   
+
+} for 3 but 2 State
