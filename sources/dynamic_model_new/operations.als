@@ -21,6 +21,8 @@ pred commit[s,s':State]{
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs)
 }
 
+
+
 pred add[s,s':State, f:File]{
 	head.s' = head.s
 	branches.s' = branches.s
@@ -28,6 +30,8 @@ pred add[s,s':State, f:File]{
 	objects.s' = objects.s
 	index.s' = index.s + f - ((f.path).~path -f)
 }
+
+
 
 pred rm[s,s':State,f:File]{
 	//pre conditions
@@ -44,6 +48,8 @@ pred rm[s,s':State,f:File]{
 	index.s' = index.s - f
 }
 
+
+
 pred branch[s,s':State,b:Branch]{
 	//pre condition
 		b not in branches.s
@@ -54,6 +60,8 @@ pred branch[s,s':State,b:Branch]{
 	objects.s' = objects.s
 	index.s' = index.s
 }
+
+
 
 pred branchDel[s,s':State, b:Branch]{
 	
@@ -74,6 +82,8 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
+
+
 fun comFls[b : Branch, s : State ] : set File {
 	path.(b.(marks.s).(abs.univ))
 }
@@ -85,7 +95,9 @@ pred checkout[s,s':State,b:Branch]{
 	//pre condition
 		//the branch is on s
 	b in branches.s
-	no index.s - comFls[(head.s),s] & comFls[b,s]						
+
+	b.(marks.s) != (head.s).(marks.s) => 
+	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path					
 
 	// pos condition 
 	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
@@ -97,7 +109,10 @@ pred checkout[s,s':State,b:Branch]{
 
 }
 
-run{
-	some disj s,s' : State, b : Branch | checkout[s,s',b]   
 
-} for 3 but 2 State
+
+run{
+	some disj s,s',s'' : State, b : Branch | commit[s,s'] and  checkout[s',s'',b]
+
+
+} for 4 but 4 State
