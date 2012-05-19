@@ -4,7 +4,7 @@ open Object_Model
 
 pred commit[s,s':State]{
 	index.s' = index.s
-
+	
 	no head.s =>{
 		head.s' = Master
 		branches.s' = Master
@@ -61,10 +61,12 @@ pred branchDel[s,s':State, b:Branch]{
 		b in branches.s
 		//the branch is not pointed by Head
 		b not in (head.s)
+		//the branch is already merged with the head
+		b.marks.s in (head.s).(marks.s).^parent
 	
 	head.s' = head.s
 	branches.s' = branches.s - b
-	marks.s' = marks.s - b -> (head.s).(marks.s)
+	marks.s' = marks.s - b -> Commit
 	objects.s' = objects.s
 	index.s' = index.s
 }
@@ -82,10 +84,10 @@ pred checkout[s,s':State,b:Branch]{
 }
 
 run{
-	//some s,s':State | s!=s' && commit[s,s'] && no head.s && some head.s'
+	some s,s':State | s!=s' && commit[s,s'] && some index.s
 	//some pathparent.pathparent 
 	//some s,s':State, f:File | s!=s' && rm[s,s',f]
-	some disj s1,s2,s3,s4,s5,s6,s7:State, disj b1:Branch, disj f1,f2:File {
+/*	some disj s1,s2,s3,s4,s5,s6,s7:State, disj b1:Branch, disj f1,f2:File {
 		add[s1,s2,f1]
 		commit[s2,s3]
 		branch[s3,s4,b1] && b1 != Master
@@ -93,4 +95,9 @@ run{
 		add[s5,s6,f2]
 		commit[s6,s7]
 	}
-} for 5 but 8 State
+*/
+//	some s,s':State, b:Branch | branchDel[s,s',b]
+//	some c:Commit | #parent.c > 1
+//	some s:State, disj b1,b2:branches.s | no b1.marks & b2.marks
+//	some parent
+} for 3 but 2 State
