@@ -56,6 +56,7 @@ pred branch[s,s':State,b:Branch]{
 }
 
 pred branchDel[s,s':State, b:Branch]{
+	
 	//pre condition
 		//the branch exists
 		b in branches.s
@@ -68,19 +69,30 @@ pred branchDel[s,s':State, b:Branch]{
 	branches.s' = branches.s - b
 	marks.s' = marks.s - b -> Commit
 	objects.s' = objects.s
-	index.s' = index.s
+	index.s' = index.s 
+}
+
+fun comFls[b : Branch, s : State ] : set File {
+	path.(b.(marks.s).(abs.univ))
 }
 
 pred checkout[s,s':State,b:Branch]{
+	// usefull instances
+	(head.s) != b
+
 	//pre condition
 		//the branch is on s
 		b in branches.s
+		no index.s - comFls[(head.s),s] & comFls[b,s]						
+
+	// pos condition 
+	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
 
 	head.s' = b
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
-	index.s' = index.s
+
 }
 
 run{

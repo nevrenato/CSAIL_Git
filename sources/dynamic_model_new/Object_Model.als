@@ -46,6 +46,5 @@ fact {
 }
 
 run{
-	some abs
-	some s:State | some objects.s & Commit
-} for 3 but exactly 1 State
+
+} for 6 but exactly 1 State
