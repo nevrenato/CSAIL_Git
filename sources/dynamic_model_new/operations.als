@@ -2,22 +2,28 @@ open Path
 open Object_Model
 
 pred commit[s,s':State]{
+
+	some index.s
 	index.s' = index.s
 	
 	no head.s =>{
+
 		head.s' = Master
 		branches.s' = Master
 		(head.s').(marks.s') in RootCommit
+
 	}else{
+	
 		head.s' = head.s
 		branches.s' = branches.s
 		marks.s' - (head.s -> Commit) = marks.s - (head.s -> Commit) //think better about this
-		(head.s').(marks.s').parent = (head.s).(marks.s)
+		(head.s').(marks.s') != (head.s).(marks.s)
+	
 	}
 
-	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
+	(index.s).path.*pathparent = (head.s').(marks.s').(abs.univ)
 	all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
-	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs)
+	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
 pred add[s,s':State, f:File]{
@@ -73,7 +79,14 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
+fun comFls[b : Branch, s : State ] : set File {
+
+	path.(b.(marks.s).(abs.univ))
+
+}
+
 pred checkout[s,s':State,b:Branch]{
+
 	// usefull instances
 	(head.s) != b
 
@@ -102,3 +115,66 @@ run{
 		commit[s3,s4]
 	}
 } for 6 but 4 State
+
+pred merge[s,s' : State, b,b' : Branch] {
+	
+	// pre conditions
+	b != b'
+	b = head.s 
+	no b'.marks.s & (b.marks.s).*parent
+
+
+	head.s' = head.s 
+	branches.s' = branches.s
+	marks.s' - (b->Commit) = marks.s - (b->Commit) 
+	objects.s' = objects.s + univ.(b.marks.s'.abs)
+	
+	// debug
+	not	b.marks.s in b'.(marks.s).^parent
+	some b.marks.s and some b'.marks.s
+	(b.marks.s).points != (b'.marks.s).points
+	one RootCommit
+	// ------
+
+	// fast-foward
+	b.(marks.s) in b'.(marks.s).^parent => b.marks.s' = b'.marks.s
+	else {
+			 b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ 
+			
+			// all paths
+			all p : b.(marks.s').abs.univ  { 
+			  			// conflict		
+							(p.(b.(marks.s).abs) in Tree ) and p in b.(marks.s).abs.univ & b'.(marks.s).abs.univ => {
+							--			p.(b.marks.s.abs) != p.(b'.marks.s.abs) =>  { no p.(b.marks.s'.abs) & p.((b+b').marks.s.abs) }
+							--		  																				else  p.((b.(marks.s')).abs) = p.((b.(marks.s)).abs) 
+							}
+							// no conflict
+							else { 
+							p in b.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b.(marks.s).abs)
+							p in b'.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b'.(marks.s).abs)
+							}
+			 }  
+    }
+
+	index.s'.path.*pathparent = b.marks.s'.abs.univ
+	all f : index.s' | f.path -> f.blob in b.marks.s'.abs	
+}
+
+
+pred rebase[s,s' : State, b,b' : Branch] {
+
+
+}
+
+
+run {
+--	some disj s,s',s'',s''' : State, b : Branch, f : File | 
+--		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
+
+--	some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+
+	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
+
+} for 6 but 2 State
+
+

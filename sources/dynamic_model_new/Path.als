@@ -29,7 +29,7 @@ fact{
 	no File.path & Root
 	//only leaves are files
 	no File.path & Path.pathparent
-	//2 different files on the same index does not share a path
+	//2 different files on the same index do not share a path
 	all s:State, disj f1,f2:index.s | f1.path != f2.path
 }
 

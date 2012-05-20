@@ -23,14 +23,19 @@ fact {
 	no ^parent & iden //check3
 
 	all s:State{
+
 		all c:objects.s & Commit{
+
 			c.points in objects.s//check4
 			c.parent in objects.s//check5
+
 			c not in RootCommit => some c.parent
+
 			let objs = c.points.*(contents.Name){
+
 				c.abs in Path some -> lone objs
 				(c.abs).(c.points) in Root
-				all p,q: c.abs.univ| p -> q in pathparent implies q.(c.abs)  -> p.name -> p.(c.abs) in contains
+				all p,q: (c.abs).univ| p -> q in pathparent implies q.(c.abs)  -> p.name -> p.(c.abs) in contains
 				all t,o: objs, n:Name | t -> n -> o  in contains 
 						implies some x: c.abs.o, y: c.abs.t | x -> y in pathparent and x.name = n
 				all p:c.abs.univ | some pathparent.p iff p.(c.abs) in Tree
