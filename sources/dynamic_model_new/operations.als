@@ -118,39 +118,62 @@ pred checkout[s,s':State,b:Branch]{
 
 pred merge[s,s' : State, b,b' : Branch] {
 	
-	// first common ancestor encountered for what ?
+	// pre conditions
+	b != b'
+	b = head.s 
+	no b'.marks.s & (b.marks.s).*parent
 
 
+	head.s' = head.s 
+	branches.s' = branches.s
+	marks.s' - (b->Commit) = marks.s - (b->Commit) 
+	objects.s' = objects.s + univ.(b.marks.s'.abs)
+	
+	// debug
+	not	b.marks.s in b'.(marks.s).^parent
+	some b.marks.s and some b'.marks.s
+	(b.marks.s).points != (b'.marks.s).points
+	one RootCommit
+	// ------
 
-	// choose one of the files conflicting 
+	// fast-foward
+	b.(marks.s) in b'.(marks.s).^parent => b.marks.s' = b'.marks.s
+	else {
+			 b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ 
+			
+			// all paths
+			all p : b.(marks.s').abs.univ  { 
+			  			// conflict		
+							(p.(b.(marks.s).abs) in Tree ) and p in b.(marks.s).abs.univ & b'.(marks.s).abs.univ => {
+							--			p.(b.marks.s.abs) != p.(b'.marks.s.abs) =>  { no p.(b.marks.s'.abs) & p.((b+b').marks.s.abs) }
+							--		  																				else  p.((b.(marks.s')).abs) = p.((b.(marks.s)).abs) 
+							}
+							// no conflict
+							else { 
+							p in b.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b.(marks.s).abs)
+							p in b'.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b'.(marks.s).abs)
+							}
+			 }  
+    }
+
+	index.s'.path.*pathparent = b.marks.s'.abs.univ
+	all f : index.s' | f.path -> f.blob in b.marks.s'.abs	
 }
-/*
-run{
-//	some s,s':State | s!=s' && commit[s,s'] && some index.s
-	//some pathparent.pathparent 
-	//some s,s':State, f:File | s!=s' && rm[s,s',f]
-/*	some disj s1,s2,s3,s4,s5,s6,s7:State, disj b1:Branch, disj f1,f2:File {
-		add[s1,s2,f1]
-		commit[s2,s3]
-		branch[s3,s4,b1] && b1 != Master
-		checkout[s4,s5,b1]
-		add[s5,s6,f2]
-		commit[s6,s7]
-	}
-*/
-//	some s,s':State, b:Branch | branchDel[s,s',b]
-//	some c:Commit | #parent.c > 1
-//	some s:State, disj b1,b2:branches.s | no b1.marks & b2.marks
-//	some parent
 
-	some s,s':State, b:Branch | checkout[s,s',b]
-} for 3 but 2 State
-*/
+
+pred rebase[s,s' : State, b,b' : Branch] {
+
+
+}
+
+
 run {
-/*	some disj s,s',s'',s''' : State, b : Branch, f : File | 
-		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
-*/
-	some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+--	some disj s,s',s'',s''' : State, b : Branch, f : File | 
+--		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
+
+--	some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+
+	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
 
 } for 6 but 2 State
 
