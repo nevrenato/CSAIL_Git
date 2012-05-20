@@ -1,7 +1,6 @@
 open Path
 open Object_Model
 
-
 pred commit[s,s':State]{
 	index.s' = index.s
 	
@@ -21,8 +20,6 @@ pred commit[s,s':State]{
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs)
 }
 
-
-
 pred add[s,s':State, f:File]{
 	head.s' = head.s
 	branches.s' = branches.s
@@ -30,8 +27,6 @@ pred add[s,s':State, f:File]{
 	objects.s' = objects.s
 	index.s' = index.s + f - ((f.path).~path -f)
 }
-
-
 
 pred rm[s,s':State,f:File]{
 	//pre conditions
@@ -61,8 +56,6 @@ pred branch[s,s':State,b:Branch]{
 	index.s' = index.s
 }
 
-
-
 pred branchDel[s,s':State, b:Branch]{
 	
 	//pre condition
@@ -80,53 +73,32 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-
-
-fun comFls[b : Branch, s : State ] : set File {
-	path.(b.(marks.s).(abs.univ))
-}
-
 pred checkout[s,s':State,b:Branch]{
 	// usefull instances
 	(head.s) != b
 
 	//pre condition
 		//the branch is on s
+		b in branches.s
 
-	b in branches.s
-
-	b.(marks.s) != (head.s).(marks.s) => 
-	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path
-
-	// pos condition 
-	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
+	(head.s').(marks.s').abs in s.pathcontents
 
 	head.s' = b
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
-
 }
 
-
-
 run{
-//	some s,s':State | s!=s' && commit[s,s'] && some index.s
-	//some pathparent.pathparent 
-	//some s,s':State, f:File | s!=s' && rm[s,s',f]
-/*	some disj s1,s2,s3,s4,s5,s6,s7:State, disj b1:Branch, disj f1,f2:File {
-		add[s1,s2,f1]
-		commit[s2,s3]
-		branch[s3,s4,b1] && b1 != Master
-		checkout[s4,s5,b1]
-		add[s5,s6,f2]
-		commit[s6,s7]
+//	#Commit = 1
+	//some pathparent.pathparent
+//	some s:State, c:objects.s | some c & Commit && some index.s
+//	some disj s,s': State, p:Path | commit[s,s'] and p not in (index.(s'+s)).path and no pathparent.p and some index.s
+//	some disj s: State, p:Path | p not in (index.(s)).path and no pathparent.p and some index.s and some objects.s & Commit
+	some s1,s2,s3,s4:State, f:File{
+		commit[s1,s2]
+		f.path not in index.s2.path
+		add[s2,s3,f]
+		commit[s3,s4]
 	}
-*/
-//	some s,s':State, b:Branch | branchDel[s,s',b]
-//	some c:Commit | #parent.c > 1
-//	some s:State, disj b1,b2:branches.s | no b1.marks & b2.marks
-//	some parent
-
-	some s,s':State, b:Branch | checkout[s,s',b]
-} for 3 but 2 State
+} for 6 but 4 State
