@@ -30,8 +30,10 @@ fact {
 			let objs = c.points.*(contents.Name){
 				c.abs in Path some -> lone objs
 				(c.abs).(c.points) in Root
-				all p,q: (c.abs).univ | p -> q in pathparent implies q.(c.abs)  -> p.name -> p.(c.abs) in contains
-				all t,o: objs, n:Name | t -> n -> o  in contains implies some x: c.abs.o, y: c.abs.t | x -> y in pathparent and x.name = n
+				all p,q: c.abs.univ| p -> q in pathparent implies q.(c.abs)  -> p.name -> p.(c.abs) in contains
+				all t,o: objs, n:Name | t -> n -> o  in contains 
+						implies some x: c.abs.o, y: c.abs.t | x -> y in pathparent and x.name = n
+				all p:c.abs.univ | some pathparent.p iff p.(c.abs) in Tree
 			}
 		}
 		// RootCommits doesn't have a parent
@@ -42,9 +44,12 @@ fact {
 		head.s in branches.s
 
 		marks.s in branches.s -> one objects.s
+
+		//if a path is not a parent then it is a file
+		Path in File.path + Path.pathparent
 	}
 }
 
 run{
-
+ some s:State, c:objects.s | some c & Commit
 } for 6 but exactly 1 State
