@@ -3,22 +3,28 @@ open Object_Model
 
 
 pred commit[s,s':State]{
+
+	some index.s
 	index.s' = index.s
 	
 	no head.s =>{
+
 		head.s' = Master
 		branches.s' = Master
 		(head.s').(marks.s') in RootCommit
+
 	}else{
+	
 		head.s' = head.s
 		branches.s' = branches.s
 		marks.s' - (head.s -> Commit) = marks.s - (head.s -> Commit) //think better about this
-		(head.s').(marks.s').parent = (head.s).(marks.s)
+		(head.s').(marks.s') != (head.s).(marks.s)
+	
 	}
 
-	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
+	(index.s).path.*pathparent = (head.s').(marks.s').(abs.univ)
 	all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
-	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs)
+	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
 
@@ -80,13 +86,15 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-
-
 fun comFls[b : Branch, s : State ] : set File {
+
 	path.(b.(marks.s).(abs.univ))
+
 }
 
+
 pred checkout[s,s':State,b:Branch]{
+
 	// usefull instances
 	(head.s) != b
 
@@ -108,8 +116,15 @@ pred checkout[s,s':State,b:Branch]{
 
 }
 
+pred merge[s,s' : State, b,b' : Branch] {
+	
+	// first common ancestor encountered for what ?
 
 
+
+	// choose one of the files conflicting 
+}
+/*
 run{
 //	some s,s':State | s!=s' && commit[s,s'] && some index.s
 	//some pathparent.pathparent 
@@ -130,3 +145,13 @@ run{
 
 	some s,s':State, b:Branch | checkout[s,s',b]
 } for 3 but 2 State
+*/
+run {
+/*	some disj s,s',s'',s''' : State, b : Branch, f : File | 
+		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
+*/
+	some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+
+} for 6 but 2 State
+
+
