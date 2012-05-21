@@ -7,6 +7,7 @@ pred commit[s,s':State]{
 	some index.s
 	index.s' = index.s
 	
+	// about branches
 	no head.s =>{
 
 		head.s' = Master
@@ -17,7 +18,7 @@ pred commit[s,s':State]{
 	
 		head.s' = head.s
 		branches.s' = branches.s
-		marks.s' - (head.s -> Commit) = marks.s - (head.s -> Commit) //think better about this
+		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s //think better about this
 		(head.s').(marks.s') != (head.s).(marks.s)
 	
 	}
@@ -170,10 +171,9 @@ run {
 --	some disj s,s',s'',s''' : State, b : Branch, f : File | 
 --		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
 
---	some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+	 some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+--	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
 
-	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
-
-} for 8 but 2 State
+} for 5 but 2 State
 
 
