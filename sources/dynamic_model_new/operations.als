@@ -103,18 +103,19 @@ pred checkout[s,s':State,b:Branch]{
 }
 
 run{
-//	#Commit = 1
-	//some pathparent.pathparent
-//	some s:State, c:objects.s | some c & Commit && some index.s
-//	some disj s,s': State, p:Path | commit[s,s'] and p not in (index.(s'+s)).path and no pathparent.p and some index.s
-//	some disj s: State, p:Path | p not in (index.(s)).path and no pathparent.p and some index.s and some objects.s & Commit
-	some s1,s2,s3,s4:State, f:File{
-		commit[s1,s2]
-		f.path not in index.s2.path
-		add[s2,s3,f]
-		commit[s3,s4]
-	}
-} for 6 but 4 State
+//	some f:File | f.path not in (index.State).path
+//	some s1,s2:State{
+//		commit[s1,s2]
+//		f.path not in index.s1.path
+//		add[s2,s3,f]
+//		commit[s3,s4]
+//	}
+	one Commit & objects.State
+	one Commit
+	some pathparent.pathparent
+	some p:Path | #pathparent.p > 1
+	//some s:State, p:Path | p not in (head.s).(marks.s).abs.Object //&& p not in Path.pathparent
+} for 5 but 1 State
 
 pred merge[s,s' : State, b,b' : Branch] {
 	

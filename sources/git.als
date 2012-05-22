@@ -48,6 +48,7 @@ fact {
 				c.abs in Path some -> lone objs
 				(c.abs).(c.points) in Root
 				all p,q : (c.abs).univ | p -> q in parent implies q.(c.abs) -> p.(c.abs) -> p.name in contains
+				//not all n:Name ------- 
 				all t,o : objs, n : Name | t -> o -> n in contains implies some x : c.abs.o, y : c.abs.t | x -> y in parent and x.name = n
 			}
 		}
