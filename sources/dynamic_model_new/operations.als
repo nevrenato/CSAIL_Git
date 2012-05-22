@@ -1,11 +1,13 @@
 open Path
 open Object_Model
 
+
 pred commit[s,s':State]{
 
 	some index.s
 	index.s' = index.s
 	
+	// about branches
 	no head.s =>{
 
 		head.s' = Master
@@ -16,7 +18,7 @@ pred commit[s,s':State]{
 	
 		head.s' = head.s
 		branches.s' = branches.s
-		marks.s' - (head.s -> Commit) = marks.s - (head.s -> Commit) //think better about this
+		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s //think better about this
 		(head.s').(marks.s') != (head.s).(marks.s)
 	
 	}
@@ -26,6 +28,8 @@ pred commit[s,s':State]{
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
+
+
 pred add[s,s':State, f:File]{
 	head.s' = head.s
 	branches.s' = branches.s
@@ -33,6 +37,8 @@ pred add[s,s':State, f:File]{
 	objects.s' = objects.s
 	index.s' = index.s + f - ((f.path).~path -f)
 }
+
+
 
 pred rm[s,s':State,f:File]{
 	//pre conditions
@@ -62,6 +68,8 @@ pred branch[s,s':State,b:Branch]{
 	index.s' = index.s
 }
 
+
+
 pred branchDel[s,s':State, b:Branch]{
 	
 	//pre condition
@@ -85,6 +93,7 @@ fun comFls[b : Branch, s : State ] : set File {
 
 }
 
+
 pred checkout[s,s':State,b:Branch]{
 
 	// usefull instances
@@ -92,9 +101,14 @@ pred checkout[s,s':State,b:Branch]{
 
 	//pre condition
 		//the branch is on s
-		b in branches.s
 
-	(head.s').(marks.s').abs in s.pathcontents
+	b in branches.s
+
+	b.(marks.s) != (head.s).(marks.s) => 
+	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path
+
+	// pos condition 
+	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
 
 	head.s' = b
 	branches.s' = branches.s
@@ -135,7 +149,6 @@ pred merge[s,s' : State, b,b' : Branch] {
 	some b.marks.s and some b'.marks.s
 	(b.marks.s).points != (b'.marks.s).points
 	one RootCommit
-	// ------
 
 	// fast-foward
 	b.(marks.s) in b'.(marks.s).^parent => b.marks.s' = b'.marks.s
@@ -146,8 +159,8 @@ pred merge[s,s' : State, b,b' : Branch] {
 			all p : b.(marks.s').abs.univ  { 
 			  			// conflict		
 							(p.(b.(marks.s).abs) in Tree ) and p in b.(marks.s).abs.univ & b'.(marks.s).abs.univ => {
-							--			p.(b.marks.s.abs) != p.(b'.marks.s.abs) =>  { no p.(b.marks.s'.abs) & p.((b+b').marks.s.abs) }
-							--		  																				else  p.((b.(marks.s')).abs) = p.((b.(marks.s)).abs) 
+										p.(b.marks.s.abs) != p.(b'.marks.s.abs) =>  { p.(b.(marks.s').abs) not in p.((b+b').(marks.s).abs) }
+									  																				else  p.(b.(marks.s').abs) = p.(b.(marks.s).abs) 
 							}
 							// no conflict
 							else { 
@@ -172,10 +185,9 @@ run {
 --	some disj s,s',s'',s''' : State, b : Branch, f : File | 
 --		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
 
---	some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+	 some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path
+--	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
 
-	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
-
-} for 6 but 2 State
+} for 5 but 2 State
 
 

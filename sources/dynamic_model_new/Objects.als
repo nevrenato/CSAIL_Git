@@ -31,7 +31,7 @@ fact {
 
 		//NEW FACT
 		//if a tree is on a certain state the all the descendants are on that state
-		all s:State, t:objects.s & Tree | t.contents.Name in objects.s //check6
+		//all s:State, t:objects.s & Tree | t.contents.Name in objects.s //check6
 }
 
 run {
