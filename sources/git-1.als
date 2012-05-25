@@ -1,4 +1,4 @@
-//open util/ordering[State]
+--open util/ordering[State]
 
 sig State {}
 
@@ -50,12 +50,14 @@ fact {
 				all t,o : objs, n : Name | t -> o -> n in contains implies some x : c.abs.o, y : c.abs.t | x -> y in parent and x.name = n
 			}
 		}
+
+
 		lone head.s
 		head.s in objects.s
 		(objects.s - Commit) in (objects.s).points.*(contains.Name)
 		all t : objects.s & Tree | t.contains.Name in objects.s
 
-		//all t : objects.s & Tree | some t.contains
+		all t : objects.s & Tree | some t.contains
 	}
 }
 
@@ -96,6 +98,7 @@ fact {
 
 pred commit [s,s' : State] {
 	some index.s
+--	some head.s implies (head.s).points != (head.s').points
 
 	index.s' = index.s
 	(head.s').parent = head.s
@@ -103,46 +106,26 @@ pred commit [s,s' : State] {
 	all f : index.s | f.path -> f.blob in (head.s').abs
 	objects.s' = objects.s + head.s' + univ.((head.s').abs)
 
-//	some head.s implies (head.s).points != (head.s').points
 }
 
---run commit for 5 but 2 State
+
+check {
+	all s0,s1,s2 : State | commit[s0,s1] and commit[s1,s2] implies (head.s1).points = (head.s2).points
+} for 7 but 3 State
 
 pred add [s,s' : State, f : File] {
-	//f not in index.s
+	f not in index.s
 	index.s' = index.s + f
 	head.s' = head.s
 	objects.s' = objects.s
 }
-
-assert addIdenpotent {
-	all s0,s1,s2 : State , f : File | add[s0,s1,f] and add[s1,s2,f] => index.s1 = index.s2
-
-}
-
-assert commitIdenpotent{
-	all s0,s1,s2: State | commit[s0,s1] and commit[s1,s2] => index.s1 = index.s2 and (head.s1).points = (head.s2).points
-}
-check commitIdenpotent for 4 but 8 Object, 3 State
-
-
 
 /*
 fact {
 	no objects.first
 	no index.first
 	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])
-
 }
 
-assert teste{
-	all s : State, t : objects.s & Tree | some t.contains
-}
-
-check teste for 7 but 5 State
-
-
-run {some s : State | #(Commit & objects.s) > 1
-
-} for 7 but 5 State
+run {some s : State | #(Commit & objects.s) > 1} for 7 but 5 State
 */

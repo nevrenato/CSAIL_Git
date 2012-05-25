@@ -1,5 +1,3 @@
-//open util/ordering[State]
-
 sig State {}
 
 abstract sig Object {
@@ -19,43 +17,46 @@ sig Tree extends Object {
 	contains : (Tree+Blob) lone -> Name 
 }
 
+//contents :: (Tree -> Object -> Name) -> (Tree -> Name -> Object)
 fun contents : Tree -> Name -> Object {
 	{t : Tree, n : Name, o : Object | t -> o -> n in contains}
 }
 
+//objects not in state
 fun nonobjects : State -> Object {
 	{s : State, o : Object | o not in objects.s}
 }
 
 fact {
-	all t,t' : Tree | t.contains = t'.contains implies t=t'
+	all t,t' : Tree | t.contains = t'.contains implies t=t' //check1
 }
 
 sig Name {}
 
 fact {
-	all c,c' : Commit | c.points = c'.points and c.parent = c'.parent implies c=c'
-	no ^(parent :> Commit) & iden
-	no ^(contains.Name) & iden
+	all c,c' : Commit | c.points = c'.points and c.parent = c'.parent implies c=c' //disagree, checked on git. they will only share the same tree
+	no ^(parent :> Commit) & iden //check3
+	no ^(contains.Name) & iden //check2
 }
 
 fact {
 	all s : State {
 		all c : objects.s & Commit {
-			c.points in objects.s and c.parent in objects.s
+			c.points in objects.s //check4
+			c.parent in objects.s//check5
 			let objs = c.points.*(contains.Name) {
 				c.abs in Path some -> lone objs
 				(c.abs).(c.points) in Root
 				all p,q : (c.abs).univ | p -> q in parent implies q.(c.abs) -> p.(c.abs) -> p.name in contains
+				//not all n:Name ------- 
 				all t,o : objs, n : Name | t -> o -> n in contains implies some x : c.abs.o, y : c.abs.t | x -> y in parent and x.name = n
 			}
 		}
-		lone head.s
-		head.s in objects.s
-		(objects.s - Commit) in (objects.s).points.*(contains.Name)
-		all t : objects.s & Tree | t.contains.Name in objects.s
+		lone head.s//head is not an object on our model
+		head.s in objects.s //same
 
-		//all t : objects.s & Tree | some t.contains
+		(objects.s - Commit) in (objects.s).points.*(contains.Name) //not sure, ask Prof Alcino and update our model
+		all t : objects.s & Tree | t.contains.Name in objects.s //check 6
 	}
 }
 
@@ -94,55 +95,25 @@ fact {
 	all s : State, disj f1,f2 : index.s | f1.path != f2.path
 }
 
+run {
+
+	one Commit & objects.State
+	one Commit
+	some s : State , p : (index.s).path | p not in (objects.s).abs.Object
+	all s : State, t : objects.s & Tree | some t.contents 
+
+
+} for 4 but exactly 1 State
+
 pred commit [s,s' : State] {
-	some index.s
+	-- just to generate nice instances
+	#index.s > 1 and objects.s != objects.s' and (head.s).points != (head.s').points and some objects.s
 
 	index.s' = index.s
 	(head.s').parent = head.s
 	(index.s).path.*parent = (head.s').abs.univ
 	all f : index.s | f.path -> f.blob in (head.s').abs
 	objects.s' = objects.s + head.s' + univ.((head.s').abs)
-
-//	some head.s implies (head.s).points != (head.s').points
 }
 
---run commit for 5 but 2 State
-
-pred add [s,s' : State, f : File] {
-	//f not in index.s
-	index.s' = index.s + f
-	head.s' = head.s
-	objects.s' = objects.s
-}
-
-assert addIdenpotent {
-	all s0,s1,s2 : State , f : File | add[s0,s1,f] and add[s1,s2,f] => index.s1 = index.s2
-
-}
-
-assert commitIdenpotent{
-	all s0,s1,s2: State | commit[s0,s1] and commit[s1,s2] => index.s1 = index.s2 and (head.s1).points = (head.s2).points
-}
-check commitIdenpotent for 4 but 8 Object, 3 State
-
-
-
-/*
-fact {
-	no objects.first
-	no index.first
-	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])
-
-}
-
-assert teste{
-	all s : State, t : objects.s & Tree | some t.contains
-}
-
-check teste for 7 but 5 State
-
-
-run {some s : State | #(Commit & objects.s) > 1
-
-} for 7 but 5 State
-*/
+run commit for 5 but 2 State
