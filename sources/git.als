@@ -1,4 +1,4 @@
-//open util/ordering[State]
+open util/ordering[State]
 
 sig State {}
 
@@ -28,7 +28,7 @@ fun nonobjects : State -> Object {
 }
 
 fact {
-	all t,t' : Tree | t.contains = t'.contains implies t=t'
+	all t,t' : Tree | t.contains = t'.contains => t=t'
 }
 
 sig Name {}
@@ -47,15 +47,16 @@ fact {
 				c.abs in Path some -> lone objs
 				(c.abs).(c.points) in Root
 				all p,q : (c.abs).univ | p -> q in parent implies q.(c.abs) -> p.(c.abs) -> p.name in contains
-				all t,o : objs, n : Name | t -> o -> n in contains implies some x : c.abs.o, y : c.abs.t | x -> y in parent and x.name = n
+				//all t,o : objs, n : Name | t -> o -> n in contains implies some x : c.abs.o, y : c.abs.t | x -> y in parent and x.name = n
+			 all t,o : objs, n : Name | t -> o -> n in contains implies all y : c.abs.t | some x : c.abs.o | x -> y in parent and x.name = n
 			}
 		}
 		lone head.s
 		head.s in objects.s
 		(objects.s - Commit) in (objects.s).points.*(contains.Name)
 		all t : objects.s & Tree | t.contains.Name in objects.s
-
-		//all t : objects.s & Tree | some t.contains
+		-- commented for debug purposes
+		--all t : objects.s & Tree | some t.contains
 	}
 }
 
@@ -92,11 +93,12 @@ fact {
 		f.path not in Root
 	}
 	all s : State, disj f1,f2 : index.s | f1.path != f2.path
-	all s:State, t : objects.s & Tree | some t.contents
 }
 
 pred commit [s,s' : State] {
 	some index.s
+	-- commented for debug purposes
+  --some head.s implies (head.s).points != (head.s').points
 
 	index.s' = index.s
 	(head.s').parent = head.s
@@ -104,46 +106,60 @@ pred commit [s,s' : State] {
 	all f : index.s | f.path -> f.blob in (head.s').abs
 	objects.s' = objects.s + head.s' + univ.((head.s').abs)
 
-//	some head.s implies (head.s).points != (head.s').points
 }
 
---run commit for 5 but 2 State
 
 pred add [s,s' : State, f : File] {
-	//f not in index.s
+
 	index.s' = index.s + f
 	head.s' = head.s
 	objects.s' = objects.s
 }
 
-assert addIdenpotent {
-	all s0,s1,s2 : State , f : File | add[s0,s1,f] and add[s1,s2,f] => index.s1 = index.s2
+--Commit, idempotent
+/*
+check {
+	all s0,s1,s2 : State | (commit[s0,s1] and commit[s1,s2]) implies (head.s1).points = (head.s2).points
+} for 7 but 3 State
+*/
 
-}
+--Commit, no trees without sons
+/*
+check {
+	all s0,s1 : State | commit[s0,s1] implies all t : Tree & Path.((head.s1).abs) | some t.contains
+} for 7 but 2 State
+*/
 
-assert commitIdenpotent{
-	all s0,s1,s2: State | commit[s0,s1] and commit[s1,s2] => index.s1 = index.s2 and (head.s1).points = (head.s2).points
-}
-check commitIdenpotent for 4 but 8 Object, 3 State
+-- Commit, all blobs must have a parent
+/*
+check {
+	all s0,s1 : State | commit[s0,s1] => all b : Blob & Path.((head.s1).abs) | some (contains.Name).b
+} for 7 but 2 State 
+*/
 
+-- Commit, with different content can never be the same
+/*
+check {
+	all s0,s1,s2,s3 : State, f :File |
+	 commit[s0,s1] and add[s1,s2,f] and commit[s2,s3] and f not in index.s1 => (head.s1).points != (head.s3).points
+} for 6 but 4 State
+*/
+
+
+-- Add, idempotent
+/*check {
+	all s0,s1,s2 : State, f : File | add[s0,s1,f] and add[s1,s2,f] implies index.s1 = index.s2
+} for 7 but 3 State 
+*/
 
 
 /*
 fact {
+	some p : index.State | #p.path.^parent = 3
 	no objects.first
 	no index.first
 	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])
-
 }
 
-assert teste{
-	all s : State, t : objects.s & Tree | some t.contains
-}
-
-check teste for 7 but 5 State
-
-
-run {some s : State | #(Commit & objects.s) > 1
-
-} for 7 but 5 State
+run {} for 7
 */
