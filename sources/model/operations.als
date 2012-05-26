@@ -88,9 +88,7 @@ pred branchDel[s,s':State, b:Branch]{
 }
 
 fun comFls[b : Branch, s : State ] : set File {
-
 	path.(b.(marks.s).(abs.univ))
-
 }
 
 
@@ -116,14 +114,14 @@ pred checkout[s,s':State,b:Branch]{
 	objects.s' = objects.s
 }
 
-/*
+
 run{
 	one Commit & objects.State
 	one Commit
 	some pathparent.pathparent
 	some s:State, p:Path | p not in (head.s).(marks.s).abs.Object //&& p not in Path.pathparent
 } for 5 but 1 State
-*/
+
 
 pred merge[s,s' : State, b,b' : Branch] {
 	

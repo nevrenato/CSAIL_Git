@@ -16,24 +16,14 @@ fun contents: Tree -> Object -> Name{
 }
 
 fact {
-
 		//trees with the same content shall be the same
-		no disj t,t':Tree | t.contains = t'.contains //check1
-
+		all t,t' : Tree | t.contains = t'.contains implies t=t'
 		// there shall be no cycles
-		no ^(contents.Name) & iden //check2
-
+		no ^(contents.Name) & iden 
 		// all trees must have at least one son (git restriction)
-		all s:State, t : objects.s & Tree | some t.(contents.Name)
-
-		// at most one parent
-		all t : Tree | lone contains.t
-
-		//NEW FACT
-		//if a tree is on a certain state the all the descendants are on that state
-		//all s:State, t:objects.s & Tree | t.contents.Name in objects.s //check6
+		all s:State, t : objects.s & Tree | some t.contains
 }
 
 run {
-	some t:Tree | #t.*(contents.Name) > 2 && some t.(contents.Name) & Tree
+	some contains
 } for 3 but exactly 1 State
