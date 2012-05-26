@@ -55,7 +55,8 @@ fact {
 		head.s in objects.s
 		(objects.s - Commit) in (objects.s).points.*(contains.Name)
 		all t : objects.s & Tree | t.contains.Name in objects.s
-		all t : objects.s & Tree | some t.contains
+		-- commented for debug purposes
+		--all t : objects.s & Tree | some t.contains
 	}
 }
 
@@ -96,7 +97,8 @@ fact {
 
 pred commit [s,s' : State] {
 	some index.s
---	some head.s implies (head.s).points != (head.s').points
+	-- commented for debug purposes
+  --some head.s implies (head.s).points != (head.s').points
 
 	index.s' = index.s
 	(head.s').parent = head.s
@@ -106,31 +108,58 @@ pred commit [s,s' : State] {
 
 }
 
-/*
-check {
-	all s0,s1,s2 : State | (commit[s0,s1] and commit[s1,s2]) implies (head.s1).points = (head.s2).points
-} for 7 but 3 State
-*/
-/*
-run {
-	some Commit
-	some disj s,s' : State | commit[s,s']
-}
-*/
+
 pred add [s,s' : State, f : File] {
-	f not in index.s
+
 	index.s' = index.s + f
 	head.s' = head.s
 	objects.s' = objects.s
 }
 
+--Commit, idempotent
+/*
+check {
+	all s0,s1,s2 : State | (commit[s0,s1] and commit[s1,s2]) implies (head.s1).points = (head.s2).points
+} for 7 but 3 State
+*/
+
+--Commit, no trees without sons
+/*
+check {
+	all s0,s1 : State | commit[s0,s1] implies all t : Tree & Path.((head.s1).abs) | some t.contains
+} for 7 but 2 State
+*/
+
+-- Commit, all blobs must have a parent
+/*
+check {
+	all s0,s1 : State | commit[s0,s1] => all b : Blob & Path.((head.s1).abs) | some (contains.Name).b
+} for 7 but 2 State 
+*/
+
+-- Commit, with different content can never be the same
+/*
+check {
+	all s0,s1,s2,s3 : State, f :File |
+	 commit[s0,s1] and add[s1,s2,f] and commit[s2,s3] and f not in index.s1 => (head.s1).points != (head.s3).points
+} for 6 but 4 State
+*/
 
 
+-- Add, idempotent
+/*check {
+	all s0,s1,s2 : State, f : File | add[s0,s1,f] and add[s1,s2,f] implies index.s1 = index.s2
+} for 7 but 3 State 
+*/
+
+
+/*
 fact {
+	some p : index.State | #p.path.^parent = 3
 	no objects.first
 	no index.first
 	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])
 }
 
-run {} for 5
-
+run {} for 7
+*/
