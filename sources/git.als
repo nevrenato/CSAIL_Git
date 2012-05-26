@@ -93,9 +93,15 @@ fact {
 		f.path not in Root
 	}
 	all s : State, disj f1,f2 : index.s | f1.path != f2.path
+	all s:State, t : objects.s & Tree | some t.contents
 }
 
-run {} for 4 but exactly 1 State
+run {
+
+//		some p:Path | p not in Commit.abs.Object &&
+//		 all p':(p.^parent)-Root | p' not in Commit.abs.Object
+		some Commit & objects.State
+} for 6 but exactly 1 State
 
 pred commit [s,s' : State] {
 	-- just to generate nice instances

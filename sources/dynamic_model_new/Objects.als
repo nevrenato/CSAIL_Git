@@ -24,7 +24,7 @@ fact {
 		no ^(contents.Name) & iden //check2
 
 		// all trees must have at least one son (git restriction)
-		all t : Tree | some t.(contents.Name)
+		all s:State, t : objects.s & Tree | some t.(contents.Name)
 
 		// at most one parent
 		all t : Tree | lone contains.t
