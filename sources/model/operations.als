@@ -9,26 +9,27 @@ pred commit[s,s':State]{
 	
 	// about branches
 	no head.s =>{
-
 		head.s' = Master
-		branches.s' = Master
+		branches.s' = head.s'
 		(head.s').(marks.s') in RootCommit
-
 	}else{
-	
 		head.s' = head.s
 		branches.s' = branches.s
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s //think better about this
 		(head.s').(marks.s') != (head.s).(marks.s)
-	
 	}
 
-	(index.s).path.*pathparent = (head.s').(marks.s').(abs.univ)
+	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
 	all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
-
+run{
+	some contains
+	some disj s0,s1:State { 
+			commit[s0,s1]
+	}
+} for 7 but 2 State
 
 pred add[s,s':State, f:File]{
 	head.s' = head.s
@@ -113,14 +114,6 @@ pred checkout[s,s':State,b:Branch]{
 	marks.s' = marks.s
 	objects.s' = objects.s
 }
-
-
-run{
-	one Commit & objects.State
-	one Commit
-	some pathparent.pathparent
-	some s:State, p:Path | p not in (head.s).(marks.s).abs.Object //&& p not in Path.pathparent
-} for 5 but 1 State
 
 
 pred merge[s,s' : State, b,b' : Branch] {

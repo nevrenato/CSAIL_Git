@@ -2,7 +2,7 @@ open Objects
 open Path
 
 sig Commit extends Object {
-	points : one Tree,
+	points : Tree,
 	parent : set Commit,
 	abs: Path -> Object
 }
@@ -43,7 +43,9 @@ fact {
 			c.abs in Path some -> lone objs
 			(c.abs).(c.points) in Root
 			all p,q : (c.abs).univ | p -> q in pathparent implies q.(c.abs) -> p.(c.abs) -> p.name in contents
-			all t,o : objs, n : Name | t -> o -> n in contents implies some x : c.abs.o, y : c.abs.t | x -> y in pathparent and x.name = n
+			//all t,o : objs, n : Name | t -> o -> n in contents implies some x : c.abs.o, y : c.abs.t | x -> y in pathparent and x.name = n
+			all t,o : objs, n : Name | t -> o -> n in contents implies all y : c.abs.t | some x : c.abs.o | x -> y in pathparent and x.name = n
+
 		}
 	}
 }

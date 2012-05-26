@@ -15,9 +15,9 @@
    <type name="Univ"/>
    <type name="univ"/>
    <type name="seq/Int"/>
-   <set name="$b" type="Object_Model/Branch"/>
-   <set name="$s" type="Path/State/State"/>
-   <set name="$s&apos;" type="Path/State/State"/>
+   <type name="Path/State/State"/>
+   <set name="$s0" type="Path/State/State"/>
+   <set name="$s1" type="Path/State/State"/>
    <set name="branches" type="Object_Model/Branch"/>
    <set name="head" type="Object_Model/Branch"/>
    <set name="index" type="Path/File"/>
@@ -26,6 +26,10 @@
 
 <node color="Blue" label="Tree">
    <type name="Object_Model/Objects/Tree"/>
+</node>
+
+<node color="Gray" label="Path">
+   <type name="Path/Path"/>
 </node>
 
 <node color="Green" label="Commit">
@@ -56,16 +60,8 @@
    <type name="Object_Model/Objects/Object"/>
 </node>
 
-<node label="Path">
-   <type name="Path/Path"/>
-</node>
-
 <node label="Root">
    <type name="Path/Root"/>
-</node>
-
-<node label="State">
-   <type name="Path/State/State"/>
 </node>
 
 <node shape="Hexagon" color="Red" label="File">
@@ -83,7 +79,6 @@
 </edge>
 
 <edge visible="no" attribute="yes">
-   <relation name="head"> <type name="Object_Model/Branch"/> <type name="Path/State/State"/> </relation>
    <relation name="name"> <type name="Path/Path"/> <type name="Path/Name/Name"/> </relation>
 </edge>
 

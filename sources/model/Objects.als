@@ -8,7 +8,7 @@ abstract sig Object {
 sig Blob extends Object {}
 
 sig Tree extends Object {
-		contains : Name  -> one (Tree+Blob)
+		contains : Name  -> lone (Tree+Blob)
 }
 
 fun contents: Tree -> Object -> Name{
