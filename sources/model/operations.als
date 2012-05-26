@@ -115,6 +115,7 @@ pred checkout[s,s':State,b:Branch]{
 	marks.s' = marks.s
 	objects.s' = objects.s
 }
+
 /*
 run{
 	one Commit & objects.State
@@ -123,6 +124,7 @@ run{
 	some s:State, p:Path | p not in (head.s).(marks.s).abs.Object //&& p not in Path.pathparent
 } for 5 but 1 State
 */
+
 pred merge[s,s' : State, b,b' : Branch] {
 	
 	// pre conditions
@@ -144,6 +146,7 @@ pred merge[s,s' : State, b,b' : Branch] {
 
 	// fast-foward
 	b.(marks.s) in b'.(marks.s).^parent => b.marks.s' = b'.marks.s
+
 	else {
 			 b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ 
 			
@@ -171,18 +174,4 @@ pred rebase[s,s' : State, b,b' : Branch] {
 
 
 }
-
-
-run {
---	some disj s,s',s'',s''' : State, b : Branch, f : File | 
---		commit[s,s'] and  add[s',s'',f] and f not in comFls[head.s',s'] and checkout[s'',s''',b]
-		some p:Path | p not in Commit.abs.Object &&
-		 all p':(p.^pathparent)-Root | p' not in Commit.abs.Object
-		some Commit
-//	 some disj s,s': State, f : File | commit[s,s'] and f.path not in (index.(s'+s)).path 
-		//&& some p:pathparent.Root | (all f:path.p | f not in index.s) && all p':*pathparent.p, f':path.p'|f' not in index.s
---	some disj s,s' : State,b,b' : Branch | merge[s,s',b,b'] 
-
-} for 5 but 2 State
-
 
