@@ -14,11 +14,16 @@
    <type name="Object"/>
    <type name="State"/>
    <type name="String"/>
+   <type name="Tree"/>
    <type name="univ"/>
+   <type name="ordering/Ord"/>
    <type name="seq/Int"/>
-   <set name="$commit_s" type="State"/>
-   <set name="$commit_s&apos;" type="State"/>
-   <set name="index" type="File"/>
+   <set name="First" type="ordering/Ord"/>
+   <set name="Next" type="ordering/Ord"/>
+</node>
+
+<node color="Green">
+   <type name="Path"/>
 </node>
 
 <node color="Red" label="">
@@ -28,14 +33,6 @@
 <node label="">
    <type name="Root"/>
    <set name="objects" type="Object"/>
-</node>
-
-<node numberatoms="no" color="Green" label="">
-   <type name="Path"/>
-</node>
-
-<node numberatoms="no" label="">
-   <type name="Tree"/>
 </node>
 
 <node numberatoms="no" shape="Ellipse" label="">
@@ -51,10 +48,18 @@
 </node>
 
 <node visible="no">
-   <type name="File"/>
    <type name="Name"/>
    <set name="$nonobjects" type="Object"/>
+   <set name="index" type="File"/>
 </node>
+
+<node visible="no" color="Blue">
+   <type name="File"/>
+</node>
+
+<edge attribute="no">
+   <relation name="path"> <type name="File"/> <type name="Path"/> </relation>
+</edge>
 
 <edge label=" ">
    <relation name="$contents"> <type name="Tree"/> <type name="Name"/> <type name="Object"/> </relation>
@@ -72,6 +77,10 @@
    <relation name="abs"> <type name="Commit"/> <type name="Path"/> <type name="Object"/> </relation>
    <relation name="contains"> <type name="Tree"/> <type name="Blob"/> <type name="Name"/> </relation>
    <relation name="contains"> <type name="Tree"/> <type name="Tree"/> <type name="Name"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="blob"> <type name="File"/> <type name="Blob"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes" label="">
