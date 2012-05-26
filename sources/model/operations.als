@@ -24,13 +24,6 @@ pred commit[s,s':State]{
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
-run{
-	some contains
-	some disj s0,s1:State { 
-			commit[s0,s1]
-	}
-} for 7 but 2 State
-
 pred add[s,s':State, f:File]{
 	head.s' = head.s
 	branches.s' = branches.s
@@ -38,8 +31,6 @@ pred add[s,s':State, f:File]{
 	objects.s' = objects.s
 	index.s' = index.s + f - ((f.path).~path -f)
 }
-
-
 
 pred rm[s,s':State,f:File]{
 	//pre conditions
@@ -56,7 +47,12 @@ pred rm[s,s':State,f:File]{
 	index.s' = index.s - f
 }
 
-
+run{
+	some contains
+	some disj s0,s1:State { 
+			commit[s0,s1]
+	}
+} for 7 but 2 State
 
 pred branch[s,s':State,b:Branch]{
 	//pre condition
@@ -68,8 +64,6 @@ pred branch[s,s':State,b:Branch]{
 	objects.s' = objects.s
 	index.s' = index.s
 }
-
-
 
 pred branchDel[s,s':State, b:Branch]{
 	
