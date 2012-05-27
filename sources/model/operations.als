@@ -17,6 +17,7 @@ pred commit[s,s':State]{
 		branches.s' = branches.s
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s //think better about this
 		(head.s').(marks.s') != (head.s).(marks.s)
+		(head.s').(marks.s').parent = (head.s).(marks.s)
 	}
 
 	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
