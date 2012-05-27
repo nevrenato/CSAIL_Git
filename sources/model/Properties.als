@@ -89,4 +89,12 @@ assert rmAdd{
 	for 8, Valid
 */
 
-check rmAdd for 8
+assert branchBranchDel{
+	all s0,s1,s2:State, b:Branch | branch[s0,s1,b] and branchDel[s1,s2,b]
+			implies branches.s0 = branches.s2 and marks.s0 = marks.s2
+}
+/*
+	for 8, Valid
+*/
+
+check branchBranchDel for 8

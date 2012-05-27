@@ -48,13 +48,6 @@ pred rm[s,s':State,f:File]{
 	index.s' = index.s - f
 }
 
-run{
-	some contains
-	some disj s0,s1:State { 
-			commit[s0,s1]
-	}
-} for 7 but 2 State
-
 pred branch[s,s':State,b:Branch]{
 	//pre condition
 		b not in branches.s
@@ -74,7 +67,7 @@ pred branchDel[s,s':State, b:Branch]{
 		//the branch is not pointed by Head
 		b not in (head.s)
 		//the branch is already merged with the head
-		b.marks.s in (head.s).(marks.s).^parent
+		b.marks.s in (head.s).(marks.s).*parent
 	
 	head.s' = head.s
 	branches.s' = branches.s - b
