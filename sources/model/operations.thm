@@ -5,7 +5,7 @@
 
 <projection> <type name="Path/State/State"/> </projection>
 
-<defaultnode/>
+<defaultnode hideunconnected="yes"/>
 
 <defaultedge/>
 
@@ -16,12 +16,13 @@
    <type name="univ"/>
    <type name="seq/Int"/>
    <type name="Path/State/State"/>
-   <set name="$s0" type="Path/State/State"/>
+   <set name="$b" type="Object_Model/Branch"/>
+   <set name="$b&apos;" type="Object_Model/Branch"/>
    <set name="$s1" type="Path/State/State"/>
+   <set name="$s2" type="Path/State/State"/>
    <set name="branches" type="Object_Model/Branch"/>
    <set name="head" type="Object_Model/Branch"/>
    <set name="index" type="Path/File"/>
-   <set name="objects" type="Object_Model/Objects/Object"/>
 </node>
 
 <node color="Blue" label="Tree">
@@ -30,18 +31,6 @@
 
 <node color="Gray" label="Path">
    <type name="Path/Path"/>
-</node>
-
-<node color="Green" label="Commit">
-   <type name="Object_Model/Commit"/>
-</node>
-
-<node color="Green" label="RootCommit">
-   <type name="Object_Model/RootCommit"/>
-</node>
-
-<node color="Red" label="Blob">
-   <type name="Object_Model/Objects/Blob"/>
 </node>
 
 <node label="Branch">
@@ -64,14 +53,33 @@
    <type name="Path/Root"/>
 </node>
 
-<node shape="Hexagon" color="Red" label="File">
+<node numberatoms="no" color="Green" label="">
+   <type name="Object_Model/RootCommit"/>
+</node>
+
+<node numberatoms="no" shape="Ellipse" color="Green" label="">
+   <type name="Object_Model/Commit"/>
+</node>
+
+<node shape="Hexagon" color="Red" label="Blob">
+   <type name="Object_Model/Objects/Blob"/>
+</node>
+
+<node showlabel="no">
+   <set name="objects" type="Object_Model/Objects/Object"/>
+</node>
+
+<node visible="no" shape="Hexagon" color="Red" label="File">
    <type name="Path/File"/>
 </node>
 
 <edge layout="yes">
    <relation name="parent"> <type name="Object_Model/Commit"/> <type name="Object_Model/Commit"/> </relation>
-   <relation name="path"> <type name="Path/File"/> <type name="Path/Path"/> </relation>
    <relation name="pathparent"> <type name="Path/Path"/> <type name="Path/Path"/> </relation>
+</edge>
+
+<edge layout="yes" attribute="no">
+   <relation name="path"> <type name="Path/File"/> <type name="Path/Path"/> </relation>
 </edge>
 
 <edge visible="no">
@@ -79,6 +87,7 @@
 </edge>
 
 <edge visible="no" attribute="yes">
+   <relation name="blob"> <type name="Path/File"/> <type name="Object_Model/Objects/Blob"/> </relation>
    <relation name="name"> <type name="Path/Path"/> <type name="Path/Name/Name"/> </relation>
 </edge>
 

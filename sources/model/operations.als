@@ -1,6 +1,16 @@
 open Path
 open Object_Model
 
+-- to aid visualization
+//associates paths with blob from index on a certain state
+fun pathcontents: State -> Path -> Blob{
+	{s:State, p:Path, b:Blob | some f:index.s | f.path = p and f.blob = b}
+}
+
+//it gives the paths that are on index
+fun files : State -> Path {
+	{s : State, p : Path | some p.(s.pathcontents) }
+}
 
 pred commit[s,s':State]{
 
@@ -107,28 +117,34 @@ pred checkout[s,s':State,b:Branch]{
 pred merge[s,s' : State, b,b' : Branch] {
 	
 	// pre conditions
-	b != b'
 	b = head.s 
-	no b'.marks.s & (b.marks.s).*parent
-
+	some b.(marks.s) and some b'.(marks.s)
+	some b.(marks.s).*parent & b'.(marks.s).^parent
+	b.(marks.s) != b'.(marks.s)
 
 	head.s' = head.s 
 	branches.s' = branches.s
-	marks.s' - (b->Commit) = marks.s - (b->Commit) 
-	objects.s' = objects.s + univ.(b.marks.s'.abs)
-	
-	// debug
-	not	b.marks.s in b'.(marks.s).^parent
-	some b.marks.s and some b'.marks.s
-	(b.marks.s).points != (b'.marks.s).points
-	one RootCommit
+	(Branch -b) <: marks.s' = (Branch -b) <: marks.s
 
+	// nothing happens
+	b'.(marks.s) in b.(marks.s).^parent implies b.(marks.s) = b.(marks.s')
+
+	// debug
+	not b.(marks.s) in b'.(marks.s).^parent
+ 
 	// fast-foward
-	b.(marks.s) in b'.(marks.s).^parent => b.marks.s' = b'.marks.s
+	b.(marks.s) in b'.(marks.s).^parent implies { 
+		b.marks.s' = b'.marks.s
+		some s'' : State | commit[s'',s']   
+	}
 
 	else {
-			 b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ 
-			
+		b.(marks.s').parent = (b+b').(marks.s)
+		b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ
+		/*all p : b.(marks.s').abs.univ {
+						
+		} */
+	 /*			
 			// all paths
 			all p : b.(marks.s').abs.univ  { 
 			  			// conflict		
@@ -142,15 +158,20 @@ pred merge[s,s' : State, b,b' : Branch] {
 							p in b'.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b'.(marks.s).abs)
 							}
 			 }  
-    }
-
-	index.s'.path.*pathparent = b.marks.s'.abs.univ
-	all f : index.s' | f.path -> f.blob in b.marks.s'.abs	
+    */
+	}
+	
 }
+
+run {
+	#Branch = 2
+	some s1,s2 : State, b,b' : Branch | merge[s1,s2,b,b']
+} for 6 but 2 State
+
+
 
 
 pred rebase[s,s' : State, b,b' : Branch] {
 
 
 }
-

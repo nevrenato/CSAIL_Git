@@ -35,14 +35,3 @@ fact{
 run {
 	#index.State > 1
 }for 3 but 1 State
-
-
-//associates paths with blob from index on a certain state
-fun pathcontents: State -> Path -> Blob{
-	{s:State, p:Path, b:Blob | some f:index.s | f.path = p and f.blob = b}
-}
-
-//it gives the paths that are on index
-fun files : State -> Path {
-	{s : State, p : Path | some p.(s.pathcontents) }
-}
