@@ -76,10 +76,31 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
+pred checkout'[s,s':State, b:Branch]{
+	//pre conditions
+		let current = (head.s).(marks.s), next = (head.s').(marks.s'){
+			all f:index.s | f.blob in (f.path).(current.abs) 
+			index.s' = path.(next.abs.univ)
+			all f:index.s' | f.blob = (f.path).(next.abs)
+		}
+
+	head.s' = b
+	branches.s' = branches.s
+	marks.s' = marks.s
+	objects.s' = objects.s
+}
+
+run{
+	some disj s,s':State, b:Branch | checkout[s,s',b] and 
+													b not in head.s and 
+													b.(marks.s) != (head.s).(marks.s) and
+													index.s != index.s'
+}for 4 but 2 State
+
+
 fun comFls[b : Branch, s : State ] : set File {
 	path.(b.(marks.s).(abs.univ))
 }
-
 
 pred checkout[s,s':State,b:Branch]{
 
@@ -104,8 +125,20 @@ pred checkout[s,s':State,b:Branch]{
 }
 
 
-pred merge[s,s' : State, b,b' : Branch] {
-	
+
+pred merge[s,s' : State, b : Branch] {
+	b != (head.s)
+
+	((head.s').(marks.s')).parent = (head.s).(marks.s) + b.marks.s
+	head.s' = head.s
+	branches.s' = branches.s
+	objects.s' = objects.s
+}
+
+run {
+	some s,s':State, b:Branch | merge[s,s',b]
+} for 4 but 2 State
+/*	
 	// pre conditions
 	b != b'
 	b = head.s 
@@ -153,4 +186,4 @@ pred rebase[s,s' : State, b,b' : Branch] {
 
 
 }
-
+*/
