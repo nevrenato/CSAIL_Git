@@ -1,6 +1,6 @@
 open Path
 open Object_Model
-open util/ordering[State]
+
 
 -- to aid visualization
 //associates paths with blob from index on a certain state
@@ -101,7 +101,8 @@ pred checkout[s,s':State,b:Branch]{
 	b in branches.s
 
 	b.(marks.s) != (head.s).(marks.s) => 
-	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path
+	no comFls[(head.s),s].path & comFLs[b,s].path
+	
 	
 	// pos condition 
 	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
