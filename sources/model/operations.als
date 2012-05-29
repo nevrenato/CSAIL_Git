@@ -25,7 +25,7 @@ pred commit[s,s':State]{
 	}else{
 		head.s' = head.s
 		branches.s' = branches.s
-		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s //think better about this
+		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 		(head.s').(marks.s') != (head.s).(marks.s)
 		(head.s').(marks.s').parent = (head.s).(marks.s)
 	}
@@ -118,13 +118,11 @@ pred checkout[s,s':State,b:Branch]{
 	(head.s) != b
 
 	//pre condition
-		//the branch is on s
-
 	b in branches.s
 
 	b.(marks.s) != (head.s).(marks.s) => 
 	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path
-
+	
 	// pos condition 
 	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
 
@@ -134,20 +132,40 @@ pred checkout[s,s':State,b:Branch]{
 	objects.s' = objects.s
 }
 
-
-
 pred merge[s,s' : State, b : Branch] {
-	b != (head.s)
+	
+	// pre conditions
+	some (head.s).(marks.s) and some b.(marks.s)
+	some (head.s).(marks.s).*parent & b.(marks.s).^parent
+	(head.s).(marks.s) != b.(marks.s)
 
-	((head.s').(marks.s')).parent = (head.s).(marks.s) + b.marks.s
-	head.s' = head.s
+	head.s' = head.s 
 	branches.s' = branches.s
-	objects.s' = objects.s
+	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s
+	// debug
+	not (head.s).(marks.s) in b.(marks.s).^parent
+	// nothing happens
+	b.(marks.s) in (head.s).(marks.s).^parent implies (head.s).(marks.s) = (head.s).(marks.s') 
+	// fast-foward
+	(head.s).(marks.s) in b.(marks.s).^parent implies { 
+		(head.s).marks.s' = b.marks.s
+		some s'' : State | commit[s'',s']   
+	}
+	else {
+		(head.s).(marks.s').parent = ((head.s)+b).(marks.s)
+		(head.s).(marks.s').abs.univ = ((head.s)+b).(marks.s).abs.univ
+		all f : (comFls[head.s,s] & comFls[b,s]) | f in comFls[head.s,s']
+	 	all f : (comFls[head.s,s] - comFls[b,s]) | f in comFls[head.s,s']
+		all f : (comFls[b,s] - comFls[head.s,s]) | f in comFls[head.s,s']
+	}
+	
 }
 
+
+
 run {
-	some s,s':State, b:Branch | merge[s,s',b]
-} for 4 but 2 State
+	some s1,s2 : State, b : Branch | merge[s1,s2,b] 
+} for 6 but 2 State
 
 pred rebase[s,s' : State, b,b' : Branch] {
 
