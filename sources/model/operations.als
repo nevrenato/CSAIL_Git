@@ -1,6 +1,16 @@
 open Path
 open Object_Model
 
+-- to aid visualization
+//associates paths with blob from index on a certain state
+fun pathcontents: State -> Path -> Blob{
+	{s:State, p:Path, b:Blob | some f:index.s | f.path = p and f.blob = b}
+}
+
+//it gives the paths that are on index
+fun files : State -> Path {
+	{s : State, p : Path | some p.(s.pathcontents) }
+}
 
 pred commit[s,s':State]{
 
@@ -138,52 +148,8 @@ pred merge[s,s' : State, b : Branch] {
 run {
 	some s,s':State, b:Branch | merge[s,s',b]
 } for 4 but 2 State
-/*	
-	// pre conditions
-	b != b'
-	b = head.s 
-	no b'.marks.s & (b.marks.s).*parent
-
-
-	head.s' = head.s 
-	branches.s' = branches.s
-	marks.s' - (b->Commit) = marks.s - (b->Commit) 
-	objects.s' = objects.s + univ.(b.marks.s'.abs)
-	
-	// debug
-	not	b.marks.s in b'.(marks.s).^parent
-	some b.marks.s and some b'.marks.s
-	(b.marks.s).points != (b'.marks.s).points
-	one RootCommit
-
-	// fast-foward
-	b.(marks.s) in b'.(marks.s).^parent => b.marks.s' = b'.marks.s
-
-	else {
-			 b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ 
-			
-			// all paths
-			all p : b.(marks.s').abs.univ  { 
-			  			// conflict		
-							(p.(b.(marks.s).abs) in Tree ) and p in b.(marks.s).abs.univ & b'.(marks.s).abs.univ => {
-										p.(b.marks.s.abs) != p.(b'.marks.s.abs) =>  { p.(b.(marks.s').abs) not in p.((b+b').(marks.s).abs) }
-									  																				else  p.(b.(marks.s').abs) = p.(b.(marks.s).abs) 
-							}
-							// no conflict
-							else { 
-							p in b.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b.(marks.s).abs)
-							p in b'.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b'.(marks.s).abs)
-							}
-			 }  
-    }
-
-	index.s'.path.*pathparent = b.marks.s'.abs.univ
-	all f : index.s' | f.path -> f.blob in b.marks.s'.abs	
-}
-
 
 pred rebase[s,s' : State, b,b' : Branch] {
 
 
 }
-*/
