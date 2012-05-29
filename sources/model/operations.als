@@ -1,5 +1,6 @@
 open Path
 open Object_Model
+open util/ordering[State]
 
 -- to aid visualization
 //associates paths with blob from index on a certain state
@@ -122,6 +123,8 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s 
 	branches.s' = branches.s
 	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s
+	index.s' = comFls[head.s,s']
+
 	// debug
 	not (head.s).(marks.s) in b.(marks.s).^parent
 	// nothing happens
@@ -129,7 +132,6 @@ pred merge[s,s' : State, b : Branch] {
 	// fast-foward
 	(head.s).(marks.s) in b.(marks.s).^parent implies { 
 		(head.s).marks.s' = b.marks.s
-		some s'' : State | commit[s'',s']   
 	}
 	else {
 		(head.s).(marks.s').parent = ((head.s)+b).(marks.s)
@@ -144,11 +146,8 @@ pred merge[s,s' : State, b : Branch] {
 
 
 run {
-	some s1,s2 : State, b : Branch | merge[s1,s2,b] 
-} for 6 but 2 State
+	no objects.first
+	no index.first
+	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])	
+} for 9 but 9 State
 
-
-pred rebase[s,s' : State, b,b' : Branch] {
-
-
-}
