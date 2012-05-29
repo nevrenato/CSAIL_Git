@@ -25,7 +25,7 @@ pred commit[s,s':State]{
 	}else{
 		head.s' = head.s
 		branches.s' = branches.s
-		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s //think better about this
+		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 		(head.s').(marks.s') != (head.s).(marks.s)
 		(head.s').(marks.s').parent = (head.s).(marks.s)
 	}
@@ -97,13 +97,11 @@ pred checkout[s,s':State,b:Branch]{
 	(head.s) != b
 
 	//pre condition
-		//the branch is on s
-
 	b in branches.s
 
 	b.(marks.s) != (head.s).(marks.s) => 
 	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path
-
+	
 	// pos condition 
 	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
 
@@ -114,61 +112,40 @@ pred checkout[s,s':State,b:Branch]{
 }
 
 
-pred merge[s,s' : State, b,b' : Branch] {
+pred merge[s,s' : State, b : Branch] {
 	
 	// pre conditions
-	b = head.s 
-	some b.(marks.s) and some b'.(marks.s)
-	some b.(marks.s).*parent & b'.(marks.s).^parent
-	b.(marks.s) != b'.(marks.s)
+	some (head.s).(marks.s) and some b.(marks.s)
+	some (head.s).(marks.s).*parent & b.(marks.s).^parent
+	(head.s).(marks.s) != b.(marks.s)
 
 	head.s' = head.s 
 	branches.s' = branches.s
-	(Branch -b) <: marks.s' = (Branch -b) <: marks.s
-
-	// nothing happens
-	b'.(marks.s) in b.(marks.s).^parent implies b.(marks.s) = b.(marks.s')
-
+	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s
 	// debug
-	not b.(marks.s) in b'.(marks.s).^parent
- 
+	not (head.s).(marks.s) in b.(marks.s).^parent
+	// nothing happens
+	b.(marks.s) in (head.s).(marks.s).^parent implies (head.s).(marks.s) = (head.s).(marks.s') 
 	// fast-foward
-	b.(marks.s) in b'.(marks.s).^parent implies { 
-		b.marks.s' = b'.marks.s
+	(head.s).(marks.s) in b.(marks.s).^parent implies { 
+		(head.s).marks.s' = b.marks.s
 		some s'' : State | commit[s'',s']   
 	}
-
 	else {
-		b.(marks.s').parent = (b+b').(marks.s)
-		b.(marks.s').abs.univ = (b+b').(marks.s).abs.univ
-		/*all p : b.(marks.s').abs.univ {
-						
-		} */
-	 /*			
-			// all paths
-			all p : b.(marks.s').abs.univ  { 
-			  			// conflict		
-							(p.(b.(marks.s).abs) in Tree ) and p in b.(marks.s).abs.univ & b'.(marks.s).abs.univ => {
-										p.(b.marks.s.abs) != p.(b'.marks.s.abs) =>  { p.(b.(marks.s').abs) not in p.((b+b').(marks.s).abs) }
-									  																				else  p.(b.(marks.s').abs) = p.(b.(marks.s).abs) 
-							}
-							// no conflict
-							else { 
-							p in b.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b.(marks.s).abs)
-							p in b'.(marks.s).abs.univ => p.(b.marks.s'.abs) = p.(b'.(marks.s).abs)
-							}
-			 }  
-    */
+		(head.s).(marks.s').parent = ((head.s)+b).(marks.s)
+		(head.s).(marks.s').abs.univ = ((head.s)+b).(marks.s).abs.univ
+		all f : (comFls[head.s,s] & comFls[b,s]) | f in comFls[head.s,s']
+	 	all f : (comFls[head.s,s] - comFls[b,s]) | f in comFls[head.s,s']
+		all f : (comFls[b,s] - comFls[head.s,s]) | f in comFls[head.s,s']
 	}
 	
 }
 
+
+
 run {
-	#Branch = 2
-	some s1,s2 : State, b,b' : Branch | merge[s1,s2,b,b']
+	some s1,s2 : State, b : Branch | merge[s1,s2,b] 
 } for 6 but 2 State
-
-
 
 
 pred rebase[s,s' : State, b,b' : Branch] {
