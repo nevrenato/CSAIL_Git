@@ -48,7 +48,8 @@ assert addCommitRmCommit{
 												add[s0,s1,f] and
 												commit[s1,s2] and
 												rm[s2,s3,f] and
-												commit[s3,s4]
+												commit[s3,s4] and
+												f not in index.s0
 												implies (head.s0).(marks.s0).points = (head.s4).(marks.s4).points
 }
 /*
@@ -73,13 +74,16 @@ assert commitAddCommitRmCommit{
 */
 
 assert addRm{
-	all s0,s1,s2:State, f:File | add[s0,s1,f] and rm[s1,s2,f]
+	all s0,s1,s2:State, f:File | add[s0,s1,f] and rm[s1,s2,f] and f not in  index.s0
 			implies index.s0 = index.s2
 }
 /*
 	for 6, not Valid
 	f can be on index.s0
 */
+
+
+check addCommitRmCommit for 10 but 3 State
 
 assert rmAdd{
 	all s0,s1,s2:State, f:File | rm[s0,s1,f] and add[s1,s2,f]
@@ -97,4 +101,14 @@ assert branchBranchDel{
 	for 8, Valid
 */
 
+		//referential integrity for the content of a tree
+//		all t : objects.s & Tree | t.contents.Name in objects.s
+		//referential integrity for commits
+//		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
+		//referential integrity for marks
+//		marks.s in branches.s -> one objects.s
+
+assert referentialIntegrity{
+	
+}
 check branchBranchDel for 8

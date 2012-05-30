@@ -45,7 +45,6 @@ fact {
 			all p,q : (c.abs).univ | p -> q in pathparent implies q.(c.abs) -> p.(c.abs) -> p.name in contents
 			//all t,o : objs, n : Name | t -> o -> n in contents implies some x : c.abs.o, y : c.abs.t | x -> y in pathparent and x.name = n
 			all t,o : objs, n : Name | t -> o -> n in contents implies all y : c.abs.t | some x : c.abs.o | x -> y in pathparent and x.name = n
-
 		}
 	}
 }

@@ -86,13 +86,42 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-pred checkout'[s,s':State, b:Branch]{
-	//pre conditions
-		let current = (head.s).(marks.s), next = (head.s').(marks.s'){
-			all f:index.s | f.blob in (f.path).(current.abs) 
-			index.s' = path.(next.abs.univ)
-			all f:index.s' | f.blob = (f.path).(next.abs)
-		}
+fun comFls[b : Branch, s : State ] : set File {
+	path.(b.(marks.s).(abs.univ))
+}
+
+fun filesCommit[c:Commit]:set File{
+	{f:File |  f.path in c.abs.Blob and f.blob = (f.path).(c.abs)}
+}
+
+pred filesSanity[c:Commit]{
+	all p:c.abs.Blob | some path.p
+}
+
+pred checkout[s,s':State,b:Branch]{
+	// usefull instances
+	(head.s) != b
+	//pre condition
+	b in branches.s
+
+	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
+						f.path not in (head.s).(marks.s).abs.univ and 
+							f.path not in b.(marks.s).abs.univ 									or
+						f.blob = f.path.(b.(marks.s).abs) 											or
+						(f.path).(((head.s).marks.s).abs) = (f.path).((b.marks.s).abs)
+
+
+	filesSanity[b.marks.s]
+	filesSanity[(head.s).(marks.s)]
+	all f:filesCommit[b.marks.s] | 
+		f in index.s' or 
+		some f':index.s | f.path = f'.path and f' in index.s'
+
+	all f:index.s-filesCommit[(head.s).(marks.s)] | f in index.s'
+
+	all f:index.s' | f in index.s + filesCommit[b.marks.s]
+
+//	index.s' = filesCommit[b.marks.s] + ((index.s) - filesCommit[(head.s).(marks.s)])
 
 	head.s' = b
 	branches.s' = branches.s
@@ -101,36 +130,10 @@ pred checkout'[s,s':State, b:Branch]{
 }
 
 run{
-	some disj s,s':State, b:Branch | checkout[s,s',b] and 
-													b not in head.s and 
-													b.(marks.s) != (head.s).(marks.s) and
-													index.s != index.s'
-}for 4 but 2 State
-
-
-fun comFls[b : Branch, s : State ] : set File {
-	path.(b.(marks.s).(abs.univ))
-}
-
-pred checkout[s,s':State,b:Branch]{
-
-	// usefull instances
-	(head.s) != b
-
-	//pre condition
-	b in branches.s
-
-	b.(marks.s) != (head.s).(marks.s) => 
-	no (index.s - comFls[(head.s),s]).path & comFls[b,s].path
-	
-	// pos condition 
-	index.s' = index.s - comFls[(head.s),s] + comFls[b,s]
-
-	head.s' = b
-	branches.s' = branches.s
-	marks.s' = marks.s
-	objects.s' = objects.s
-}
+	some s,s': State, b:Branch | checkout[s,s',b]
+											 and (head.s).(marks.s).points != (head.s').(marks.s').points
+											and some index.s
+}for 5 but 2 State
 
 pred merge[s,s' : State, b : Branch] {
 	
@@ -160,12 +163,6 @@ pred merge[s,s' : State, b : Branch] {
 	}
 	
 }
-
-
-
-run {
-	some s1,s2 : State, b : Branch | merge[s1,s2,b] 
-} for 6 but 2 State
 
 pred rebase[s,s' : State, b,b' : Branch] {
 
