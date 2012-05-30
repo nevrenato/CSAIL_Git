@@ -1,6 +1,7 @@
 open Path
 open Object_Model
 
+
 -- to aid visualization
 //associates paths with blob from index on a certain state
 fun pathcontents: State -> Path -> Blob{
@@ -98,6 +99,7 @@ pred filesSanity[c:Commit]{
 	all p:c.abs.Blob | some path.p
 }
 
+
 pred checkout[s,s':State,b:Branch]{
 	// usefull instances
 	(head.s) != b
@@ -145,6 +147,8 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s 
 	branches.s' = branches.s
 	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s
+	index.s' = comFls[head.s,s']
+
 	// debug
 	not (head.s).(marks.s) in b.(marks.s).^parent
 	// nothing happens
@@ -152,7 +156,6 @@ pred merge[s,s' : State, b : Branch] {
 	// fast-foward
 	(head.s).(marks.s) in b.(marks.s).^parent implies { 
 		(head.s).marks.s' = b.marks.s
-		some s'' : State | commit[s'',s']   
 	}
 	else {
 		(head.s).(marks.s').parent = ((head.s)+b).(marks.s)
@@ -161,10 +164,11 @@ pred merge[s,s' : State, b : Branch] {
 	 	all f : (comFls[head.s,s] - comFls[b,s]) | f in comFls[head.s,s']
 		all f : (comFls[b,s] - comFls[head.s,s]) | f in comFls[head.s,s']
 	}
-	
 }
 
-pred rebase[s,s' : State, b,b' : Branch] {
+run {
+	no objects.first
+	no index.first
+	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])	
+} for 9 but 9 State
 
-
-}

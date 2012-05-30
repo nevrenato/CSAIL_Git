@@ -1,5 +1,7 @@
 open Name
-open State 
+open util/ordering[State]
+sig State {}
+
 
 abstract sig Object {
 	objects: set State

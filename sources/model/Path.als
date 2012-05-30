@@ -1,6 +1,5 @@
 open Objects
 open Name
-open State
 
 sig Path {
 	pathparent : lone Path,
