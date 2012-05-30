@@ -13,8 +13,21 @@ fun files : State -> Path {
 	{s : State, p : Path | some p.(s.pathcontents) }
 }
 
-pred commit[s,s':State]{
+pred invariant[s:State]{
+		//all object from one state descend from one of its commit
+		(objects.s - Commit) in (objects.s).points.*(contents.Name)
+		
+		//referential integrity for the content of a tree
+		all t : objects.s & Tree | t.contents.Name in objects.s
+		//referential integrity for commits
+		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
+		//referential integrity for marks
+		marks.s in branches.s -> one objects.s
+		//all trees have content
+		all t:objects.s & Tree | some t.contains
+}
 
+pred commit[s,s':State]{
 	some index.s
 	index.s' = index.s
 	
@@ -35,6 +48,13 @@ pred commit[s,s':State]{
 	all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
+
+run{
+	some s,s':State | invariant[s]
+								and commit[s,s']  
+								and some head.s
+								and (head.s).(marks.s).points != (head.s').(marks.s').points
+}for 5 but 2 State
 
 pred add[s,s':State, f:File]{
 	head.s' = head.s
@@ -165,10 +185,4 @@ pred merge[s,s' : State, b : Branch] {
 		all f : (comFls[b,s] - comFls[head.s,s]) | f in comFls[head.s,s']
 	}
 }
-
-run {
-	no objects.first
-	no index.first
-	all s : State, s' : s.next | commit[s,s'] or (some f : File | add[s,s',f])	
-} for 9 but 9 State
 
