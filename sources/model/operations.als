@@ -185,3 +185,7 @@ pred merge[s,s' : State, b : Branch] {
 	}
 }
 
+run {
+		some s1,s2 : State, b : Branch | checkout[s1,s2,b]
+} for 6 but 2 State
+
