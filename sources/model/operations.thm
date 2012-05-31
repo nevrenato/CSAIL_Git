@@ -3,7 +3,7 @@
 
 <view>
 
-<projection> <type name="Path/State/State"/> </projection>
+<projection> <type name="Object_Model/Objects/State"/> </projection>
 
 <defaultnode hideunconnected="yes"/>
 
@@ -15,14 +15,18 @@
    <type name="Univ"/>
    <type name="univ"/>
    <type name="seq/Int"/>
-   <type name="Path/State/State"/>
-   <set name="$b" type="Object_Model/Branch"/>
-   <set name="$b&apos;" type="Object_Model/Branch"/>
-   <set name="$s1" type="Path/State/State"/>
-   <set name="$s2" type="Path/State/State"/>
+   <type name="Object_Model/Objects/State"/>
+   <type name="Object_Model/Objects/ordering/Ord"/>
+   <set name="$f" type="Path/File"/>
+   <set name="$files" type="Path/Path"/>
+   <set name="$s1" type="Object_Model/Objects/State"/>
+   <set name="$s2" type="Object_Model/Objects/State"/>
+   <set name="$s3" type="Object_Model/Objects/State"/>
    <set name="branches" type="Object_Model/Branch"/>
+   <set name="First" type="Object_Model/Objects/ordering/Ord"/>
    <set name="head" type="Object_Model/Branch"/>
    <set name="index" type="Path/File"/>
+   <set name="Next" type="Object_Model/Objects/ordering/Ord"/>
 </node>
 
 <node color="Blue" label="Tree">
@@ -65,12 +69,12 @@
    <type name="Object_Model/Objects/Blob"/>
 </node>
 
-<node showlabel="no">
-   <set name="objects" type="Object_Model/Objects/Object"/>
-</node>
-
 <node visible="no" shape="Hexagon" color="Red" label="File">
    <type name="Path/File"/>
+</node>
+
+<node visible="yes" showlabel="no">
+   <set name="objects" type="Object_Model/Objects/Object"/>
 </node>
 
 <edge layout="yes">
@@ -87,6 +91,7 @@
 </edge>
 
 <edge visible="no" attribute="yes">
+   <relation name="$pathcontents"> <type name="Path/Path"/> <type name="Object_Model/Objects/Blob"/> </relation>
    <relation name="blob"> <type name="Path/File"/> <type name="Object_Model/Objects/Blob"/> </relation>
    <relation name="name"> <type name="Path/Path"/> <type name="Path/Name/Name"/> </relation>
 </edge>
