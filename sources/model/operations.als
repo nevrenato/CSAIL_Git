@@ -49,13 +49,6 @@ pred commit[s,s':State]{
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
-run{
-	some s,s':State | invariant[s]
-								and commit[s,s']  
-								and some head.s
-								and (head.s).(marks.s).points != (head.s').(marks.s').points
-}for 5 but 2 State
-
 pred add[s,s':State, f:File]{
 	head.s' = head.s
 	branches.s' = branches.s
@@ -119,6 +112,9 @@ pred filesSanity[c:Commit]{
 	all p:c.abs.Blob | some path.p
 }
 
+fun indexContent[s:State]:Path -> Blob{
+	{p:Path, b:Blob | some f:index.s | p->b in f.path -> f.blob}
+}
 
 pred checkout[s,s':State,b:Branch]{
 	// usefull instances
@@ -126,7 +122,17 @@ pred checkout[s,s':State,b:Branch]{
 	//pre condition
 	b in branches.s
 
-	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
+	let CA=(head.s).(marks.s).abs, CB=(b.marks.s).abs, IA=indexContent[s]{
+		indexContent[s'] = CB++(IA-CA)
+	}
+	(b.marks.s).abs in indexContent[s']
+
+	head.s' = b
+	branches.s' = branches.s
+	marks.s' = marks.s
+	objects.s' = objects.s
+
+/*	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
 						f.path not in (head.s).(marks.s).abs.univ and 
 							f.path not in b.(marks.s).abs.univ 									or
 						f.blob = f.path.(b.(marks.s).abs) 											or
@@ -134,7 +140,7 @@ pred checkout[s,s':State,b:Branch]{
 
 
 	filesSanity[b.marks.s]
-	filesSanity[(head.s).(marks.s)]
+//	filesSanity[(head.s).(marks.s)]
 	all f:filesCommit[b.marks.s] | 
 		f in index.s' or 
 		some f':index.s | f.path = f'.path and f' in index.s'
@@ -142,20 +148,13 @@ pred checkout[s,s':State,b:Branch]{
 	all f:index.s-filesCommit[(head.s).(marks.s)] | f in index.s'
 
 	all f:index.s' | f in index.s + filesCommit[b.marks.s]
-
+*/
 //	index.s' = filesCommit[b.marks.s] + ((index.s) - filesCommit[(head.s).(marks.s)])
-
-	head.s' = b
-	branches.s' = branches.s
-	marks.s' = marks.s
-	objects.s' = objects.s
 }
 
 run{
 	some s,s': State, b:Branch | checkout[s,s',b]
-											 and (head.s).(marks.s).points != (head.s').(marks.s').points
-											and some index.s
-}for 5 but 2 State
+}for 8 but 2 State
 
 pred merge[s,s' : State, b : Branch] {
 	
