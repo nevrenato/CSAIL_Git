@@ -111,28 +111,18 @@ pred filesSanity[c:Commit]{
 }
 
 pred checkout[s,s':State,b:Branch]{
-	// usefull instances
-	(head.s) != b
 	//pre condition
 	b in branches.s
 
-	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
-						f.path not in (head.s).(marks.s).abs.univ and 
-							f.path not in b.(marks.s).abs.univ 									or
-						f.blob = f.path.(b.(marks.s).abs) 											or
-						(f.path).(((head.s).marks.s).abs) = (f.path).((b.marks.s).abs)
-	
-
 	let CA=(head.s).(marks.s).abs & Path -> Blob, IA=s.pathcontents, CB=(b.marks.s).abs & Path -> Blob{
+		
 		s'.pathcontents = CB ++ (IA - CA)
 		
 		//all f:index.s | f.path -> f.blob in (IA - CA) implies 
 		all f:index.s | f.path -> f.blob in (IA - CA) 
 								implies (f.path in CB.univ 
-									implies f.path -> f.blob in CB or 
-										(f.path).CA = (f.path).CB)
-								else f.path not in CA.univ
-
+									implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+									else f.path not in CA.univ)
 	}
 
 	head.s' = b
@@ -142,35 +132,21 @@ pred checkout[s,s':State,b:Branch]{
 }
 
 run{
-	some s,s': State, b:Branch | checkout[s,s',b] 
+/*	some s,s': State, b:Branch | checkout[s,s',b] 
 											and invariant[s]
 											and invariant[s']
 										//	and #index.s' > 2
-										//	and some index.s 
-										//	and some index.s' 
+											and some index.s 
+											and some index.s' 
 										//	and index.s != index.s'
 											and (head.s).(marks.s).points != (head.s').(marks.s').points
-}for 5 but 2 State
-
-
-/*	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
-						f.path not in (head.s).(marks.s).abs.univ and 
-							f.path not in b.(marks.s).abs.univ 									or
-						f.blob = f.path.(b.(marks.s).abs) 											or
-						(f.path).(((head.s).marks.s).abs) = (f.path).((b.marks.s).abs)
-
-
-	filesSanity[b.marks.s]
-//	filesSanity[(head.s).(marks.s)]
-	all f:filesCommit[b.marks.s] | 
-		f in index.s' or 
-		some f':index.s | f.path = f'.path and f' in index.s'
-
-	all f:index.s-filesCommit[(head.s).(marks.s)] | f in index.s'
-
-	all f:index.s' | f in index.s + filesCommit[b.marks.s]
+											and some f:index.s' | f.path not in (head.s').(marks.s').abs.univ
 */
-//	index.s' = filesCommit[b.marks.s] + ((index.s) - filesCommit[(head.s).(marks.s)])
+	some s0,s1,s2:State, b:Branch | commit[s0,s1]
+											and checkout[s1,s2,b]
+											and (head.s1) != b
+						
+}for 5 but 3 State
 
 
 pred merge[s,s' : State, b : Branch] {

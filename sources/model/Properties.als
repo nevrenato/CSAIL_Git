@@ -108,7 +108,12 @@ assert branchBranchDel{
 		//referential integrity for marks
 //		marks.s in branches.s -> one objects.s
 
-assert referentialIntegrity{
-	
+assert commitInvariantPreservavtion{
+	all s,s':State | invariant[s] and commit[s,s'] => invariant[s']
 }
+
+assert checkoutInvariantPreservavtion{
+	all s,s':State, b:Branch | invariant[s] and checkout[s,s',b] => invariant[s']
+}
+
 check branchBranchDel for 8
