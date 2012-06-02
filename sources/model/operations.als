@@ -23,8 +23,6 @@ pred invariant[s:State]{
 		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
 		//referential integrity for marks
 		marks.s in branches.s -> one objects.s
-		//all trees have content
-		all t:objects.s & Tree | some t.contains
 }
 
 pred commit[s,s':State]{
@@ -112,25 +110,38 @@ pred filesSanity[c:Commit]{
 	all p:c.abs.Blob | some path.p
 }
 
-fun indexContent[s:State]:Path -> Blob{
-	{p:Path, b:Blob | some f:index.s | p->b in f.path -> f.blob}
-}
-
 pred checkout[s,s':State,b:Branch]{
 	// usefull instances
 	(head.s) != b
 	//pre condition
 	b in branches.s
 
-	let CA=(head.s).(marks.s).abs, CB=(b.marks.s).abs, IA=indexContent[s]{
-		indexContent[s'] = CB++(IA-CA)
+	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
+						f.path not in (head.s).(marks.s).abs.univ and 
+							f.path not in b.(marks.s).abs.univ 									or
+						f.blob = f.path.(b.(marks.s).abs) 											or
+						(f.path).(((head.s).marks.s).abs) = (f.path).((b.marks.s).abs)
+
+	let CA=(head.s).(marks.s).abs & Path -> Blob, IA=s.pathcontents, CB=(b.marks.s).abs & Path -> Blob{
+		s'.pathcontents = CB ++ (IA - CA)
 	}
-	(b.marks.s).abs in indexContent[s']
 
 	head.s' = b
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
+}
+
+run{
+	some s,s': State, b:Branch | checkout[s,s',b] 
+											and invariant[s]
+											and invariant[s']
+										//	and #index.s' > 2
+										//	and some index.s 
+										//	and some index.s' 
+										//	and index.s != index.s'
+}for 5 but 2 State
+
 
 /*	all f:index.s | f.blob = f.path.((head.s).(marks.s).abs) 								or
 						f.path not in (head.s).(marks.s).abs.univ and 
@@ -150,11 +161,7 @@ pred checkout[s,s':State,b:Branch]{
 	all f:index.s' | f in index.s + filesCommit[b.marks.s]
 */
 //	index.s' = filesCommit[b.marks.s] + ((index.s) - filesCommit[(head.s).(marks.s)])
-}
 
-run{
-	some s,s': State, b:Branch | checkout[s,s',b]
-}for 8 but 2 State
 
 pred merge[s,s' : State, b : Branch] {
 	
