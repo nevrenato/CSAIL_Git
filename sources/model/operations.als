@@ -121,9 +121,18 @@ pred checkout[s,s':State,b:Branch]{
 							f.path not in b.(marks.s).abs.univ 									or
 						f.blob = f.path.(b.(marks.s).abs) 											or
 						(f.path).(((head.s).marks.s).abs) = (f.path).((b.marks.s).abs)
+	
 
 	let CA=(head.s).(marks.s).abs & Path -> Blob, IA=s.pathcontents, CB=(b.marks.s).abs & Path -> Blob{
 		s'.pathcontents = CB ++ (IA - CA)
+		
+		//all f:index.s | f.path -> f.blob in (IA - CA) implies 
+		all f:index.s | f.path -> f.blob in (IA - CA) 
+								implies (f.path in CB.univ 
+									implies f.path -> f.blob in CB or 
+										(f.path).CA = (f.path).CB)
+								else f.path not in CA.univ
+
 	}
 
 	head.s' = b
@@ -140,6 +149,7 @@ run{
 										//	and some index.s 
 										//	and some index.s' 
 										//	and index.s != index.s'
+											and (head.s).(marks.s).points != (head.s').(marks.s').points
 }for 5 but 2 State
 
 
