@@ -82,9 +82,6 @@ assert addRm{
 	f can be on index.s0
 */
 
-
-check addCommitRmCommit for 10 but 3 State
-
 assert rmAdd{
 	all s0,s1,s2:State, f:File | rm[s0,s1,f] and add[s1,s2,f]
 			implies index.s0 = index.s2
@@ -101,19 +98,28 @@ assert branchBranchDel{
 	for 8, Valid
 */
 
-		//referential integrity for the content of a tree
-//		all t : objects.s & Tree | t.contents.Name in objects.s
-		//referential integrity for commits
-//		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
-		//referential integrity for marks
-//		marks.s in branches.s -> one objects.s
-
-assert commitInvariantPreservavtion{
+assert commitInvariantPreservation{
 	all s,s':State | invariant[s] and commit[s,s'] => invariant[s']
 }
+/* 
+	for 8, Valid
+*/
 
-assert checkoutInvariantPreservavtion{
+assert checkoutInvariantPreservation{
 	all s,s':State, b:Branch | invariant[s] and checkout[s,s',b] => invariant[s']
 }
+/*
+	for 8, Valid
+*/
 
-check branchBranchDel for 8
+assert RevertCheckout {
+	all s,s',s'' : State , b : Branch | (checkout[s,s',b] and checkout[s',s'',head.s]) => 
+			(head.s).(marks.s) = (head.s'').(marks.s'')
+}
+/*
+	for 8, Valid
+*/
+
+assert IndexCheckout {
+	all s,s' : State , b : Branch | checkout[s,s',b] => 
+}
