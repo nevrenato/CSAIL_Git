@@ -116,4 +116,11 @@ assert checkoutInvariantPreservavtion{
 	all s,s':State, b:Branch | invariant[s] and checkout[s,s',b] => invariant[s']
 }
 
+assert commitForthAndBack {
+        all s0,s1,s2,s3: State, b : Branch | commit[s0,s1] 
+													and checkout[s1,s2,b] 
+													and checkout[s2,s3,head.s1] 
+													implies s1.pathcontents = s3.pathcontents and head.s1 = head.s3
+}
+
 check branchBranchDel for 8

@@ -98,17 +98,6 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-fun comFls[b : Branch, s : State ] : set File {
-	path.(b.(marks.s).(abs.univ))
-}
-
-fun filesCommit[c:Commit]:set File{
-	{f:File |  f.path in c.abs.Blob and f.blob = (f.path).(c.abs)}
-}
-
-pred filesSanity[c:Commit]{
-	all p:c.abs.Blob | some path.p
-}
 
 pred checkout[s,s':State,b:Branch]{
 	//pre condition
@@ -121,8 +110,8 @@ pred checkout[s,s':State,b:Branch]{
 		//all f:index.s | f.path -> f.blob in (IA - CA) implies 
 		all f:index.s | f.path -> f.blob in (IA - CA) 
 								implies (f.path in CB.univ 
-									implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
-									else f.path not in CA.univ)
+												implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+												else f.path not in CA.univ)
 	}
 
 	head.s' = b
@@ -149,11 +138,14 @@ run{
 }for 5 but 3 State
 
 
-pred merge[s,s' : State, b : Branch] {
-	
+fun comFls[b : Branch, s : State ] : set File {
+	path.(b.(marks.s).(abs.univ))
+}
+
+pred merge[s,s' : State, b : Branch] {	
 	// pre conditions
 	some (head.s).(marks.s) and some b.(marks.s)
-	some (head.s).(marks.s).*parent & b.(marks.s).^parent
+	some (head.s).(marks.s).*parent & b.(marks.s).^parent //why not b.(marks.s).*parent ?
 	(head.s).(marks.s) != b.(marks.s)
 
 	head.s' = head.s 
@@ -162,7 +154,8 @@ pred merge[s,s' : State, b : Branch] {
 	index.s' = comFls[head.s,s']
 
 	// debug
-	not (head.s).(marks.s) in b.(marks.s).^parent
+	//not (head.s).(marks.s) in b.(marks.s).^parent
+
 	// nothing happens
 	b.(marks.s) in (head.s).(marks.s).^parent implies (head.s).(marks.s) = (head.s).(marks.s') 
 	// fast-foward
@@ -176,6 +169,15 @@ pred merge[s,s' : State, b : Branch] {
 	 	all f : (comFls[head.s,s] - comFls[b,s]) | f in comFls[head.s,s']
 		all f : (comFls[b,s] - comFls[head.s,s]) | f in comFls[head.s,s']
 	}
+}
+
+pred tiro[s,s' : State, b : Branch] {	
+	// pre conditions
+	some (head.s).(marks.s) and some b.(marks.s)
+	some (head.s).(marks.s).*parent & b.(marks.s).^parent //why not b.(marks.s).*parent ?
+	(head.s).(marks.s) != b.(marks.s)
+
+	
 }
 
 run {
