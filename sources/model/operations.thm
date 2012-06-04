@@ -16,17 +16,13 @@
    <type name="univ"/>
    <type name="seq/Int"/>
    <type name="Object_Model/Objects/State"/>
-   <type name="Object_Model/Objects/ordering/Ord"/>
-   <set name="$f" type="Path/File"/>
-   <set name="$files" type="Path/Path"/>
+   <set name="$b" type="Object_Model/Branch"/>
+   <set name="$s0" type="Object_Model/Objects/State"/>
    <set name="$s1" type="Object_Model/Objects/State"/>
    <set name="$s2" type="Object_Model/Objects/State"/>
-   <set name="$s3" type="Object_Model/Objects/State"/>
    <set name="branches" type="Object_Model/Branch"/>
-   <set name="First" type="Object_Model/Objects/ordering/Ord"/>
    <set name="head" type="Object_Model/Branch"/>
    <set name="index" type="Path/File"/>
-   <set name="Next" type="Object_Model/Objects/ordering/Ord"/>
 </node>
 
 <node color="Blue" label="Tree">
@@ -63,6 +59,10 @@
 
 <node numberatoms="no" shape="Ellipse" color="Green" label="">
    <type name="Object_Model/Commit"/>
+</node>
+
+<node shape="Hexagon" color="Red">
+   <set name="$files" type="Path/Path"/>
 </node>
 
 <node shape="Hexagon" color="Red" label="Blob">

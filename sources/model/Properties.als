@@ -120,6 +120,9 @@ assert RevertCheckout {
 	for 8, Valid
 */
 
-assert IndexCheckout {
-	all s,s' : State , b : Branch | checkout[s,s',b] => 
-}
+assert mergeInvariantPreservation {
+	all s,s' : State, b : Branch | invariant[s] and merge[s,s',b] => invariant[s']
+} 
+
+
+check mergeInvariantPreservation for 10 but 2 State
