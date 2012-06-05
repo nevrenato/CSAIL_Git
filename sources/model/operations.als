@@ -117,7 +117,7 @@ pred checkout[s,s':State,b:Branch]{
 	b in branches.s
 	b != head.s 
 
-	let CA=(head.s).(marks.s).abs & Path -> Blob, IA=s.pathcontents, CB=(b.marks.s).abs & Path -> Blob{
+	let CA=(head.s).(marks.s).abs :> Blob, IA=s.pathcontents, CB=(b.marks.s).abs :> Blob{
 		
 		s'.pathcontents = CB ++ (IA - CA)
 		
@@ -134,45 +134,40 @@ pred checkout[s,s':State,b:Branch]{
 	marks.s' = marks.s
 }
 
-pred merge[s,s' : State, b : Branch] {	
+pred merge[s,s' : State, b : Branch] {
 	// pre conditions
-	some (head.s).(marks.s) and some b.(marks.s)
-	some (head.s).(marks.s).*parent & b.(marks.s).^parent //why not b.(marks.s).*parent ?
-	(head.s).(marks.s) != b.(marks.s)
-
-	head.s' = head.s 
-	branches.s' = branches.s
-	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s
-	index.s' = comFls[head.s,s']
-
+	some (head.s).(marks.s).*parent & b.(marks.s).^parent
+	(head.s).(marks.s).points != b.(marks.s).points
+	not (b.marks.s) in (head.s).(marks.s).^parent
+	
 	// debug
-	//not (head.s).(marks.s) in b.(marks.s).^parent
-
-	// nothing happens
-	b.(marks.s) in (head.s).(marks.s).^parent implies (head.s).(marks.s) = (head.s).(marks.s') 
+	not (head.s).(marks.s) in b.(marks.s).^parent
+	
 	// fast-foward
 	(head.s).(marks.s) in b.(marks.s).^parent implies { 
-		(head.s).marks.s' = b.marks.s
+		(head.s).marks.s' = b.marks.s 
+		objects.s' = objects.s		
+		s'.pathcontents = (head.s').(marks.s').abs :> Blob
 	}
+	// the other case
 	else {
-		(head.s).(marks.s').parent = ((head.s)+b).(marks.s)
-		(head.s).(marks.s').abs.univ = ((head.s)+b).(marks.s).abs.univ
-		all f : (comFls[head.s,s] & comFls[b,s]) | f in comFls[head.s,s']
-	 	all f : (comFls[head.s,s] - comFls[b,s]) | f in comFls[head.s,s']
-		all f : (comFls[b,s] - comFls[head.s,s]) | f in comFls[head.s,s']
+		(head.s').(marks.s').parent = ((head.s)+b).(marks.s)
+		let CA = (head.s).(marks.s).abs :> Blob, CB=(b.marks.s).abs :> Blob, CC = (head.s).(marks.s').abs :> Blob {
+			no s.pathcontents.univ - (CA+CB).univ
+			CA & CB in CC
+			CA.univ + CB.univ = CC.univ
+			s'.pathcontents = (head.s').(marks.s').abs :> Blob + (Path - CA.univ - CB.univ) <: s.pathcontents 
+		}
 	}
-}
 
-pred tiro[s,s' : State, b : Branch] {	
-	// pre conditions
-	some (head.s).(marks.s) and some b.(marks.s)
-	some (head.s).(marks.s).*parent & b.(marks.s).^parent //why not b.(marks.s).*parent ?
-	(head.s).(marks.s) != b.(marks.s)
-
-	
+	objects.s' = objects.s + univ.((head.s').(marks.s').abs) + (head.s').(marks.s')
+	head.s' = head.s 
+	branches.s' = branches.s
+  (Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
 }
 
 run {
-		some s1,s2 : State, b : Branch | checkout[s1,s2,b]
-} for 6 but 2 State
+		#Branch = 2
+		some s0,s1,s2 : State, b : Branch | commit[s0,s1] and merge[s1,s2,b]
+} for 7 but 3 State
 

@@ -127,3 +127,10 @@ assert commitForthAndBack {
 }
 
 check branchBranchDel for 8
+
+assert mergeInvariantPreservation {
+	all s,s' : State, b : Branch | invariant[s] and merge[s,s',b] => invariant[s']
+} 
+
+
+check mergeInvariantPreservation for 10 but 2 State
