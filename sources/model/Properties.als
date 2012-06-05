@@ -27,12 +27,11 @@ assert blobHasParent {
 -- Commit, with different content can never be the same
 assert differentContentDifferentCommit{
 	all s0,s1,s2,s3 : State, f :File |
-	 commit[s0,s1] and add[s1,s2,f] and commit[s2,s3] and f not in index.s1 
+	 commit[s0,s1] and add[s1,s2,f] and f.path not in (head.s1).(marks.s1).abs.univ and commit[s2,s3] 
 		implies (head.s1).(marks.s1).points != (head.s3).(marks.s3).points
 } 
 /*
-	for 6, not Valid
-	if f.path is included in commit[s0,s1]
+	for 6, Valid
 */
 
 -- Add, idempotent
@@ -40,11 +39,12 @@ assert addIdempotence{
 	all s0,s1,s2 : State, f : File | add[s0,s1,f] and add[s1,s2,f] implies index.s1 = index.s2
 } 
 /*
-	for 6, Valid
+	for 7, Valid
 */
 
 assert addCommitRmCommit{
 	all s0,s1,s2,s3,s4:State, f:File | some head.s0 and 
+												f.path not in (head.s0).(marks.s0).abs.univ and
 												add[s0,s1,f] and
 												commit[s1,s2] and
 												rm[s2,s3,f] and
@@ -53,34 +53,31 @@ assert addCommitRmCommit{
 												implies (head.s0).(marks.s0).points = (head.s4).(marks.s4).points
 }
 /*
-	for 6, not Valid
-	when we make add[s0,s1,f], f can already exist on the initial commit
+	for 6, Valid
 */
 
 assert commitAddCommitRmCommit{
 	all s0,s1,s2,s3,s4,s5:State, f:File |
 					(commit[s0,s1] and
-					add[s1,s2,f] and
+					add[s1,s2,f] and f.path not in (index.s1).path and
 					commit[s2,s3] and
 					rm[s3,s4,f] and
 					commit[s4,s5])
-					implies ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points or 
-								 (head.s1).(marks.s1).points = (head.s4).(marks.s4).points)
+					implies ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
 }
 /*
 	for 6, Valid
-	s1 can be the same as s2, so - we need to compara s1 with s5 for the case s1!=s2
-											   - we need to compare s1 with s4 for the case s1=s2
 */
 
+
 assert addRm{
-	all s0,s1,s2:State, f:File | add[s0,s1,f] and rm[s1,s2,f] and f not in  index.s0
+	all s0,s1,s2:State, f:File | add[s0,s1,f] and f.path not in (index.s0).path and rm[s1,s2,f] and f not in  index.s0
 			implies index.s0 = index.s2
 }
 /*
-	for 6, not Valid
-	f can be on index.s0
+	for 8, Valid
 */
+
 
 assert rmAdd{
 	all s0,s1,s2:State, f:File | rm[s0,s1,f] and add[s1,s2,f]
@@ -98,12 +95,14 @@ assert branchBranchDel{
 	for 8, Valid
 */
 
+
 assert commitInvariantPreservation{
 	all s,s':State | invariant[s] and commit[s,s'] => invariant[s']
 }
 /* 
 	for 8, Valid
 */
+
 
 assert checkoutInvariantPreservation{
 	all s,s':State, b:Branch | invariant[s] and checkout[s,s',b] => invariant[s']
@@ -118,6 +117,16 @@ assert RevertCheckout {
 }
 /*
 	for 8, Valid
+*/
+
+assert commitForthAndBack {
+        all s0,s1,s2,s3: State, b : Branch | commit[s0,s1] 
+													and checkout[s1,s2,b] 
+													and checkout[s2,s3,head.s1] 
+													implies s1.pathcontents = s3.pathcontents and head.s1 = head.s3
+}
+/*
+	for 7, Valid
 */
 
 assert mergeInvariantPreservation {
