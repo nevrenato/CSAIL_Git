@@ -1,17 +1,31 @@
 open Path
 open Object_Model
 
-
 -- to aid visualization
 //associates paths with blob from index on a certain state
 fun pathcontents: State -> Path -> Blob{
 	{s:State, p:Path, b:Blob | some f:index.s | f.path = p and f.blob = b}
 }
 
+
+fun comFls[b : Branch, s : State ] : set File {
+	path.(b.(marks.s).(abs.univ))
+}
+
+fun filesCommit[c:Commit]:set File{
+	{f:File |  f.path in c.abs.Blob and f.blob = (f.path).(c.abs)}
+}
+
+pred filesSanity[c:Commit]{
+	all p:c.abs.Blob | some path.p
+}
+
 //it gives the paths that are on index
 fun files : State -> Path {
 	{s : State, p : Path | some p.(s.pathcontents) }
 }
+
+
 
 pred invariant[s:State]{
 		//all object from one state descend from one of its commit
@@ -98,16 +112,15 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-
 pred checkout[s,s':State,b:Branch]{
 	//pre condition
 	b in branches.s
+	b != head.s 
 
 	let CA=(head.s).(marks.s).abs & Path -> Blob, IA=s.pathcontents, CB=(b.marks.s).abs & Path -> Blob{
 		
 		s'.pathcontents = CB ++ (IA - CA)
 		
-		//all f:index.s | f.path -> f.blob in (IA - CA) implies 
 		all f:index.s | f.path -> f.blob in (IA - CA) 
 								implies (f.path in CB.univ 
 												implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
@@ -118,28 +131,7 @@ pred checkout[s,s':State,b:Branch]{
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
-}
-
-run{
-/*	some s,s': State, b:Branch | checkout[s,s',b] 
-											and invariant[s]
-											and invariant[s']
-										//	and #index.s' > 2
-											and some index.s 
-											and some index.s' 
-										//	and index.s != index.s'
-											and (head.s).(marks.s).points != (head.s').(marks.s').points
-											and some f:index.s' | f.path not in (head.s').(marks.s').abs.univ
-*/
-	some s0,s1,s2:State, b:Branch | commit[s0,s1]
-											and checkout[s1,s2,b]
-											and (head.s1) != b
-						
-}for 5 but 3 State
-
-
-fun comFls[b : Branch, s : State ] : set File {
-	path.(b.(marks.s).(abs.univ))
+	marks.s' = marks.s
 }
 
 pred merge[s,s' : State, b : Branch] {	
