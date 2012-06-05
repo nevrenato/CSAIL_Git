@@ -112,8 +112,6 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-
-
 pred checkout[s,s':State,b:Branch]{
 	//pre condition
 	b in branches.s
@@ -125,8 +123,8 @@ pred checkout[s,s':State,b:Branch]{
 		
 		all f:index.s | f.path -> f.blob in (IA - CA) 
 								implies (f.path in CB.univ 
-									implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
-									else f.path not in CA.univ)
+												implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+												else f.path not in CA.univ)
 	}
 
 	head.s' = b
@@ -135,7 +133,6 @@ pred checkout[s,s':State,b:Branch]{
 	objects.s' = objects.s
 	marks.s' = marks.s
 }
-
 
 pred merge[s,s' : State, b : Branch] {
 	// pre conditions
@@ -169,8 +166,6 @@ pred merge[s,s' : State, b : Branch] {
 	branches.s' = branches.s
   (Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
 }
-
-
 
 run {
 		some disj s0,s1 : State, b : Branch | merge[s0,s1,b]
