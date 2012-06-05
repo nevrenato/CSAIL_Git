@@ -118,7 +118,7 @@ pred checkout[s,s':State,b:Branch]{
 	b != head.s 
 
 	let CA=(head.s).(marks.s).abs :> Blob, IA=s.pathcontents, CB=(b.marks.s).abs :> Blob{
-		
+
 		s'.pathcontents = CB ++ (IA - CA)
 		
 		all f:index.s | f.path -> f.blob in (IA - CA) 
@@ -152,11 +152,12 @@ pred merge[s,s' : State, b : Branch] {
 	// the other case
 	else {
 		(head.s').(marks.s').parent = ((head.s)+b).(marks.s)
+		((head.s)+b).(marks.s).abs.univ = (head.s').(marks.s').abs.univ
 		let CA = (head.s).(marks.s).abs :> Blob, CB=(b.marks.s).abs :> Blob, CC = (head.s).(marks.s').abs :> Blob {
-			no s.pathcontents.univ - (CA+CB).univ
+			no s.pathcontents - CA			
 			CA & CB in CC
-			CA.univ + CB.univ = CC.univ
-			s'.pathcontents = (head.s').(marks.s').abs :> Blob + (Path - CA.univ - CB.univ) <: s.pathcontents
+			(Path - CB.univ) <: CA + (Path - CA.univ) <: CB in CC
+			s'.pathcontents = CC
 		}
 	}
 
@@ -167,9 +168,9 @@ pred merge[s,s' : State, b : Branch] {
 }
 
 run {
-		some s0,s1: State, b : Branch | merge[s0,s1,b] 
-					//and (head.s0).(marks.s0).points != (head.s1).(marks.s1).points
-					//and  (head.s1).(marks.s1).points != (b.marks.s0).points
-					and invariant[s0]
-} for 5 but 2 State
+
+		some disj s0,s1 : State, b : Branch | merge[s0,s1,b]
+				and (head.s0).(marks.s0).points != (head.s1).(marks.s1).points
+				and (head.s1).(marks.s1).points != (b.marks.s0).points
+} for 8 but 2 State
 
