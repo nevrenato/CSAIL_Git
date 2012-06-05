@@ -168,8 +168,8 @@ pred merge[s,s' : State, b : Branch] {
 }
 
 run {
-
-		some disj s0,s1 : State, b : Branch | merge[s0,s1,b]
+		some disj s0,s1 : State, b : Branch | invariant[s0]
+				and merge[s0,s1,b]
 				and (head.s0).(marks.s0).points != (head.s1).(marks.s1).points
 				and (head.s1).(marks.s1).points != (b.marks.s0).points
 } for 8 but 2 State
