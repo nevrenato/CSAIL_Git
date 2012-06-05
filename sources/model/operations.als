@@ -156,18 +156,20 @@ pred merge[s,s' : State, b : Branch] {
 			no s.pathcontents.univ - (CA+CB).univ
 			CA & CB in CC
 			CA.univ + CB.univ = CC.univ
-			s'.pathcontents = (head.s').(marks.s').abs :> Blob + (Path - CA.univ - CB.univ) <: s.pathcontents 
+			s'.pathcontents = (head.s').(marks.s').abs :> Blob + (Path - CA.univ - CB.univ) <: s.pathcontents
 		}
 	}
 
 	objects.s' = objects.s + univ.((head.s').(marks.s').abs) + (head.s').(marks.s')
 	head.s' = head.s 
 	branches.s' = branches.s
-  (Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
+  	(Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
 }
 
 run {
-		#Branch = 2
-		some s0,s1,s2 : State, b : Branch | commit[s0,s1] and merge[s1,s2,b]
-} for 7 but 3 State
+		some s0,s1: State, b : Branch | merge[s0,s1,b] 
+					//and (head.s0).(marks.s0).points != (head.s1).(marks.s1).points
+					//and  (head.s1).(marks.s1).points != (b.marks.s0).points
+					and invariant[s0]
+} for 5 but 2 State
 
