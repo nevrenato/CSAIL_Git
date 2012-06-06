@@ -1,10 +1,18 @@
 open Path
 open Object_Model
 
+-- to aid visualization
 //associates paths with blob from index on a certain state
 fun pathcontents: State -> Path -> Blob{
 	{s:State, p:Path, b:Blob | some f:index.s | f.path = p and f.blob = b}
 }
+
+//it gives the paths that are on index
+fun files : State -> Path {
+	{s : State, p : Path | some p.(s.pathcontents) }
+}
+
+
 
 pred invariant[s:State]{
 		//all object from one state descend from one of its commit
@@ -40,7 +48,6 @@ pred commit[s,s':State]{
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
 
-
 pred add[s,s':State, f:File]{
 	head.s' = head.s
 	branches.s' = branches.s
@@ -48,7 +55,6 @@ pred add[s,s':State, f:File]{
 	objects.s' = objects.s
 	index.s' = index.s + f - ((f.path).~path -f)
 }
-
 
 pred rm[s,s':State,f:File]{
 	//pre conditions
@@ -65,7 +71,6 @@ pred rm[s,s':State,f:File]{
 	index.s' = index.s - f
 }
 
-
 pred branch[s,s':State,b:Branch]{
 	//pre condition
 		b not in branches.s
@@ -76,7 +81,6 @@ pred branch[s,s':State,b:Branch]{
 	objects.s' = objects.s
 	index.s' = index.s
 }
-
 
 pred branchDel[s,s':State, b:Branch]{
 	
@@ -95,20 +99,19 @@ pred branchDel[s,s':State, b:Branch]{
 	index.s' = index.s 
 }
 
-
 pred checkout[s,s':State,b:Branch]{
 	//pre condition
 	b in branches.s
 	b != head.s 
 
 	let CA=(head.s).(marks.s).abs :> Blob, IA=s.pathcontents, CB=(b.marks.s).abs :> Blob{
-
-		s'.pathcontents = CB ++ (IA - CA)
-		
+		//precondition
 		all f:index.s | f.path -> f.blob in (IA - CA) 
 								implies (f.path in CB.univ 
-									implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
-									else f.path not in CA.univ)
+												implies (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+												else f.path not in CA.univ)
+
+		s'.pathcontents = CB ++ (IA - CA)
 	}
 
 	head.s' = b
@@ -118,16 +121,24 @@ pred checkout[s,s':State,b:Branch]{
 	marks.s' = marks.s
 }
 
+run{
+	some s,s':State, b:Branch | checkout[s,s',b]
+}for 7 but 2 State
 
 pred merge[s,s' : State, b : Branch] {
 	// pre conditions
 	some (head.s).(marks.s).*parent & b.(marks.s).^parent
 	(head.s).(marks.s).points != b.(marks.s).points
 	not (b.marks.s) in (head.s).(marks.s).^parent
-
+	
+	// debug
+	not (head.s).(marks.s) in b.(marks.s).^parent
+	
 	// fast-foward
-	(head.s).(marks.s) in b.(marks.s).^parent implies {
+	(head.s).(marks.s) in b.(marks.s).^parent implies { 
 		(head.s).marks.s' = b.marks.s 
+		objects.s' = objects.s		
+		s'.pathcontents = (head.s').(marks.s').abs :> Blob
 	}
 	// the other case
 	else {
@@ -137,10 +148,10 @@ pred merge[s,s' : State, b : Branch] {
 			no s.pathcontents - CA			
 			CA & CB in CC
 			(Path - CB.univ) <: CA + (Path - CA.univ) <: CB in CC
+			s'.pathcontents = CC
 		}
 	}
-	
-	s'.pathcontents = (head.s').(marks.s').abs :> Blob
+
 	objects.s' = objects.s + univ.((head.s').(marks.s').abs) + (head.s').(marks.s')
 	head.s' = head.s 
 	branches.s' = branches.s
@@ -153,3 +164,4 @@ run {
 				and (head.s0).(marks.s0).points != (head.s1).(marks.s1).points
 				and (head.s1).(marks.s1).points != (b.marks.s0).points
 } for 8 but 2 State
+
