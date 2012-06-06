@@ -26,8 +26,8 @@ fact {
 		some Commit & objects.s <=> some marks.s && one head.s
 		head.s in branches.s & (marks.s).Commit
 
-		//all trees have content
-		all t:objects.s & Tree | some t.contains
+		//this must only be checked in the properties
+		//all t:objects.s & Tree | some t.contains
 	}
 
 	all c: Commit{

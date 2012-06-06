@@ -1,5 +1,5 @@
 open Name
-//open util/ordering[State]
+
 sig State {}
 
 
