@@ -1,6 +1,12 @@
 open Objects
 open Path
 
+-- The representation of the commit object.
+-- Each commit points to a root tree, that represents
+-- the root folder of the repository.
+-- Each commit has a set of parent commits.
+-- The abs (abstraction) relation is used to 
+-- identify wich files and folders are represented on commit.
 sig Commit extends Object {
 	points : Tree,
 	parent : set Commit,
@@ -9,6 +15,10 @@ sig Commit extends Object {
 
 sig RootCommit extends Commit {}
 
+-- The representation of the branch. Each branch
+-- points to a specific commit on a given state.
+-- A branch exists on a given state, and can be
+-- the current branch (head) on a given state.
 sig Branch{
 	marks: Commit one -> State,
 	branches: set State,
@@ -18,9 +28,16 @@ sig Branch{
 lone sig Master extends Branch{}
 
 fact {
-	//no cycles
+	
+	-- There can be no cycles on a parent relation of commmits.
+	-- This can probably pass to Properties.als file, in order to check for consistency
 	no ^parent & iden
 
+	-- Only Commits (not RootCommits) can and must have parents.
+	-- All objects represented on a commit can be associated to a path, and the
+	-- parent relation among them must be preserved
+	-- At least the first property can be passed to Properties.als, in order to
+	-- check for consistency
 	all c: Commit{
 		c not in RootCommit <=> some c.parent
 		let objs = c.points.*(contents.Name){
