@@ -24,6 +24,11 @@ pred invariant[s:State]{
 		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
 		//referential integrity for marks
 		marks.s in branches.s -> one objects.s
+		//there is one commit iff there is at least one branch and an head
+		some Commit & objects.s <=> some marks.s && one head.s
+		head.s in branches.s & (marks.s).Commit
+		//all trees have content
+		all t:objects.s & Tree | some t.contains
 }
 
 pred commit[s,s':State]{
