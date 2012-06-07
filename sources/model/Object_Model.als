@@ -33,14 +33,6 @@ fact {
 	-- This can probably pass to Properties.als file, in order to check for consistency
 	no ^parent & iden
 
-	-- There is some commit iff exists at least one branch and an head
-	-- The current branch must exist and must have a commit
-	-- Theses properties can probably pass to Properties.als file, in order to check for consistency
-	all s:State{
-		some Commit & objects.s <=> some marks.s && one head.s
-		head.s in branches.s & (marks.s).Commit
-	}
-
 	-- Only Commits (not RootCommits) can and must have parents.
 	-- All objects represented on a commit can be associated to a path, and the
 	-- parent relation among them must be preserved

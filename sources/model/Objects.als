@@ -35,5 +35,4 @@ fun contents: Tree -> Object -> Name{
 fact {
 		all t,t' : Tree | t.contains = t'.contains implies t=t'
 		no ^(contents.Name) & iden 
-		all s:State, t : objects.s & Tree | some t.contains
 }
