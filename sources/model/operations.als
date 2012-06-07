@@ -250,11 +250,40 @@ pred merge[s,s' : State, b : Branch] {
 	branches.s' = branches.s
   	(Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
 }
+assert x{
+	all s0,s1,s2,s3,s4,s5,s6,s7,s8:State, f,f2,f3:File, b:Branch | no head.s0
+									and no index.s0
+									and add[s0,s1,f]
+									and commit[s1,s2]
+									and branch[s2,s3,b]
+									and add[s3,s4,f2] and f2.path!=f.path
+									and commit[s4,s5]
+									and rm[s5,s6,f2]
+									and add[s6,s7,f3] and (f3.path).pathparent = f2.path
+									and checkout[s7,s8,b]
+									implies f3.path in (index.s8).path
+}
 
 run {
-		some disj s0,s1 : State, b : Branch | invariant[s0]
-				and merge[s0,s1,b]
-				and (head.s0).(marks.s0).points != (head.s1).(marks.s1).points
-				and (head.s1).(marks.s1).points != (b.marks.s0).points
-} for 8 but 2 State
+	some s:State | invariant[s] and some head.s and #(head.s).(marks.s).abs > 2
+	one Commit
+	one Branch
+	#File > 1
+	no path.Root
+	#pathparent.Root > 2
+} for 5 but 1 State
+
+check x for 8 but 9 State
+run {
+		some s0,s1,s2,s3,s4,s5,s6,s7,s8:State, f,f2,f3:File, b:Branch | no head.s0
+									and no index.s0
+									and add[s0,s1,f]
+									and commit[s1,s2]
+									and branch[s2,s3,b]
+									and add[s3,s4,f2] and f2.path!=f.path
+									and commit[s4,s5]
+									and rm[s5,s6,f2]
+									and add[s6,s7,f3] and (f3.path).pathparent = f2.path
+									and checkout[s7,s8,b]
+} for 5 but 9 State
 

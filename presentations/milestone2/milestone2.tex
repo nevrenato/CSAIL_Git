@@ -10,7 +10,7 @@
 \usepackage{lmodern}
 
 \title{Understanding Git with Alloy}
-\subtitle{Milestone 1}
+\subtitle{Milestone 2}
 \author{Cláudio Lourenço \and Renato Neves}
 \institute{University of Minho\\
 Formal Methods in Software Engineering}
@@ -28,6 +28,155 @@ Formal Methods in Software Engineering}
 \frame{
    \frametitle{Table of contents}
    \tableofcontents 
+}
+
+\section{Where were we?}
+\frame{
+   \frametitle{Where were we?}
+   \begin{columns}[c]
+      \column{2.5in}
+         \begin{itemize}
+            \item Focusing on Index + Object Model
+            \item No problem with add and rm operations
+            \item Commit - Big Problem
+         \end{itemize}
+      \column{1.5in}
+         \begin{figure}[t]
+            \includegraphics[width=1.5in]{images/data_flow_simplified.png}
+         \end{figure}
+   \end{columns}
+}
+
+\frame{
+   \frametitle{The problem}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.9\textwidth]{images/structures.png}
+   \end{figure}
+}
+\section{Progress}
+\begin{frame}[fragile]
+   \frametitle{How did we solve it?}
+   \begin{columns}[c]
+      \column{2.5in}
+         \begin{block}{Abstraction}
+            \begin{itemize}
+               \item In each commit there is relation between Objects and Paths
+               \item Facts to reflect the parent relationship
+         \end{itemize}
+         \end{block}
+      \column{1.5in}\\
+
+
+      \tiny
+      \begin{lstlisting}[escapechar=!]
+sig Commit extends Object {
+   points : Tree,
+   parent : set Commit,
+   !\color{red}{abs: Path -> Object}!
+}
+     \end{lstlisting}
+   \end{columns}
+   \tiny
+   \begin{lstlisting}[escapechar=!]
+         all c: Commit{
+            let objs = c.points.*(contents.Name){
+               c.abs in Path some -> lone objs
+               (c.abs).(c.points) in Root
+               all p,q : (c.abs).univ | p -> q in pathparent 
+                  implies q.(c.abs) -> p.(c.abs) -> p.name in contents
+               all t,o : objs, n : Name | t -> o -> n in contents 
+                  implies all y : c.abs.t | some x : c.abs.o | 
+                     x -> y in pathparent and x.name = n
+            }
+         }
+   \end{lstlisting}  
+\end{frame}
+
+\frame{
+   \frametitle{The abstraction relation}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.3\textwidth]{images/abs1.png}
+   \end{figure}
+
+}
+
+\frame{
+   \frametitle{The abstraction relation}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.8\textwidth]{images/abs2.png}
+   \end{figure}
+
+}
+
+\section{Our model right now}
+\begin{frame}[fragile]
+   \frametitle{Model}
+   \tiny
+   \begin{columns}[c]
+      \column{1.5in}
+         \begin{lstlisting}
+abstract sig Object {
+   objects: set State
+}
+
+sig Blob extends Object {}
+
+sig Tree extends Object {
+   contains : Name -> lone (Tree+Blob)
+}
+
+sig Commit extends Object {
+   points : Tree,
+   parent : set Commit,
+   abs: Path -> Object
+}
+
+sig RootCommit extends Commit {}
+
+sig Branch{
+   marks: Commit one -> State,
+   branches: set State,
+   head: set State
+}
+
+lone sig Master extends Branch{}
+                  
+         \end{lstlisting}
+      \column{1.5in}
+      \color{blue}{
+         \begin{lstlisting}
+sig Path {
+   pathparent : lone Path,
+   name : Name
+}
+
+sig File{
+   path: Path,
+   blob: Blob,
+   index: set State
+}
+         \end{lstlisting}
+      }
+   \end{columns}
+\end{frame}
+
+
+\section{The operations}
+\frame{
+   \frametitle{Operations}
+}
+
+
+\section{The properties}
+\frame{
+   \frametitle{Properties}
+}
+\section{Future work}
+\frame{
+   \frametitle{Future work}
 }
 
 \frame{
