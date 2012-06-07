@@ -33,7 +33,6 @@ fact {
 	-- This can probably pass to Properties.als file, in order to check for consistency
 	no ^parent & iden
 
-
 	-- There is some commit iff exists at least one branch and an head
 	-- The current branch must exist and must have a commit
 	-- Theses properties can probably pass to Properties.als file, in order to check for consistency

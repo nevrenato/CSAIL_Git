@@ -9,4 +9,7 @@
 *.glo
 *.ist
 *.vrb
+*.bbl
+*.blg
+*.fdb_latexmk
 notes
