@@ -2,16 +2,36 @@
 
 \subsection{Commit}
 
+Accordingly to man git-commit, the commit operation 
+stores the current contents of the index in a new commit 
+along with a log message from the user describing the changes. \par 
+
 \subsection{Add}
+
+The add operation will just update the content of a file in the index, 
+or add a new file to it. \par
 
 \subsection{Remove}
 
+Accordingly to man git-rm, removes files from the index, or from the
+working tree and the index. \par
+
 \subsection{Branch}
 
-\subsection{Delete Branch}
+Git branch operation has several forms, that to different things on git.
+The ones wich we care are the forms that create a delete branches. \par
+When a new branch is created it will point to the current HEAD by default.
+\par
+The man git-branch says that when deleting a branch, it must be fully
+merged in its upstream branch, or in HEAD if no upstream was set. \par
 
 \subsection{Checkout}
 
+From man git-checkout : "Switches branches by updating the index, 
+working tree, and HEAD to reflect the specified branch or commit. \par
+
 \subsection{Merge}
 
-\subsection{Rebase}
+From man git-merge : "Join two or mode development histories together" \par
+
+
