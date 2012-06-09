@@ -1,20 +1,22 @@
 \section{Git Object Model}
 
-In this section, we will specify the git object model, using as
+In this section, we will show the 
+specification of the git object model, using as
 basis two manuals, \cite{gitComm} and \cite{progit}. \par
-After the specification of the git object model we can start
-to specify it's operations. \par
+Only the key parts of the model will be presented. \par
 
 \subsection{Identification of Objects}
+
 All objects are identified by a sha defined by their contents. \par
 "All the information needed to represent the history
 of a project is stored in files referenced by a 
 40-digit {\bf "object name"}..." (page 7) \par
+We don't need to specify this, as Alloy already can uniquely
+identify atoms, so we can reutilize that functionality. \par
 
-However Alloy has a mechanism to uniquely identify atoms, so 
-we can use it instead of the sha. \par
 
 \subsection{The four types of Objects}
+
 The objects are defined as in \cite{gitComm} (page 7) wich says: 
 "...and there are four different types of objects: blob,
 tree, commit, and tag."
@@ -36,18 +38,22 @@ sig Tree extends Object {
 }
 \end{lstlisting}
 
+The tag will be discarded, as it doesn't affect the main operations
+of git. \par 
+
 Now for the commit:  
 "As you can see,a commit is defined by : 
-parent(s) : {\bf The SHA1 name of some number of commits which
+parent(s):{\bf The SHA1 name of some number of commits which
 represent the immediately previous step(s) in the 
 history of the project}..."
 "...merge commits may have more than one. A commit with no 
 parents is called a root commit, and represents the 
 initial revision of a project. {\bf Each project must have at
 least one root. A project can also have multiple roots,
-though that isn't common (or necessarily a good idea)}". \cite{gitComm} (page 12)
-A commit also points to a certain tree that represents the state of the repository
-at a given state. \par
+though that isn't common (or necessarily a good idea)}". 
+\cite{gitComm} (page12) 
+A commit also points to a certain tree that represents the state of the
+repository at a given state. \par
 
 \begin{lstlisting}
 sig Commit extends Object {
@@ -59,12 +65,11 @@ sig Commit extends Object {
 \section{Branches in Git}
 One of the advantages of git compared to others VCS is the operation
 of creating a new branch. While in others VCS, a copy of the hole project is
-done each time we create new branch, in git, only a new pointer is created.
-
+done each time we create new branch, in git, only a new pointer is created, as
+said in the next quotations:
 "A branch in Git is {\bf simply a 
 lightweight movable pointer to one of these commits}." \cite{progit} (pag 39) \par
-
-Also:"The special pointer called {\bf Header 
+"The special pointer called {\bf Header 
 points to the branch we are working on}". \cite{progit} (pag 40) \par
 
 \begin{lstlisting}
@@ -80,7 +85,7 @@ sig Branch {
 In order to model Git, we need the notion of a file. In our view a file should have
 a path associated and a content. The path (along with it's parents)
 will uniquely determine the full name of a file
-(e.g. /x/y/example.txt), the content will be for this case, a Blob.
+(e.g. /x/y/example.txt), the content will be just a Blob.
 
 \begin{lstlisting}
 	sig File {
