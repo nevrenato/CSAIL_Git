@@ -20,7 +20,7 @@ sig RootCommit extends Commit {}
 -- A branch exists on a given state, and can be
 -- the current branch (head) on a given state.
 sig Branch{
-	marks: Commit one -> State,
+	marks: Commit lone -> State,
 	branches: set State,
 	head: set State
 }
@@ -32,7 +32,7 @@ fact {
 	-- There can be no cycles on a parent relation of commmits.
 	-- This can probably pass to Properties.als file, in order to check for consistency
 	no ^parent & iden
-
+	all s:State | lone head.s
 	-- Only Commits (not RootCommits) can and must have parents.
 	-- All objects represented on a commit can be associated to a path, and the
 	-- parent relation among them must be preserved

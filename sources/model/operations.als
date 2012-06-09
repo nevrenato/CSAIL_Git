@@ -23,7 +23,7 @@ fun files : State -> Path {
 pred invariant[s:State]{	
 		some Commit & objects.s <=> some marks.s && one head.s
 		head.s in branches.s & (marks.s).Commit
-		(objects.s - Commit) in (objects.s).points.*(contents.Name)		
+		(objects.s - Commit) in (objects.s).points.*(contents.Name)
 		all t : objects.s & Tree | t.contents.Name in objects.s
 		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
 		marks.s in branches.s -> one objects.s
@@ -49,6 +49,7 @@ pred commit[s,s':State]{
 		head.s' = Master
 		branches.s' = head.s'
 		(head.s').(marks.s') in RootCommit
+		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 	}
 
 	-- If there are already commits in the repository
@@ -72,7 +73,6 @@ pred commit[s,s':State]{
 	-- commit must exist on the system (referential integrity)
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
 }
-
 
 -- The representation of the add operation
 -- The only difference from one state to the other is that is guaranteed
@@ -118,6 +118,7 @@ pred branch[s,s':State,b:Branch]{
 	
 	--pre conditions
 	b not in branches.s
+	some head.s
 
 	-- pos conditions
 	head.s' = head.s
@@ -129,9 +130,10 @@ pred branch[s,s':State,b:Branch]{
 	marks.s' = marks.s + b -> (head.s).(marks.s)
 }
 
--- The representation of the branch delete operation. It
+
+-- The representation of the branch remove operation. It
 -- just removes a previously existing branch
-pred branchDel[s,s':State, b:Branch]{
+pred branchRm[s,s':State, b:Branch]{
 	
 	--pre conditions
 	
@@ -151,7 +153,6 @@ pred branchDel[s,s':State, b:Branch]{
 	-- Removal of all commits pointed by the branch
 	marks.s' = marks.s - b -> Commit
 }
-
 
 -- The representation of the checkout operation.
 -- The recommended way to use checkout, is first to commit all things
@@ -193,6 +194,17 @@ pred checkout[s,s':State,b:Branch]{
 	objects.s' = objects.s
 	marks.s' = marks.s
 }
+
+run{
+	some s,s':State, b:Branch | checkout[s,s',b] 
+									and invariant[s] 
+									and (b.marks.s).points !=(head.s).(marks.s).points
+									and no index.s & index.s'
+									and some index.s
+	#Commit = 2
+	#RootCommit = 1
+	all p:Path | lone path.p
+} for 5 but 2 State
 
 -- The representation of the merge operation. A merge has two ways
 -- to work : Fast-Forward or normal merge.
@@ -250,19 +262,7 @@ pred merge[s,s' : State, b : Branch] {
 	branches.s' = branches.s
   	(Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
 }
-assert x{
-	all s0,s1,s2,s3,s4,s5,s6,s7,s8:State, f,f2,f3:File, b:Branch | no head.s0
-									and no index.s0
-									and add[s0,s1,f]
-									and commit[s1,s2]
-									and branch[s2,s3,b]
-									and add[s3,s4,f2] and f2.path!=f.path
-									and commit[s4,s5]
-									and rm[s5,s6,f2]
-									and add[s6,s7,f3] and (f3.path).pathparent = f2.path
-									and checkout[s7,s8,b]
-									implies f3.path in (index.s8).path
-}
+
 
 run {
 	some s:State | invariant[s] and some head.s and #(head.s).(marks.s).abs > 2
@@ -273,7 +273,6 @@ run {
 	#pathparent.Root > 2
 } for 5 but 1 State
 
-check x for 8 but 9 State
 run {
 		some s0,s1,s2,s3,s4,s5,s6,s7,s8:State, f,f2,f3:File, b:Branch | no head.s0
 									and no index.s0

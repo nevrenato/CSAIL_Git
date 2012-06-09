@@ -59,7 +59,7 @@ Formal Methods in Software Engineering}
    \frametitle{How did we solve it?}
    \begin{block}{Abstraction}
       \begin{itemize}
-         \item In each commit there is relation between Objects and Paths
+         \item In each commit there is a relation between Objects and Paths
          \item Facts to reflect the parent relationship
             \begin{itemize}
                \item The Tree pointed by the Commit corresponds to the root
@@ -164,7 +164,7 @@ index.s' = index.s +
    \end{lstlisting}
    \normalsize
    \begin{block}{rm}
-      Remove the file from index
+      Remove the file from the index
    \end{block}
    \tiny
    \begin{lstlisting}
@@ -270,25 +270,25 @@ marks.s' = marks.s - b -> Commit
       branch
    \begin{block}{Problems}
       \begin{itemize}
-         \item Difficult to understand the pre conditions
+         \item Difficulty to understand the pre-conditions
          \item There are no specifications
      \end{itemize}
    \end{block}
 \end{frame}
 
 \begin{frame}
-   \begin{block}{Pre conditions found relatively to the index}
+   \begin{block}{Pre-conditions found relatively to the index}
       \begin{itemize}
          \item Removed files are ignored
-         \item Not modified files since last commit are ignored
+         \item Non modified files since the last commit are ignored
          \item New files or Modified files:
             \begin{itemize}
-               \item if file exists on destination commit then:
+               \item if file exists on the destination commit then:
                   \begin{itemize}
-                     \item the content is the same as in index, or
+                     \item the content is the same as in the index, or
                      \item the content in the destination commit is the same as in the current commit
                   \end{itemize}
-               \item if the files does not exists in the destination commit
+               \item if the file does not exist in the destination commit
                   \begin{itemize}
                      \item it also does not exist on the current commit
                   \end{itemize}
@@ -341,7 +341,7 @@ pred invariant[s:State]{
    \frametitle{Properties}
    \begin{block}{Idempotence}
       \begin{itemize}
-         \item After doing an operation repeating repeating it does not change the state
+         \item After performing an operation, repeating it does not change the state
          \item Add, commit and checkout are idempotent
       \end{itemize}
    \end{block}
