@@ -43,3 +43,14 @@ fact{
 	}
 	all s:State, disj f1,f2:index.s | f1.path != f2.path
 }
+
+
+run { 
+			no Tree 
+			#File = 2
+			#File.path.*pathparent = 2
+			#Path = 2
+			#Blob = 1
+			#Name = 2
+			some index.State
+}

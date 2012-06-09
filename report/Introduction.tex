@@ -2,8 +2,9 @@
 
 This project aims to build a precise model of how the git works. \par
 The purpose of this model is to better comprehend git and 
-check some properties that the model does
-(not) guarantees.\par
+check some properties that the model (not) guarantees. \par
+Also, using this model as basis, a manual will be build. This one,
+has the advange of being based on a semiformal specification.
 
 \subsection{A brief explanation of git}
 
@@ -14,7 +15,8 @@ Git it's in the later. The major difference between git and any
 other VCS, is that while others save differences between files, git saves
 snapshots. \par
 A Git project usually has three main sections: Repository, Index and
-Working Directory. Where the later it's just a subset of the filesystem. \par
+Working Directory. 
+Where the later it's just a subset of the filesystem. \par
 Git was created in 2005 by the Linux community, 
 with the purpose of replacing BitKeeper. Some of it's
 goals are \cite{progit}: 
@@ -33,7 +35,10 @@ goals are \cite{progit}:
 Nowadays, the software projects are getting bigger, and in most
 cases it is needed a version control system. Thus, git is being
 more and more used. However, can we trust in git to manage projects
-of big value ? We don't know the answer, but it's true that we can be
+of big value ? We can be
 more confident in git if we make some kind of verification on it. Because
 there are no known formal/semiformal verifications of git, we try to fill
 part of that hole with this project.
+
+\subsection{Alloy}
+We will use Alloy as the specification language used for the model.
