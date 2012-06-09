@@ -168,7 +168,7 @@ sig File{
 \begin{frame}[fragile]
    \frametitle{Operations - add and rm}
    \begin{block}{add}
-      Add a file with the current content to the index.
+      Add a file with the current content to the index
    \end{block}
    \tiny
    \begin{lstlisting}
@@ -179,7 +179,7 @@ index.s' = index.s +
    \end{lstlisting}
    \normalsize
    \begin{block}{rm}
-      Remove the file from index.
+      Remove the file from index
    \end{block}
    \tiny
    \begin{lstlisting}
@@ -208,7 +208,7 @@ index.s' = index.s - f
 \begin{frame}[fragile]
    \frametitle{Operations - commit}
    \begin{block}{commit}
-      Creates a commit, from the index.
+      Creates a commit, from the index
    \end{block}
    \tiny
    \begin{lstlisting}
@@ -240,7 +240,7 @@ all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
 \begin{frame}[fragile]
    \frametitle{Operations - branch}
    \begin{block}{branch}
-      Creates a new branch pointing to the current one.
+      Creates a new branch pointing to the current one
    \end{block}
    \tiny
    \begin{lstlisting}
@@ -251,7 +251,7 @@ marks.s' = marks.s + b -> (head.s).(marks.s)
    \end{lstlisting}
    \normalsize
    \begin{block}{branch -d}
-      Removes a branch if it is not pointed by the head.
+      Removes a branch if it is not pointed by the head
    \end{block}
    \tiny
    \begin{lstlisting}
@@ -280,15 +280,52 @@ marks.s' = marks.s - b -> Commit
 \end{frame}
 
 \begin{frame}[fragile]
-   \frametitle{Operations - branch}
+   \frametitle{Operations - checkout}
+      Updates the head and the index to reflect a certain commit pointed by a
+      branch
+   \begin{block}{Problems}
+      \begin{itemize}
+         \item Difficult to understand the pre conditions
+         \item There are no specifications
+     \end{itemize}
+   \end{block}
+\end{frame}
+
+\begin{frame}
+   \begin{block}{Pre conditions found relatively to the index}
+      \begin{itemize}
+         \item Removed files are ignored
+         \item Not modified files since last commit are ignored
+         \item New files or Modified files:
+            \begin{itemize}
+               \item if file exists on destination commit then:
+                  \begin{itemize}
+                     \item the content is the same as in index, or
+                     \item the content in the destination commit is the same as in the current commit
+                  \end{itemize}
+               \item if the files does not exists in the destination commit
+                  \begin{itemize}
+                     \item it also does not exist on the current commit
+                  \end{itemize}
+            \end{itemize}
+      \end{itemize}
+   \end{block}
 \end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Operations - checkout}
-   \begin{block}{checkout}
-      Updates the index to reflect a certain commit pointed by a
-      branch.
-   \end{block}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.50\textwidth]{images/checkout1.png}
+      \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Operations - checkout}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.50\textwidth]{images/checkout2.png}
+      \end{figure}
 \end{frame}
 
 \section{The properties}
