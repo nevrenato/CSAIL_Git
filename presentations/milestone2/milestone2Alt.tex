@@ -300,17 +300,24 @@ marks.s' = marks.s - b -> Commit
    \end{block}
 \end{frame}
 
-\begin{frame}
-	all f : index.s | f.path -> f.blob in ((CA.univ <: IA) - CA) and f.path
-	in CB.univ => (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
-
-	For all newly modified files, if their paths are also on CB then, or the
+\begin{frame}[fragile]
+	\scriptsize
+	\begin{lstlisting}	
+	all f : index.s | f.path -> f.blob in ((CA.univ <: IA) - CA) 
+	and f.path in CB.univ => 
+	(f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+	\end{lstlisting}
+	\normalsize
+	\begin{itemize}
+	\item For all newly modified files, if their paths are also on CB then, or the
 	new changes are already on CB or the old content it's equal on both
 	commits
+	\end{itemize}
+
 \end{frame}
 
 \begin{frame}
-	Probably a bug encountered...
+	The bug about losing content when renaming things...
 \end{frame}
 
 \begin{frame}[fragile]
@@ -333,10 +340,10 @@ marks.s' = marks.s - b -> Commit
 \begin{frame}[fragile]
    \frametitle{Properties}
    \begin{block}{Invariant preservation}
-      All operations preserve the invariant
+      All operations must preserve the invariant
    \end{block}
    \vspace{0.1in}
-all s,s':State | invariant[s] and operation[s,s',...] implies invariant[s'] \\
+all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
    \vspace{0.3in}
    \tiny
    \begin{lstlisting}
@@ -368,14 +375,32 @@ all s0,s1,s2 : State | operation[s0,s1,...] and operation[s1,s2,...]
    \end{lstlisting}
 \end{frame}
 
-\begin{frame}
-	the property of commitaddcommitrmcommit
-	add remove inverse operation
-	checkout idempotence
-	checkout no lost files ?
-	commit invariant
-
+\begin{frame}[fragile]
+	\frametitle{Properties}
+	\begin{block}{Commit, Add, Commit, Rm, Commit}
+	\begin{itemize}
+		\item Resulting from this sequence of operations, the last
+		commit must be equal to the first commit
+	\end{itemize}
+	\end{block}
+	\tiny
+	\begin{lstlisting}
+	all s0,s1,s2,s3,s4,s5:State, f:File |	
+	(commit[s0,s1] and add[s1,s2,f] and f.path not in (index.s1).path and
+	 commit[s2,s3] and rm[s3,s4,f] and commit[s4,s5])
+		=> ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
+	\end{lstlisting}
+	\normalsize
 \end{frame}
+
+\begin{frame}
+	checkout no lost files ?
+\end{frame}
+
+\begin{frame}
+	Maybe show some simple workflow ?
+\end{frame}
+
 \section{Future work}
 \frame{
    \frametitle{Future work}
