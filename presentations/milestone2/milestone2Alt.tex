@@ -274,6 +274,10 @@ marks.s' = marks.s - b -> Commit
          \item There are no specifications
 	 \item "if there are any uncommitted changes when you run git checkout,
 	 Git will behave very strangely."
+	 \item "...Git resets your working directory to look like the 
+	 snapshot of the commit that the branch you check out points to. 
+	 It adds, removes, and modifies files automatically to make 
+	 sure your working copy is what the branch looked like on your last commit to it."
      \end{itemize}
    \end{block}
 \end{frame}
@@ -317,7 +321,24 @@ marks.s' = marks.s - b -> Commit
 \end{frame}
 
 \begin{frame}
-	The bug about losing content when renaming things...
+	\frametitle{Operations - checkout}
+	\begin{block}{Master}
+	\begin{itemize}
+		\item 1 - f (add), commit
+		\item 2 - g (add), commit
+		\item 3 - g (rm)
+		\item 4 - g/* (add)
+		\item 5 - git checkout B
+		\item 7 - All that was inside the folder g disappeared
+	\end{itemize}
+	\end{block}
+
+	\begin{block}{B}
+	\begin{itemize}
+		\item 1 - f (add), commit
+		\item 6 - git checkout Master
+	\end{itemize}
+	\end{block}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -345,14 +366,15 @@ marks.s' = marks.s - b -> Commit
    \vspace{0.1in}
 all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
    \vspace{0.3in}
-   \tiny
+   \scriptsize
    \begin{lstlisting}
 pred invariant[s:State]{   
    some Commit & objects.s <=> some marks.s && one head.s
    head.s in branches.s & (marks.s).Commit
    (objects.s - Commit) in (objects.s).points.*(contents.Name)
    all t : objects.s & Tree | t.contents.Name in objects.s
-   all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
+   all c:objects.s & Commit 
+   	| c.points in objects.s and c.parent in objects.s
    marks.s in branches.s -> one objects.s
    all s:State, t : objects.s & Tree | some t.contains
 }
@@ -368,10 +390,11 @@ pred invariant[s:State]{
          \item Add, commit and checkout are idempotent
       \end{itemize}
    \end{block}
-   \tiny
+   \scriptsize
    \begin{lstlisting}
-all s0,s1,s2 : State | operation[s0,s1,...] and operation[s1,s2,...] 
-                       implies dynamicRelations[s1] = dynamicRelations[s2]
+	all s0,s1,s2 : State | 
+		operation[s0,s1,...] and operation[s1,s2,...] => 
+		dynamicRelations[s1] = dynamicRelations[s2]
    \end{lstlisting}
 \end{frame}
 
@@ -383,18 +406,35 @@ all s0,s1,s2 : State | operation[s0,s1,...] and operation[s1,s2,...]
 		commit must be equal to the first commit
 	\end{itemize}
 	\end{block}
-	\tiny
+	\scriptsize
 	\begin{lstlisting}
 	all s0,s1,s2,s3,s4,s5:State, f:File |	
-	(commit[s0,s1] and add[s1,s2,f] and f.path not in (index.s1).path and
-	 commit[s2,s3] and rm[s3,s4,f] and commit[s4,s5])
-		=> ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
+	(commit[s0,s1] and add[s1,s2,f] and 
+	f.path not in (index.s1).path and
+	commit[s2,s3] and rm[s3,s4,f] and commit[s4,s5]) => 
+	((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
 	\end{lstlisting}
 	\normalsize
 \end{frame}
 
-\begin{frame}
-	checkout no lost files ?
+\begin{frame}[fragile]
+	\frametitle{Properties}
+	\begin{block}{Revert the Checkout}
+	\begin{itemize}
+		\item If we checkout to a given branch, and then checkout to the
+		branch where we were, the commit and index before the first checkout must
+		be the equal to the commit and index after the second checkout. In other
+		words, no changes in the state
+	\end{itemize}
+	\end{block}
+	\scriptsize
+	\begin{lstlisting}
+	all s,s',s'' : State , b : Branch | 
+		(checkout[s,s',b] and checkout[s',s'',head.s]) => 
+		(head.s).(marks.s) = (head.s'').(marks.s'') and
+		s.pathcontents = s''.pathcontents
+	\end{lstlisting}
+	\normalsize
 \end{frame}
 
 \begin{frame}
@@ -406,6 +446,8 @@ all s0,s1,s2 : State | operation[s0,s1,...] and operation[s1,s2,...]
    \frametitle{Future work}
    \begin{itemize}
       \item Finish the Merge operation
+      \item Add more interesting properties
+      \item Maybe try to model git rebase
       \item Document operations and properties
    \end{itemize}
 }
