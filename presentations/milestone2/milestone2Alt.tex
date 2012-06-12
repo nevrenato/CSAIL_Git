@@ -153,52 +153,52 @@ sig File{
    \tiny
    \begin{lstlisting}
 ...
-index.s' = index.s + 
-           f - ((f.path).~path -f)
-...   
+index.s' = index.s + f - ((f.path).~path -f)
    \end{lstlisting}
    \normalsize
    \begin{block}{rm}
       Remove the file from the index
+      \begin{itemize}
+	\item The file must exist in the index
+	\item The file with its content must exist in the current commit
+	\item If you add a file, you can only remove it after committing it 
+      \end{itemize}
    \end{block}
    \tiny
    \begin{lstlisting}
 ...
-index.s' = index.s - f
+f in index.s
+f.path -> f.blob in (head.s).(marks.s).abs
 ...
+index.s' = index.s - f
    \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-   \frametitle{Operations - add and rm}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.4\textwidth]{images/add1.png}
-   \end{figure}
-\end{frame}
-
-\begin{frame}[fragile]
-   \frametitle{Operations - add and rm}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.38\textwidth]{images/add2.png}
-   \end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Operations - commit}
-   \begin{block}{commit}
+   \begin{block}{Commit}
       Creates a commit, from the index
    \end{block}
    \tiny
-   \begin{lstlisting}
-...
-(head.s').(marks.s').parent = (head.s).(marks.s)
-...
-(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
-all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
-...
+   \begin{block}{Commit Restrictions}
+   	\begin{lstlisting}
+	all p,q : (c.abs).univ | p -> q in pathparent => 
+	q.(c.abs) -> p.(c.abs) -> p.name in contents
+	...
+	all t,o : objs, n : Name | t -> o -> n in contents => 
+	all y : c.abs.t | some x : c.abs.o | x -> y in pathparent and x.name = n
+	...
    \end{lstlisting}
+	\end{block}
+	\begin{block}{Commit Post Conditions}
+	\begin{lstlisting}
+	(head.s').(marks.s').parent = (head.s).(marks.s)
+	...
+	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
+	all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
+	...
+   	\end{lstlisting}
+	\end{block}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -266,19 +266,17 @@ marks.s' = marks.s - b -> Commit
 
 \begin{frame}[fragile]
    \frametitle{Operations - checkout}
-      Updates the head and the index to reflect a certain commit pointed by a
-      branch
+	 "...It adds, removes, and modifies files automatically to make 
+	 sure your working copy is what the branch looked like on your last commit to it."	 
+	 \footnote{Git Community Book}
+
    \begin{block}{Problems}
       \begin{itemize}
-         \item Difficulty to understand the pre-conditions
          \item There are no specifications
+	 \item Difficulty to understand the pre-conditions
 	 \item "if there are any uncommitted changes when you run git checkout,
-	 Git will behave very strangely."
-	 \item "...Git resets your working directory to look like the 
-	 snapshot of the commit that the branch you check out points to. 
-	 It adds, removes, and modifies files automatically to make 
-	 sure your working copy is what the branch looked like on your last commit to it."
-     \end{itemize}
+	 Git will behave very strangely." \footnote{Understanding Git}
+	\end{itemize}
    \end{block}
 \end{frame}
 
@@ -316,40 +314,20 @@ marks.s' = marks.s - b -> Commit
 	\begin{itemize}
 	\item ... 
 	\end{itemize}
-
 \end{frame}
 
 \begin{frame}
 	\frametitle{Checkout - Bug}
-   
-      \begin{itemize}
-         \item touch f
-         \item git add f
-         \item git commit
-         \item git rm f
-         \item touch f/g
-         \item git add f/g
-         \item git checkout b
-      \end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Operations - checkout}
-	\begin{block}{Master}
 	\begin{itemize}
-		\item 1 - g (add), commit
-		\item 2 - g (rm)
-		\item 3 - g/f (add)
-		\item 4 - git checkout B
-		\item 6 - All that was inside the folder g disappeared
+	   \item touch f \pause
+	   \item git add f \pause
+	   \item git commit \pause
+	   \item git rm f \pause
+	   \item mkdir f \pause
+	   \item touch f/g \pause
+	   \item git add f/g \pause 
+	   \item git checkout b 
 	\end{itemize}
-	\end{block}
-
-	\begin{block}{B}
-	\begin{itemize}
-		\item 5 - git checkout Master
-	\end{itemize}
-	\end{block}
 \end{frame}
 
 \begin{frame}
@@ -465,10 +443,6 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 	\normalsize
 \end{frame}
 
-\begin{frame}
-	Maybe show some simple workflow ?
-\end{frame}
-
 \section{Future work}
 \frame{
    \frametitle{Future work}
@@ -483,6 +457,5 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 \frame{
    \titlepage
 }
-
 
 \end{document}
