@@ -320,6 +320,20 @@ marks.s' = marks.s - b -> Commit
 \end{frame}
 
 \begin{frame}
+	\frametitle{Checkout - Bug}
+   
+      \begin{itemize}
+         \item touch f
+         \item git add f
+         \item git commit
+         \item git rm f
+         \item touch f/g
+         \item git add f/g
+         \item git checkout b
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
 	\frametitle{Operations - checkout}
 	\begin{block}{Master}
 	\begin{itemize}
@@ -336,6 +350,28 @@ marks.s' = marks.s - b -> Commit
 		\item 5 - git checkout Master
 	\end{itemize}
 	\end{block}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Why we assume it is a bug} \pause
+   \begin{block}{Git Mailing list}
+      \footnotesize
+      \begin{itemize}
+         \item ''I think providing a link to that "alloy" thing could
+         be helpful.'' \pause
+         \item ''When you create a branch, it will contain everything
+         committed on the branch you created it from at that given
+         point. So if you commit more things on the master branch like
+         you have done (after creating b), then switch to branch b,
+         they won't appear. This is the correct behavior. Does that
+         answer your question?'' \pause
+         \item ''Yes, that looks like a bug. Checkout should not
+         overwrite uncommitted files. It does the right thing if you
+         do not "git add f/g" (it complains that deleting the
+         directory would lose untracked files). But if the file has
+         been added to the index, we seem to miss the check.''
+      \end{itemize}
+   \end{block}
 \end{frame}
 
 \begin{frame}[fragile]
