@@ -363,19 +363,14 @@ marks.s' = marks.s - b -> Commit
    \vspace{0.1in}
 all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
    \vspace{0.3in}
-   \scriptsize
-   \begin{lstlisting}
-pred invariant[s:State]{   
-   some Commit & objects.s <=> some marks.s && one head.s
-   head.s in branches.s & (marks.s).Commit
-   (objects.s - Commit) in (objects.s).points.*(contents.Name)
-   all t : objects.s & Tree | t.contents.Name in objects.s
-   all c:objects.s & Commit 
-   	| c.points in objects.s and c.parent in objects.s
-   marks.s in branches.s -> one objects.s
-   all s:State, t : objects.s & Tree | some t.contains
-}
-   \end{lstlisting}
+   \begin{itemize}
+      \item There is some commit iff exists at least one branch and
+      an head
+      \item The current branch must exist and must have a commit
+      \item All objects from one state descend from one of its commits
+      \item Referential integrity is kept on dynamic relations
+      \item There are no empty trees
+   \end{itemize}
 
 \end{frame}
 
