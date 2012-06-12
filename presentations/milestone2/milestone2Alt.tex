@@ -307,15 +307,14 @@ marks.s' = marks.s - b -> Commit
 \begin{frame}[fragile]
 	\scriptsize
 	\begin{lstlisting}	
-	all f : index.s | f.path -> f.blob in ((CA.univ <: IA) - CA) 
-	and f.path in CB.univ => 
+	all f:index.s | f.path -> f.blob in (IA - CA) => 
+	(f.path in CB.univ => 
 	(f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+	else f.path not in CA.univ)
 	\end{lstlisting}
 	\normalsize
 	\begin{itemize}
-	\item For all newly modified files, if their paths are also on CB then, or the
-	new changes are already on CB or the old content it's equal on both
-	commits
+	\item ... 
 	\end{itemize}
 
 \end{frame}
