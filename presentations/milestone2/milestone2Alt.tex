@@ -324,19 +324,17 @@ marks.s' = marks.s - b -> Commit
 	\frametitle{Operations - checkout}
 	\begin{block}{Master}
 	\begin{itemize}
-		\item 1 - f (add), commit
-		\item 2 - g (add), commit
-		\item 3 - g (rm)
-		\item 4 - g/* (add)
-		\item 5 - git checkout B
-		\item 7 - All that was inside the folder g disappeared
+		\item 1 - g (add), commit
+		\item 2 - g (rm)
+		\item 3 - g/f (add)
+		\item 4 - git checkout B
+		\item 6 - All that was inside the folder g disappeared
 	\end{itemize}
 	\end{block}
 
 	\begin{block}{B}
 	\begin{itemize}
-		\item 1 - f (add), commit
-		\item 6 - git checkout Master
+		\item 5 - git checkout Master
 	\end{itemize}
 	\end{block}
 \end{frame}
