@@ -32,7 +32,7 @@ Formal Methods in Software Engineering}
 
 \section{Where were we?}
 \frame{
-   \frametitle{Where were we?}
+   \frametitle{Where were we}
    \begin{columns}[c]
       \column{2.5in}
          \begin{itemize}
@@ -47,6 +47,18 @@ Formal Methods in Software Engineering}
    \end{columns}
 }
 
+\frame {
+	\frametitle{What we are going to show}
+		\begin{itemize}
+			\item The solution to the commit problem 
+			\item Heads up of the current model
+			\item Show Commit, Add, Rm and Branch operations
+			\item Focus on the Checkout operation
+			\item Show some properties
+			\item Future work
+		\end{itemize}
+
+}
 
 \frame{
    \frametitle{The problem}
@@ -58,7 +70,7 @@ Formal Methods in Software Engineering}
 
 \section{Current Model}
 \begin{frame}[fragile]
-   \frametitle{Model}
+   \frametitle{Top view of the Model}
    \tiny
    \begin{columns}[c]
       \column{1.5in}
@@ -110,7 +122,7 @@ sig File{
 
 \section{Progress}
 \begin{frame}[fragile]
-   \frametitle{How did we solve it?}
+   \frametitle{Commit}
    \begin{block}{Abstraction}
       \begin{itemize}
          \item In each commit there is a relation between Objects and Paths
@@ -118,7 +130,7 @@ sig File{
             \begin{itemize}
                \item The Tree pointed by the Commit corresponds to the root
                \item A contains tuple exists, 
-	       if and only if, the corresponding parent tuple exists
+	       if and only if, the corresponding pathparent tuple exists
             \end{itemize}
       \end{itemize}
    \end{block}
@@ -142,42 +154,10 @@ sig File{
 
 }
 
-
-
-\section{The operations}
-\begin{frame}[fragile]
-   \frametitle{Operations - add and rm}
-   \begin{block}{add}
-      Add a file with the current content to the index
-   \end{block}
-   \tiny
-   \begin{lstlisting}
-...
-index.s' = index.s + f - ((f.path).~path -f)
-   \end{lstlisting}
-   \normalsize
-   \begin{block}{rm}
-      Remove the file from the index
-      \begin{itemize}
-	\item The file must exist in the index
-	\item The file with its content must exist in the current commit
-	\item If you add a file, you can only remove it after committing it 
-      \end{itemize}
-   \end{block}
-   \tiny
-   \begin{lstlisting}
-...
-f in index.s
-f.path -> f.blob in (head.s).(marks.s).abs
-...
-index.s' = index.s - f
-   \end{lstlisting}
-\end{frame}
-
 \begin{frame}[fragile]
    \frametitle{Operations - commit}
    \begin{block}{Commit}
-      Creates a commit, from the index
+      Creates a commit object, using the index as source information
    \end{block}
    \tiny
    \begin{block}{Commit Restrictions}
@@ -216,6 +196,38 @@ index.s' = index.s - f
       \includegraphics[width=0.5\textwidth]{images/commit2.png}
    \end{figure}
 \end{frame}
+
+
+\section{The operations}
+\begin{frame}[fragile]
+   \frametitle{Operations - add and rm}
+   \begin{block}{add}
+      Add a file with the current content to the index
+   \end{block}
+   \tiny
+   \begin{lstlisting}
+...
+index.s' = index.s + f - ((f.path).~path -f)
+   \end{lstlisting}
+   \normalsize
+   \begin{block}{rm}
+      Remove the file from the index
+      \begin{itemize}
+	\item The file must exist in the index
+	\item The file with its content must exist in the current commit
+	\item If you add a file, you can only remove it after committing it 
+      \end{itemize}
+   \end{block}
+   \tiny
+   \begin{lstlisting}
+...
+f in index.s
+f.path -> f.blob in (head.s).(marks.s).abs
+...
+index.s' = index.s - f
+   \end{lstlisting}
+\end{frame}
+
 
 \begin{frame}[fragile]
    \frametitle{Operations - branch}
