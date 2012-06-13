@@ -283,16 +283,16 @@ marks.s' = marks.s - b -> Commit
 \begin{frame}
    \frametitle{Checkout}
    \begin{block}{Pre-conditions found}
-      Everything that is on index should be on the current commit with the
+      Everything that is in the index has to be in the current commit with the
       same content, except if:
       \begin{itemize}
          \item The content of a file is the same in the
          current and destination commit - in this case
-         the file on index keeps its content (warning is thrown)
-         \item Exists a file on index, and that file does not exists
+         the file in the index keeps its content (warning is thrown)
+         \item Exists a file in the index, and that file does not exists
          neither in the current nor in the destination commit - in
-         this case the file is kept on index (warning is thrown)
-         \item Content of the file on index is the same as in the
+         this case the file is kept in the index (warning is thrown)
+         \item Content of the file in the index is the same as in the
          destination commit (no warning is thrown)
       \end{itemize}
    \end{block}
@@ -401,8 +401,10 @@ marks.s' = marks.s - b -> Commit
       All operations must preserve the invariant
    \end{block}
    \vspace{0.1in}
+   \scriptsize
 all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
-   \vspace{0.3in}
+   \normalsize
+   \vspace{0.1in}
    \begin{itemize}
       \item There is some commit iff exists at least one branch and
       an head
@@ -426,7 +428,7 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
    \begin{lstlisting}
 	all s0,s1,s2 : State | 
 		operation[s0,s1,...] and operation[s1,s2,...] => 
-		dynamicRelations[s1] = dynamicRelations[s2]
+		   dynamicRelations[s1] = dynamicRelations[s2]
    \end{lstlisting}
 \end{frame}
 
@@ -440,11 +442,16 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
-	all s0,s1,s2,s3,s4,s5:State, f:File |	
-	(commit[s0,s1] and add[s1,s2,f] and 
-	f.path not in (index.s1).path and
-	commit[s2,s3] and rm[s3,s4,f] and commit[s4,s5]) => 
-	((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
+	all s0,s1,s2,s3,s4,s5:State, f:File | 
+  
+        commit[s0,s1] 
+        and add[s1,s2,f] 
+        and f.path not in (index.s1).path 
+        and commit[s2,s3] 
+        and rm[s3,s4,f] 
+        and commit[s4,s5]
+	
+   => ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
 	\end{lstlisting}
 	\normalsize
 \end{frame}
@@ -461,12 +468,30 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
-	all s,s',s'' : State , b : Branch | 
-		(checkout[s,s',b] and checkout[s',s'',head.s]) => 
-		(head.s).(marks.s) = (head.s'').(marks.s'') and
-		s.pathcontents = s''.pathcontents
+all s,s',s'':State, b:Branch | 
+   checkout[s,s',b] and checkout[s',s'',head.s] => 
+      (head.s).(marks.s) = (head.s'').(marks.s'') 
+      and s.pathcontents = s''.pathcontents
 	\end{lstlisting}
 	\normalsize
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Properties}
+	\begin{block}{Checkout, all files from commit will be in index}
+      When a checkout is performed, all files that are on the commit
+      pointed by b, will be in the index.
+   \end{block}
+	\scriptsize
+	\begin{lstlisting}
+all s,s':State, b:branches.s, p:Path, blo:Blob | 
+      p->blo in (b.marks.s).abs => some f:File | 
+         f.path = p and f.blob = blo and f inindex.s'
+	\end{lstlisting}\pause
+   \Large
+   \color{red}
+   \center
+   Counter Examples found
 \end{frame}
 
 \section{Future work}
@@ -479,6 +504,7 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
       \item Document operations and properties
    \end{itemize}
 }
+
 
 \frame{
    \titlepage
