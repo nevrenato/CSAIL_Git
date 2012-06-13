@@ -32,19 +32,13 @@ Formal Methods in Software Engineering}
 
 \section{Where were we?}
 \frame{
-   \frametitle{Where were we}
-   \begin{columns}[c]
-      \column{2.5in}
+   \frametitle{Where were we?}
          \begin{itemize}
-            \item Focusing on Index + Object Model
-            \item No problem with add and rm operations
-            \item Commit - Big Problem
+            \item Focus on Index and Object Model
+	    \item Ditched the Working Directory
+            \item No problems with add and rm operations
+            \item Big Problem in the commit
          \end{itemize}
-      \column{1.5in}
-         \begin{figure}[t]
-            \includegraphics[width=1.5in]{images/data_flow_simplified.png}
-         \end{figure}
-   \end{columns}
 }
 
 \frame {
@@ -64,8 +58,24 @@ Formal Methods in Software Engineering}
    \frametitle{The problem}
    \begin{figure}
       \centering
-      \includegraphics[width=0.9\textwidth]{images/structures.png}
+      \includegraphics[width=1.0\textwidth]{images/CommitAbs1.png}
    \end{figure}
+}
+
+\frame {
+	\frametitle{The problem}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\textwidth]{images/CommitAbs2.png}
+	\end{figure}
+}
+
+\frame {
+	\frametitle{The problem}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\textwidth]{images/CommitAbs3.png}
+	\end{figure}
 }
 
 \section{Current Model}
@@ -74,7 +84,20 @@ Formal Methods in Software Engineering}
    \tiny
    \begin{columns}[c]
       \column{1.5in}
-         \begin{lstlisting}
+\begin{lstlisting}
+sig Path {
+   pathparent : lone Path,
+   name : Name
+}
+
+sig File{
+   path: Path,
+   blob: Blob,
+   index: set State
+}
+\end{lstlisting}
+\color{blue}{
+\begin{lstlisting}
 abstract sig Object {
    objects: set State
 }
@@ -84,6 +107,13 @@ sig Blob extends Object {}
 sig Tree extends Object {
    contains : Name -> lone (Tree+Blob)
 }
+
+\end{lstlisting}
+}
+      \column{1.5in}
+      \color{blue}{
+
+\begin{lstlisting}
 
 sig Commit extends Object {
    points : Tree,
@@ -101,20 +131,6 @@ sig Branch{
 
 lone sig Master extends Branch{}
                   
-         \end{lstlisting}
-      \column{1.5in}
-      \color{blue}{
-         \begin{lstlisting}
-sig Path {
-   pathparent : lone Path,
-   name : Name
-}
-
-sig File{
-   path: Path,
-   blob: Blob,
-   index: set State
-}
          \end{lstlisting}
       }
    \end{columns}
@@ -485,7 +501,7 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 \frame{
    \frametitle{Future work}
    \begin{itemize}
-      \item Finish the Merge operation
+      \item Finish the Merge operation (used for Push and Pull)
       \item Add more interesting properties
       \item Maybe try to model git rebase
       \item Document operations and properties
