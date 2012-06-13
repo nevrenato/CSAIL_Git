@@ -454,9 +454,11 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
    \end{block}
    \scriptsize
    \begin{lstlisting}
-	all s0,s1,s2 : State | 
-		operation[s0,s1,...] and operation[s1,s2,...] => 
-		   dynamicRelations[s1] = dynamicRelations[s2]
+   all s0,s1,s2 : State | invariant[s0] 
+                      and operation[s0,s1,...] 
+                      and operation[s1,s2,...]
+      
+      => dynamicRelations[s1] = dynamicRelations[s2]
    \end{lstlisting}
 \end{frame}
 
@@ -470,17 +472,18 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
-	all s0,s1,s2,s3,s4,s5:State, f:File | 
+all s0,s1,s2,s3,s4,s5:State, f:File | 
+      
+         invariant[s0] 
+     and commit[s0,s1] 
+     and add[s1,s2,f] 
+     and f.path not in (index.s1).path
+     and commit[s2,s3] 
+     and rm[s3,s4,f] 
+     and commit[s4,s5] 
   
-        commit[s0,s1] 
-        and add[s1,s2,f] 
-        and f.path not in (index.s1).path 
-        and commit[s2,s3] 
-        and rm[s3,s4,f] 
-        and commit[s4,s5]
-	
-   => ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
-	\end{lstlisting}
+  => ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
+   \end{lstlisting}
 	\normalsize
 \end{frame}
 
@@ -496,10 +499,11 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
-all s,s',s'':State, b:Branch | 
-   checkout[s,s',b] and checkout[s',s'',head.s] => 
-      (head.s).(marks.s) = (head.s'').(marks.s'') 
-      and s.pathcontents = s''.pathcontents
+all s,s',s'':State, b:Branch | invariant[s] 
+                           and checkout[s,s',b] 
+                           and checkout[s',s'',head.s] 
+      
+      => (head.s).(marks.s) = (head.s'').(marks.s'') 
 	\end{lstlisting}
 	\normalsize
 \end{frame}
@@ -512,10 +516,11 @@ all s,s',s'':State, b:Branch |
    \end{block}
 	\scriptsize
 	\begin{lstlisting}
-all s,s':State, b:branches.s, p:Path, blo:Blob | 
-      p->blo in (b.marks.s).abs => some f:File | 
-         f.path = p and f.blob = blo and f inindex.s'
-	\end{lstlisting}\pause
+   all s,s':State, b:branches.s | invariant[s] 
+                              and checkout[s,s',b] 
+         
+      => (b.marks.s).abs in s'.pathcontents
+   \end{lstlisting}\pause
    \Large
    \color{red}
    \center
