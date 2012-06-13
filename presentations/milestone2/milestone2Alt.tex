@@ -281,39 +281,81 @@ marks.s' = marks.s - b -> Commit
 \end{frame}
 
 \begin{frame}
-   \begin{block}{Pre-conditions found relatively to the index}
+   \frametitle{Checkout}
+   \begin{block}{Pre-conditions found}
+      Everything that is on index should be on the current commit with the
+      same content, except if:
       \begin{itemize}
-         \item Removed files are ignored
-         \item Non modified files since the last commit are ignored
-         \item New files or Modified files:
-            \begin{itemize}
-               \item if file exists on the destination commit then:
-                  \begin{itemize}
-                     \item the content is the same as in the index, or
-                     \item the content in 
-		     the destination commit is the same as in the current commit
-                  \end{itemize}
-               \item if the file does not exist in the destination commit
-                  \begin{itemize}
-                     \item it also does not exist on the current commit
-                  \end{itemize}
-            \end{itemize}
+         \item The content of a file is the same in the
+         current and destination commit - in this case
+         the file on index keeps its content (warning is thrown)
+         \item Exists a file on index, and that file does not exists
+         neither in the current nor in the destination commit - in
+         this case the file is kept on index (warning is thrown)
+         \item Content of the file on index is the same as in the
+         destination commit (no warning is thrown)
       \end{itemize}
    \end{block}
 \end{frame}
 
 \begin{frame}[fragile]
-	\scriptsize
-	\begin{lstlisting}	
-	all f:index.s | f.path -> f.blob in (IA - CA) => 
-	(f.path in CB.univ => 
-	(f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
-	else f.path not in CA.univ)
+   \frametitle{Checkout - Alloy}
+	\tiny
+	\begin{lstlisting}
+   ...
+   let CA = (head.s).(marks.s).abs :> Blob, 
+       IA = s.pathcontents,
+       CB = (b.marks.s).abs :> Blob
+   ...
 	\end{lstlisting}
-	\normalsize
-	\begin{itemize}
-	\item ... 
-	\end{itemize}
+   \pause
+	\begin{lstlisting}
+   
+   all f:index.s | f.path -> f.blob in (IA - CA) 
+                   => (f.path in CB.univ 
+                        => (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
+                        else f.path not in CA.univ)
+   ...
+	\end{lstlisting}
+   \pause
+	\begin{lstlisting}
+   
+   s'.pathcontents = CB ++ (IA - CA)
+   ...
+   \end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+   \frametitle{Checkout - Instance 1}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.50\textwidth]{images/checkout1.png}
+      \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Checkout - Instance 1}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.50\textwidth]{images/checkout2.png}
+      \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Checkout - Instance 2}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.80\textwidth]{images/checkout2_1.png}
+      \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Checkout - Instance 2}
+      \begin{figure}
+         \centering
+         \includegraphics[width=0.80\textwidth]{images/checkout2_2.png}
+      \end{figure}
 \end{frame}
 
 \begin{frame}
@@ -350,22 +392,6 @@ marks.s' = marks.s - b -> Commit
          been added to the index, we seem to miss the check.''
       \end{itemize}
    \end{block}
-\end{frame}
-
-\begin{frame}[fragile]
-   \frametitle{Operations - checkout}
-      \begin{figure}
-         \centering
-         \includegraphics[width=0.50\textwidth]{images/checkout1.png}
-      \end{figure}
-\end{frame}
-
-\begin{frame}[fragile]
-   \frametitle{Operations - checkout}
-      \begin{figure}
-         \centering
-         \includegraphics[width=0.50\textwidth]{images/checkout2.png}
-      \end{figure}
 \end{frame}
 
 \section{The properties}
