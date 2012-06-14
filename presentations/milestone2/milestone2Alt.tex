@@ -136,30 +136,6 @@ lone sig Master extends Branch{}
    \end{columns}
 \end{frame}
 
-\section{Progress}
-\begin{frame}[fragile]
-   \frametitle{Commit}
-   \begin{block}{Abstraction}
-      \begin{itemize}
-         \item In each commit there is a relation between Objects and Paths
-         \item Facts to reflect the parent relationship
-            \begin{itemize}
-               \item The Tree pointed by the Commit corresponds to the root
-               \item A contains tuple exists, 
-	       if and only if, the corresponding pathparent tuple exists
-            \end{itemize}
-      \end{itemize}
-   \end{block}
-   \tiny
-   \begin{lstlisting}[escapechar=!]
-                        sig Commit extends Object {
-                           points : Tree,
-                           parent : set Commit,
-                           !\color{red}{abs: Path -> Object}!
-                        }
-  \end{lstlisting}
-
-\end{frame}
 
 \frame{
    \frametitle{The abstraction relation}
@@ -374,7 +350,7 @@ marks.s' = marks.s - b -> Commit
    \frametitle{Checkout - Instance 2}
       \begin{figure}
          \centering
-         \includegraphics[width=0.80\textwidth]{images/checkout2_1.png}
+         \includegraphics[width=1\textwidth]{images/checkout2_1.png}
       \end{figure}
 \end{frame}
 
@@ -382,7 +358,7 @@ marks.s' = marks.s - b -> Commit
    \frametitle{Checkout - Instance 2}
       \begin{figure}
          \centering
-         \includegraphics[width=0.80\textwidth]{images/checkout2_2.png}
+         \includegraphics[width=1\textwidth]{images/checkout2_2.png}
       \end{figure}
 \end{frame}
 
@@ -490,12 +466,8 @@ all s0,s1,s2,s3,s4,s5:State, f:File |
 \begin{frame}[fragile]
 	\frametitle{Properties}
 	\begin{block}{Revert the Checkout}
-	\begin{itemize}
-		\item If we checkout to a given branch, and then checkout to the
-		branch where we were, the commit and index before the first checkout must
-		be the equal to the commit and index after the second checkout. In other
-		words, no changes in the state
-	\end{itemize}
+		If we checkout to a given branch, and then checkout to the
+      previous HEAD, we will be on the initial branch
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
@@ -512,7 +484,7 @@ all s,s',s'':State, b:Branch | invariant[s]
 	\frametitle{Properties}
 	\begin{block}{Checkout, all files from commit will be in index}
       When a checkout is performed, all files that are on the commit
-      pointed by b, will be in the index.
+      pointed by b, will be in the index
    \end{block}
 	\scriptsize
 	\begin{lstlisting}
