@@ -136,30 +136,6 @@ lone sig Master extends Branch{}
    \end{columns}
 \end{frame}
 
-\section{Progress}
-\begin{frame}[fragile]
-   \frametitle{Commit}
-   \begin{block}{Abstraction}
-      \begin{itemize}
-         \item In each commit there is a relation between Objects and Paths
-         \item Facts to reflect the parent relationship
-            \begin{itemize}
-               \item The Tree pointed by the Commit corresponds to the root
-               \item A contains tuple exists, 
-	       if and only if, the corresponding pathparent tuple exists
-            \end{itemize}
-      \end{itemize}
-   \end{block}
-   \tiny
-   \begin{lstlisting}[escapechar=!]
-                        sig Commit extends Object {
-                           points : Tree,
-                           parent : set Commit,
-                           !\color{red}{abs: Path -> Object}!
-                        }
-  \end{lstlisting}
-
-\end{frame}
 
 \frame{
    \frametitle{The abstraction relation}
@@ -374,7 +350,7 @@ marks.s' = marks.s - b -> Commit
    \frametitle{Checkout - Instance 2}
       \begin{figure}
          \centering
-         \includegraphics[width=0.80\textwidth]{images/checkout2_1.png}
+         \includegraphics[width=1\textwidth]{images/checkout2_1.png}
       \end{figure}
 \end{frame}
 
@@ -382,7 +358,7 @@ marks.s' = marks.s - b -> Commit
    \frametitle{Checkout - Instance 2}
       \begin{figure}
          \centering
-         \includegraphics[width=0.80\textwidth]{images/checkout2_2.png}
+         \includegraphics[width=1\textwidth]{images/checkout2_2.png}
       \end{figure}
 \end{frame}
 
@@ -454,9 +430,11 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
    \end{block}
    \scriptsize
    \begin{lstlisting}
-	all s0,s1,s2 : State | 
-		operation[s0,s1,...] and operation[s1,s2,...] => 
-		   dynamicRelations[s1] = dynamicRelations[s2]
+   all s0,s1,s2 : State | invariant[s0] 
+                      and operation[s0,s1,...] 
+                      and operation[s1,s2,...]
+      
+      => dynamicRelations[s1] = dynamicRelations[s2]
    \end{lstlisting}
 \end{frame}
 
@@ -470,36 +448,34 @@ all s,s':State,... | invariant[s] and operation[s,s',...] => invariant[s'] \\
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
-	all s0,s1,s2,s3,s4,s5:State, f:File | 
+all s0,s1,s2,s3,s4,s5:State, f:File | 
+      
+         invariant[s0] 
+     and commit[s0,s1] 
+     and add[s1,s2,f] 
+     and f.path not in (index.s1).path
+     and commit[s2,s3] 
+     and rm[s3,s4,f] 
+     and commit[s4,s5] 
   
-        commit[s0,s1] 
-        and add[s1,s2,f] 
-        and f.path not in (index.s1).path 
-        and commit[s2,s3] 
-        and rm[s3,s4,f] 
-        and commit[s4,s5]
-	
-   => ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
-	\end{lstlisting}
+  => ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
+   \end{lstlisting}
 	\normalsize
 \end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Properties}
 	\begin{block}{Revert the Checkout}
-	\begin{itemize}
-		\item If we checkout to a given branch, and then checkout to the
-		branch where we were, the commit and index before the first checkout must
-		be the equal to the commit and index after the second checkout. In other
-		words, no changes in the state
-	\end{itemize}
+		If we checkout to a given branch, and then checkout to the
+      previous HEAD, we will be on the initial branch
 	\end{block}
 	\scriptsize
 	\begin{lstlisting}
-all s,s',s'':State, b:Branch | 
-   checkout[s,s',b] and checkout[s',s'',head.s] => 
-      (head.s).(marks.s) = (head.s'').(marks.s'') 
-      and s.pathcontents = s''.pathcontents
+all s,s',s'':State, b:Branch | invariant[s] 
+                           and checkout[s,s',b] 
+                           and checkout[s',s'',head.s] 
+      
+      => (head.s).(marks.s) = (head.s'').(marks.s'') 
 	\end{lstlisting}
 	\normalsize
 \end{frame}
@@ -508,14 +484,15 @@ all s,s',s'':State, b:Branch |
 	\frametitle{Properties}
 	\begin{block}{Checkout, all files from commit will be in index}
       When a checkout is performed, all files that are on the commit
-      pointed by b, will be in the index.
+      pointed by b, will be in the index
    \end{block}
 	\scriptsize
 	\begin{lstlisting}
-all s,s':State, b:branches.s, p:Path, blo:Blob | 
-      p->blo in (b.marks.s).abs => some f:File | 
-         f.path = p and f.blob = blo and f inindex.s'
-	\end{lstlisting}\pause
+   all s,s':State, b:branches.s | invariant[s] 
+                              and checkout[s,s',b] 
+         
+      => (b.marks.s).abs in s'.pathcontents
+   \end{lstlisting}\pause
    \Large
    \color{red}
    \center
