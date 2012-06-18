@@ -92,16 +92,16 @@ assert differentContentDifferentCommit{
 -- Removing a file and commiting is the inverse of adding the same file
 -- and commiting
 assert commitAddCommitRmCommit{
-	all s0,s1,s2,s3,s4,s5:State, f:File |
-					(commit[s0,s1] and
-					add[s1,s2,f] and f.path not in (index.s1).path and
-					commit[s2,s3] and
-					rm[s3,s4,f] and
-					commit[s4,s5])
+	all s0,s1,s2,s3,s4,s5:State, f:File | invariant[s0] 
+											and commit[s0,s1] 
+											and add[s1,s2,f] and f.path not in (index.s1).path 
+											and commit[s2,s3] 
+											and rm[s3,s4,f] 
+											and commit[s4,s5]
 					implies ((head.s1).(marks.s1).points = (head.s5).(marks.s5).points)
 }
 --	for 6, Valid
-
+check commitAddCommitRmCommit for 7
 -----------------------------------------------------------------------------------------------
 -------------------------------------add and rm operations---------------------------------------
 -- Add and Remove, inverse operation
@@ -155,11 +155,10 @@ assert newBranchPointsToHead{
 -- we were before doing the first checkout. The current commit before of the first
 -- checkout should be equal to the commit after doings the first and second checkouts
 assert RevertCheckout {
-	all s,s',s'' : State , b : Branch | (checkout[s,s',b] and checkout[s',s'',head.s]) => 
+	all s,s',s'' : State , b : Branch |invariant[s] and (checkout[s,s',b] and checkout[s',s'',head.s]) => 
 			(head.s).(marks.s) = (head.s'').(marks.s'')
 }
 --	for 8, Valid
-
 
 -- The inverse operation of a checkout, is just doing checkout to the branch where
 -- we were before doing the first checkout. The current index before the first
@@ -181,6 +180,11 @@ assert checkoutNoLostFiles'{
 										no f:index.s0 | f.path -> f.blob not in s1.pathcontents + (head.s0).(marks.s0).abs
 }
 
-check checkoutNoLostFiles' for 10
+assert CBInIndex{
+	all s,s':State, b:branches.s |
+		invariant[s] and checkout[s,s',b] => (b.marks.s).abs in s'.pathcontents
+}
+
+check CBInIndex for 5
 -----------------------------------------------------------------------------------------------
 

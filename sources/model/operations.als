@@ -176,7 +176,7 @@ pred checkout[s,s':State,b:Branch]{
 	-- Except if it's previous (saved) content is equal to the content in the 
 	-- commit to wich we want to branch.
 		all f:index.s | f.path -> f.blob in (IA - CA) => (f.path in CB.univ => (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
-											else f.path not in CA.univ)
+																											else f.path not in CA.univ)
 	-- alternative
 	-- all f : index.s | f.path -> f.blob in ((CA.univ <: IA) - CA) and f.path in CB.univ => (f.path -> f.blob in CB or (f.path).CA = (f.path).CB)
 
@@ -194,6 +194,14 @@ pred checkout[s,s':State,b:Branch]{
 	objects.s' = objects.s
 	marks.s' = marks.s
 }
+
+run{
+	some s,s':State, b:branches.s | invariant[s] 
+										and checkout[s,s',b]
+										and (b.marks.s).points != (head.s).(marks.s).points
+										and some p:Path, blo:Blob | p->blo in (b.marks.s).abs and (all f:File | f.path=p and f.blob = blo => f not in index.s')
+	all p:Path, b:Blob, s:State | p->b in (head.s).(marks.s).abs => some f:File | f.path = p and f.blob = b
+}for 6 but 2 State
 
 run{
 	some s,s':State, b:Branch | checkout[s,s',b] 
