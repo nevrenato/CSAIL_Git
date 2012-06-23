@@ -1,6 +1,16 @@
-\section{Git Object Model}
+\section{The Repository}
+\subsection{Git Object Model}
 
-In this section, we will show the 
+As we have presented before git keeps snapshoots of how your system
+looked like on a certain moment in time. This moment in time is
+represented in git by a commit. A commit points to a tree, that
+represents the structure of your system on that moment. So a tree
+contains others trees and/or blobs. In git the files are not kept. 
+What git keeps is a blob that represents the content of files. The
+relation between the path of a file and the content of that path 
+is kept on the trees corresponding to that path.
+
+We will show the 
 specification of the git object model, using as
 basis two manuals, \cite{gitComm} and \cite{progit}. \par
 Only the key parts of the model will be presented. \par
@@ -15,7 +25,7 @@ We don't need to specify this, as Alloy already can uniquely
 identify atoms, so we can reutilize that functionality. \par
 
 
-\subsection{The four types of Objects}
+\subsubsection{The four types of Objects}
 
 The objects are defined as in \cite{gitComm} (page 7) wich says: 
 "...and there are four different types of objects: blob,

@@ -1,5 +1,6 @@
 \section{Introduction}
 
+% VERSION CONTROL SYSTEM
 A \Gls{version control system} is a tool that records changes on your
 files over time. The main idea is to keep track of the changes on your
 files and to retrieve them later. There are mainly three kinds of 
@@ -8,55 +9,43 @@ a local VCS it is not possible to collaborate with other users and
 the structure that keeps track of the files is kept only locally. The
 need for collaborations with other users brought the centralized VCS.
 On the centralized version control systems exists a server that keeps
-track of the changes on the files. Each user pull and checks out files
-from that central server. This approach has mainly two problems. The
-first is to have a single point of failure. If a server goes down
+track of the changes on the files and each user pulls and checks out files
+from this server. This approach has mainly two problems. The
+first is to have a single point of failure, if a server goes down
 during a certain time, nobody can check out or pull updates. The
-second problem is when you are not connected to the network. You
+second problem is when you are not connected to the network, you
 cannot pull or commit your changes. To solve this problems, the
 distributed VCS appear. Here each user keeps a mirror of the
-repository. There is not a central server. An user can always commit,
-and when connected, can pull/checkout the changes.
+repository and there is not a central server. An user can always commit,
+and when connected, can pull/checkout the changes.\\
+%GIT
+Git is a distributed VCS. It was created in 2005 by Linus Torvalds,
+for the Linux kernel development. The main different when comparing to
+others distributed VCS is that git keeps snapshots of how your system
+looks likes on a certain moment in time, instead of keeping track of
+changes.\\
+%ALLOY
+Alloy description goes here\\
+%OUR PROJECT
+Nowadays git is having great success, it is efficient, fast and very
+easy to use. The problem here is that, most of the users do not dive
+into the git internals, they are just happy that it works. The ones
+that actually try to go deep into git to see how it works and why git
+behaves in a specific way, are fronted with the lack of formal or even
+informal specifications.  So, the purpose of this project is to
+formally model the git core using alloy, analyse and model some git
+operations and then check which properties the model does (not)
+guarantee. This report presents to the reader a formal description of
+git internals, the description of some operations and it ends with
+some properties that the model guarantee.\\
+%report organization
+This reports starts by explaining the organization of git, how git is
+structured. Then we cover each component of git. We begin with the
+object model, following the index and working directory. For matters
+of time and complexity we focus our model on the index and object
+model. After the presentation of the structure we give the formal
+specification of some operations. We finish the report with the
+analysis of some properties.
 
-This project aims to build a precise model of how the git works. \par
-The purpose of this model is to better comprehend git and 
-check some properties that the model (not) guarantees. \par
-Also, using this model as basis, a manual will be build. This one,
-has the advange of being based on a semiformal specification.
+% can we trust in git to manage projects of big value ? 
 
-\subsection{A brief explanation of git}
-
-Git is just one of many \Gls{version control system} available. 
-They are 
-distinguished by two main types: Centralized and Distributed.
-Git it's in the later. The major difference between git and any
-other VCS, is that while others save differences between files, git saves
-snapshots. \par
-A Git project usually has three main sections: Repository, Index and
-Working Directory. 
-Where the later it's just a subset of the filesystem. \par
-Git was created in 2005 by the Linux community, 
-with the purpose of replacing BitKeeper. Some of it's
-goals are \cite{progit}: 
-
-\begin{enumerate}
-	\item Speed
-	\item Simple design
-	\item Strong support for non-linear development
-	\item Fully distributed
-	\item Able to handle large projects like the Linux Kernel 
-	efficiently (speed and data size)
-\end{enumerate}
-
-\subsection{Why the verification of git is important}
-
-Nowadays, the software projects are getting bigger, and in most
-cases it is needed a version control system. Thus, git is being
-more and more used. However, can we trust in git to manage projects
-of big value ? We can be
-more confident in git if we make some kind of verification on it. Because
-there are no known formal/semiformal verifications of git, we try to fill
-part of that hole with this project.
-
-\subsection{Alloy}
-We will use Alloy as the specification language used for the model.
