@@ -240,7 +240,6 @@ pred merge[s,s' : State, b : Branch] {
 		-- more pos conditions here
 	}
 
-
 	-- 3-way merge situation. 
 	else {
 		let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent, 
@@ -251,18 +250,11 @@ pred merge[s,s' : State, b : Branch] {
 					-- the conflicts situations
 					-- modify conflict
 					-- delete/modify conflict
-					all f : File | 
-						f.path in unmerge.s' <=> (f.path in ch.univ & cb.univ and no f.path.ch & f.path.cb & f.path.cc) or
-																		 (f.path in ch.univ & cc.univ and no f.path & cb.univ and f.path.ch != f.path.cc) or
-																		 (f.path in cb.univ & cc.univ and no f.path & ch.univ and f.path.cb != f.path.cc)
+					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc').univ - (cb & cc').univ
 
 					-- updating the index
-					ch & cb in s'.pathcontents
-					all p : (ch+cb).univ - unmerge.s' |	p.ch != p.cb and p.ch = p.cc => p.(s'.pathcontents) = p.cb and
-																							p.ch != p.cb and p.cb = p.cc => p.(s'.pathcontents) = p.ca
-					s'.pathcontents.univ in (ch+cb).univ - unmerge.s'
+					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc  & (cb - ch)					
 
-		
 					no unmerge.s' => { }
 					else {}
 				} 
