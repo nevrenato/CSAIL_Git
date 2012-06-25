@@ -198,9 +198,8 @@ pred merge[s,s' : State, b : Branch] {
   -- to be updated
 	some b.(marks.s).^parent & (head.s).(marks.s) implies { 
 		-- pos conditions
-		(head.s).marks.s' = b.marks.s 
+		(head.s').marks.s' = b.marks.s 
 		s'.pathcontents = (head.s').(marks.s').abs :> Blob	
-		head.s' = b
 		merge.s = merge.s'
 		unmerge.s = unmerge.s'
 	}
@@ -219,19 +218,20 @@ pred merge[s,s' : State, b : Branch] {
 					-- building the index accordingly with the conflicts
 					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc & (cb - ch) 				
 				
-					no unmerge.s' => { /* the commit situation */ }
-					else  { 
+					//no unmerge.s' => { /* the commit situation */ }
+					some unmerge.s' /* this is temporary* (testing only) */
+				//	else  { 
 										merge.s' = b.(marks.s) + head.s.(marks.s)
 										head.s' = head.s	
-					} 
+					//} 
 		}
 	}
 	
 	-- pos conditions
 	branches.s' = branches.s
-	(Branch - head.s') <: marks.s' = marks.s
+	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 	objects.s' = objects.s
-
+	head.s' = head.s
 }
 
-run { some s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 5 but 2 State
+run { some s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 4 but 2 State
