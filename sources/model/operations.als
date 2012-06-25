@@ -227,13 +227,13 @@ pred merge[s,s' : State, b : Branch] {
 	-- pre conditions
 	-- head can't be descedent of b
 	-- no uncommitted changes on head
-	no (head.s).*parent & b
+	no (head.s).(marks.s).*parent & b.(marks.s)
 	(head.s).(marks.s).abs :> Blob = s.pathcontents	
 
 	-- The fast-forward situation. The current commit is older than of branch
 	-- b so the head will point to the commit pointed by b, and the index is going
   -- to be updated
-	some b.^parent & head.s implies { 
+	some b.(marks.s).^parent & (head.s).(marks.s) implies { 
 		-- pos conditions
 		(head.s).marks.s' = b.marks.s 
 		s'.pathcontents = (head.s').(marks.s').abs :> Blob	
@@ -246,26 +246,23 @@ pred merge[s,s' : State, b : Branch] {
 	-- 3-way merge situation. 
 	else {
 		let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent, 
-				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s) :> Blob {
+				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s).abs :> Blob {
 					-- pre conditions
 					-- common ancestor
-				one com : ancestors | com.*parent = ancestors {
-					let cc = com.abs :> Blob | 
-					-- the conflicts situations
+				one com : ancestors | com.*parent = ancestors and
+					let cc = com.abs :> Blob {
 					-- modify conflict
 					-- delete/modify conflict
-					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ and 
+					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ 
 					-- updating the index
-					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc  & (cb - ch)					
+					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc  & (cb - ch) 
+					}					
 				
 					no unmerge.s' => { }
 					else  { 
-										merge.s' = b + head.s
-										head.s' = head.s
-										
-					} 
-				} 
-		 }
+										merge.s' = b.(marks.s) + head.s.(marks.s)
+										head.s' = head.s	} 
+		}
 	}
 	
 	-- pos conditions
@@ -274,3 +271,5 @@ pred merge[s,s' : State, b : Branch] {
 	objects.s' = objects.s
 
 }
+
+run {}
