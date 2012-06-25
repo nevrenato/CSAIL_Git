@@ -234,4 +234,4 @@ pred merge[s,s' : State, b : Branch] {
 
 }
 
-run { some s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 4 but 2 State
+run { some s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 5 but 2 State
