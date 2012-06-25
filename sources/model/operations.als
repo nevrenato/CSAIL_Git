@@ -270,4 +270,4 @@ pred merge[s,s' : State, b : Branch] {
 
 }
 
-run {}
+run { some s,s' : State , b : Branch | merge[s,s',b] } for 4 but 2 State
