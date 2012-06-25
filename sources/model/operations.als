@@ -247,7 +247,7 @@ pred merge[s,s' : State, b : Branch] {
 				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s) :> Blob {
 					-- pre conditions
 					-- common ancestor
-				one cc : Commit | cc in ancestors and cc.*parent = ancestors {
+				one cc : ancestors | cc.*parent = ancestors {
 					-- the conflicts situations
 					-- modify conflict
 					-- delete/modify conflict
@@ -255,9 +255,17 @@ pred merge[s,s' : State, b : Branch] {
 						f.path in unmerge.s' <=> (f.path in ch.univ & cb.univ and no f.path.ch & f.path.cb & f.path.cc) or
 																		 (f.path in ch.univ & cc.univ and no f.path & cb.univ and f.path.ch != f.path.cc) or
 																		 (f.path in cb.univ & cc.univ and no f.path & ch.univ and f.path.cb != f.path.cc)
-				}
-				some unmerge.s' {}
-				else { } 
-		 } 
+
+					-- updating the index
+					ch & cb in s'.pathcontents
+					all p : (ch+cb).univ - unmerge.s' |	p.ch != p.cb and p.ch = p.cc => p.(s'.pathcontents) = p.cb and
+																							p.ch != p.cb and p.cb = p.cc => p.(s'.pathcontents) = p.ca
+					s'.pathcontents.univ in (ch+cb).univ - unmerge.s'
+
+		
+					no unmerge.s' => { }
+					else {}
+				} 
+		 }
 	}
 }
