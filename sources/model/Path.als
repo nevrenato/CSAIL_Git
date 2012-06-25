@@ -3,9 +3,13 @@ open Name
 
 -- A path is used to represent a subset of full path of a file
 -- E.g. the /a of /x/a or /a/x or /x/a/x etc...
+-- the merge relation tells, if a file is unmerged at a given state
+-- the commit operation can't happen unless this relation is empty
+-- at that state
 sig Path {
 	pathparent : lone Path,
-	name : Name
+	name : Name,
+	unmerge : set State
 }
 
 -- The root folder of the repository

@@ -7,10 +7,13 @@ open Path
 -- Each commit has a set of parent commits.
 -- The abs (abstraction) relation is used to 
 -- identify wich files and folders are represented on commit.
+-- The merge relation points to wich commits will be parent of
+-- the next merge commit
 sig Commit extends Object {
 	points : Tree,
 	parent : set Commit,
-	abs: Path -> Object
+	abs: Path -> Object,
+	merge : set State
 }
 
 sig RootCommit extends Commit {}

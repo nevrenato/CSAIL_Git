@@ -30,18 +30,23 @@ pred invariant[s:State]{
 		all s:State, t : objects.s & Tree | some t.contains
 }
 
+
+
+
+
+
+
 -- The representation of a commit operation 
 -- Some new changes have to be done since last commit, so we can make a new commit (pre)
 pred commit[s,s':State]{
 
 	-- pre condition
-	some index.s
+	-- there must be something new to commit
+	(head.s).(marks.s).abs :> Blob != s.pathcontents
+	-- there cannot be unmerge conflicts	
+	no unmerge.s
 
 	-- pos conditions
-
-	-- No changes have been done to the index
-	index.s' = index.s
-	
 	-- The case of a first commit
 	-- The new commit will be a Root
 	-- And the master branch will be the current
@@ -60,9 +65,7 @@ pred commit[s,s':State]{
 		head.s' = head.s
 		branches.s' = branches.s
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
-		-- The following cannot be necessary
-		--(head.s').(marks.s') != (head.s).(marks.s)
-		(head.s').(marks.s').parent = (head.s).(marks.s)
+		(head.s').(marks.s').parent = (head.s).(marks.s) + merge.s
 	}
 
 	-- All files on the index must be on the commit also
@@ -72,6 +75,13 @@ pred commit[s,s':State]{
 	-- The new objects refering to the new
 	-- commit must exist on the system (referential integrity)
 	objects.s' = objects.s + (head.s').(marks.s') + univ.((head.s').(marks.s').abs) 
+
+
+	-- there is no more merge situation
+	no merge.s'
+  unmerge.s' = unmerge.s
+	-- No changes have been done to the index
+	index.s' = index.s
 }
 
 -- The representation of the add operation
@@ -84,6 +94,8 @@ pred add[s,s':State, f:File]{
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
+	merge.s = merge.s'
+	unmerge.s = unmerge.s' - f.path
 
 	-- The new file must be added to the index, and all files
 	-- with the same path must be removed
@@ -108,6 +120,8 @@ pred rm[s,s':State,f:File]{
 	marks.s' = marks.s
 	objects.s' = objects.s
 	index.s' = index.s - f
+	merge.s = merge.s'
+  unmerge.s = unmerge.s' - f.path
 }
 
 
@@ -125,6 +139,8 @@ pred branch[s,s':State,b:Branch]{
 	branches.s' = branches.s + b
 	objects.s' = objects.s
 	index.s' = index.s
+	merge.s = merge.s'
+ 	unmerge.s = unmerge.s' 
 
 	-- The new branch must point to the current commit
 	marks.s' = marks.s + b -> (head.s).(marks.s)
@@ -149,6 +165,8 @@ pred branchRm[s,s':State, b:Branch]{
 	branches.s' = branches.s - b
 	objects.s' = objects.s
 	index.s' = index.s
+	merge.s = merge.s'
+	unmerge.s = unmerge.s'
 
 	-- Removal of all commits pointed by the branch
 	marks.s' = marks.s - b -> Commit
@@ -193,26 +211,12 @@ pred checkout[s,s':State,b:Branch]{
 	marks.s' = marks.s
 	objects.s' = objects.s
 	marks.s' = marks.s
+	merge.s = merge.s'
+	unmerge.s = unmerge.s'
 }
 
-run{
-	some s,s':State, b:branches.s | invariant[s] 
-										and checkout[s,s',b]
-										and (b.marks.s).points != (head.s).(marks.s).points
-										and some p:Path, blo:Blob | p->blo in (b.marks.s).abs and (all f:File | f.path=p and f.blob = blo => f not in index.s')
-	all p:Path, b:Blob, s:State | p->b in (head.s).(marks.s).abs => some f:File | f.path = p and f.blob = b
-}for 6 but 2 State
 
-run{
-	some s,s':State, b:Branch | checkout[s,s',b] 
-									and invariant[s] 
-									and (b.marks.s).points !=(head.s).(marks.s).points
-									and no index.s & index.s'
-									and some index.s
-	#Commit = 2
-	#RootCommit = 1
-	all p:Path | lone path.p
-} for 5 but 2 State
+
 
 -- The representation of the merge operation. A merge has two ways
 -- to work : Fast-Forward or normal merge.
@@ -221,76 +225,39 @@ run{
 pred merge[s,s' : State, b : Branch] {
 	
 	-- pre conditions
-	
-	-- This may be not needed
-	some (head.s).(marks.s).*parent & b.(marks.s).^parent
-	(head.s).(marks.s).points != b.(marks.s).points
-	not (b.marks.s) in (head.s).(marks.s).^parent
-	
-	-- pos conditions 
-	
+	-- head can't be descedent of b
+	-- no uncommitted changes on head
+	no (head.s).*parent & b
+	(head.s).(marks.s).abs :> Blob = s.pathcontents	
+
 	-- The fast-forward situation. The current commit is older than of branch
-	-- b so the head will point to the commit pointed by b
-	(head.s).(marks.s) in b.(marks.s).^parent implies { 
+	-- b so the head will point to the commit pointed by b, and the index is going
+  -- to be updated
+	some b.^parent & head.s implies { 
+		-- pos conditions
 		(head.s).marks.s' = b.marks.s 
-		objects.s' = objects.s		
-		s'.pathcontents = (head.s').(marks.s').abs :> Blob
+		s'.pathcontents = (head.s').(marks.s').abs :> Blob		
+		-- more pos conditions here
 	}
 
 
-	-- Normal merge situation. Where the two commits have (usually) a common 
-	-- ancestor, and a new merge commit will be created if not conflicts are
-	-- found.
+	-- 3-way merge situation. 
 	else {
-		-- The merge commit will have as parents the commits we want to merge. And
-		-- the new commit will have all the content that it's parents have.
-		(head.s').(marks.s').parent = ((head.s)+b).(marks.s)
-		((head.s)+b).(marks.s).abs.univ = (head.s').(marks.s').abs.univ
-
-		let CA = (head.s).(marks.s).abs :> Blob, CB=(b.marks.s).abs :> Blob, CC = (head.s).(marks.s').abs :> Blob {
-		
-			-- All files must be previously saved. (pre condition)
-			no s.pathcontents - CA			
-
-			-- pos conditions
-			-- The information common to the parents must exist on the new commit.
-			-- Also all information existing only on one of the parents must also exist on 
-			-- the new commit. And the new index must be consistent with the new commit
-			-- If any file conflicts it's new content can be anything
-			CA & CB in CC
-			(Path - CB.univ) <: CA + (Path - CA.univ) <: CB in CC
-			s'.pathcontents = CC
-		}
+		let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent, 
+				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s) :> Blob {
+					-- pre conditions
+					-- common ancestor
+				one cc : Commit | cc in ancestors and cc.*parent = ancestors {
+					-- the conflicts situations
+					-- modify conflict
+					-- delete/modify conflict
+					all f : File | 
+						f.path in unmerge.s' <=> (f.path in ch.univ & cb.univ and no f.path.ch & f.path.cb & f.path.cc) or
+																		 (f.path in ch.univ & cc.univ and no f.path & cb.univ and f.path.ch != f.path.cc) or
+																		 (f.path in cb.univ & cc.univ and no f.path & ch.univ and f.path.cb != f.path.cc)
+				}
+				some unmerge.s' {}
+				else { } 
+		 } 
 	}
-
-	-- referential integrity
-	objects.s' = objects.s + univ.((head.s').(marks.s').abs) + (head.s').(marks.s')
-	
-	head.s' = head.s 
-	branches.s' = branches.s
-  	(Branch - head.s') <: marks.s' = (Branch - head.s) <: marks.s
 }
-
-
-run {
-	some s:State | invariant[s] and some head.s and #(head.s).(marks.s).abs > 2
-	one Commit
-	one Branch
-	#File > 1
-	no path.Root
-	#pathparent.Root > 2
-} for 5 but 1 State
-
-run {
-		some s0,s1,s2,s3,s4,s5,s6,s7,s8:State, f,f2,f3:File, b:Branch | no head.s0
-									and no index.s0
-									and add[s0,s1,f]
-									and commit[s1,s2]
-									and branch[s2,s3,b]
-									and add[s3,s4,f2] and f2.path!=f.path
-									and commit[s4,s5]
-									and rm[s5,s6,f2]
-									and add[s6,s7,f3] and (f3.path).pathparent = f2.path
-									and checkout[s7,s8,b]
-} for 5 but 9 State
-
