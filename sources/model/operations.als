@@ -219,11 +219,10 @@ pred checkout[s,s':State,b:Branch]{
 
 
 -- The representation of the merge operation. A merge has two ways
--- to work : Fast-Forward or normal merge.
+-- to work : Fast-Forward or normal 3-way merge.
 -- In order for a merge to be done, the two branches cannot point to
 -- the same commit, and the current cannot be more recent than of branch b
-pred merge[s,s' : State, b : Branch] {
-	
+pred merge[s,s' : State, b : Branch] {	
 	-- pre conditions
 	-- head can't be descedent of b
 	-- no uncommitted changes on head
@@ -237,31 +236,30 @@ pred merge[s,s' : State, b : Branch] {
 		-- pos conditions
 		(head.s).marks.s' = b.marks.s 
 		s'.pathcontents = (head.s').(marks.s').abs :> Blob	
-	
 		head.s' = b
 		merge.s = merge.s'
 		unmerge.s = unmerge.s'
 	}
-
 	-- 3-way merge situation. 
 	else {
 		let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent, 
-				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s).abs :> Blob {
+				cc'= (ancestors - ancestors.parent), cc = cc'.abs :> Blob,
+				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s).abs :> Blob {	
 					-- pre conditions
-					-- common ancestor
-				one com : ancestors | com.*parent = ancestors and
-					let cc = com.abs :> Blob {
+					-- the must be a common ancestor
+					one cc'
+		
 					-- modify conflict
 					-- delete/modify conflict
 					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ 
-					-- updating the index
-					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc  & (cb - ch) 
-					}					
+					-- building the index accordingly with the conflicts
+					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc & (cb - ch) 				
 				
-					no unmerge.s' => { }
+					no unmerge.s' => { /* the commit situation */ }
 					else  { 
 										merge.s' = b.(marks.s) + head.s.(marks.s)
-										head.s' = head.s	} 
+										head.s' = head.s	
+					} 
 		}
 	}
 	
