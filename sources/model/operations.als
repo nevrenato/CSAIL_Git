@@ -246,18 +246,19 @@ pred merge[s,s' : State, b : Branch] {
 				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s) :> Blob {
 					-- pre conditions
 					-- common ancestor
-				one cc : ancestors | cc.*parent = ancestors {
+				one com : ancestors | com.*parent = ancestors {
+					let cc = com.abs :> Blob | 
 					-- the conflicts situations
 					-- modify conflict
 					-- delete/modify conflict
-					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc').univ - (cb & cc').univ
-
+					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ and 
 					-- updating the index
 					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc  & (cb - ch)					
-
+				
 					no unmerge.s' => { }
-					else {}
+					else  merge.s' = b 
 				} 
 		 }
 	}
+
 }
