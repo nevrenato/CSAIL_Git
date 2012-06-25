@@ -41,6 +41,7 @@ pred invariant[s:State]{
 pred commit[s,s':State]{
 
 	-- pre condition
+	some index.s
 	-- there must be something new to commit
 	(head.s).(marks.s).abs :> Blob != s.pathcontents
 	-- there cannot be unmerge conflicts	
@@ -210,7 +211,6 @@ pred checkout[s,s':State,b:Branch]{
 	branches.s' = branches.s
 	marks.s' = marks.s
 	objects.s' = objects.s
-	marks.s' = marks.s
 	merge.s = merge.s'
 	unmerge.s = unmerge.s'
 }
@@ -236,8 +236,11 @@ pred merge[s,s' : State, b : Branch] {
 	some b.^parent & head.s implies { 
 		-- pos conditions
 		(head.s).marks.s' = b.marks.s 
-		s'.pathcontents = (head.s').(marks.s').abs :> Blob		
-		-- more pos conditions here
+		s'.pathcontents = (head.s').(marks.s').abs :> Blob	
+	
+		head.s' = b
+		merge.s = merge.s'
+		unmerge.s = unmerge.s'
 	}
 
 	-- 3-way merge situation. 
@@ -256,9 +259,18 @@ pred merge[s,s' : State, b : Branch] {
 					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc  & (cb - ch)					
 				
 					no unmerge.s' => { }
-					else  merge.s' = b 
+					else  { 
+										merge.s' = b + head.s
+										head.s' = head.s
+										
+					} 
 				} 
 		 }
 	}
+	
+	-- pos conditions
+	branches.s' = branches.s
+	(Branch - head.s') <: marks.s' = marks.s
+	objects.s' = objects.s
 
 }
