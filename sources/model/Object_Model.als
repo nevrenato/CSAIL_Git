@@ -46,7 +46,8 @@ fact {
 		let objs = c.points.*(contents.Name){
 			c.abs in Path some -> lone objs
 			(c.abs).(c.points) in Root
-			all p,q : (c.abs).univ | p -> q in pathparent implies q.(c.abs) -> p.(c.abs) -> p.name in contents
+			--all p,q: (c.abs).univ | p -> q in pathparent implies q.(c.abs) -> p.(c.abs) -> p.name in contents
+			all p : (c.abs).univ | some p.pathparent implies some q : (c.abs).univ | p -> q in pathparent and q.(c.abs) -> p.(c.abs) -> p.name in contents
 			all t,o : objs, n : Name | t -> o -> n in contents implies all y : c.abs.t | some x : c.abs.o | x -> y in pathparent and x.name = n
 		}
 	}

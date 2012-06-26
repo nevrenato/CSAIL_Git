@@ -44,7 +44,7 @@ pred commit[s,s':State]{
 
 	-- there is no more merge situation
 	no merge.s'
-  unmerge.s' = unmerge.s
+  no unmerge.s'
 	-- No changes have been done to the index
 	index.s' = index.s
 }
