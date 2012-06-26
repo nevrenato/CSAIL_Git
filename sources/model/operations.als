@@ -193,6 +193,8 @@ pred merge[s,s' : State, b : Branch] {
 	no (head.s).(marks.s).*parent & b.(marks.s)
 	(head.s).(marks.s).abs :> Blob = s.pathcontents	
 
+	/* debug */ not some b.(marks.s).^parent & (head.s).(marks.s)
+
 	-- The fast-forward situation. The current commit is older than of branch
 	-- b so the head will point to the commit pointed by b, and the index is going
   -- to be updated
@@ -202,7 +204,10 @@ pred merge[s,s' : State, b : Branch] {
 		s'.pathcontents = (head.s').(marks.s').abs :> Blob	
 		merge.s = merge.s'
 		unmerge.s = unmerge.s'
+		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 	}
+
+
 	-- 3-way merge situation. 
 	else {
 		let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent, 
@@ -223,15 +228,15 @@ pred merge[s,s' : State, b : Branch] {
 				//	else  { 
 										merge.s' = b.(marks.s) + head.s.(marks.s)
 										head.s' = head.s	
+										marks.s' = marks.s
 					//} 
 		}
 	}
 	
 	-- pos conditions
 	branches.s' = branches.s
-	(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 	objects.s' = objects.s
 	head.s' = head.s
 }
 
-run { some s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 4 but 2 State
+run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 6 but 2 State

@@ -82,6 +82,7 @@
 
 <edge visible="no" attribute="yes">
    <relation name="blob"> <type name="Aux/Path/File"/> <type name="Aux/Object_Model/Objects/Blob"/> </relation>
+   <relation name="name"> <type name="Aux/Path/Path"/> <type name="Aux/Path/Name/Name"/> </relation>
 </edge>
 
 </view>
