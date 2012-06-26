@@ -205,7 +205,7 @@ pred merge[s,s' : State, b : Branch] {
 		no ((s.pathcontents - (head.s).(marks.s).abs :> Blob).univ).(b.(marks.s).abs)
 		-- pos conditions
 		(head.s').marks.s' = b.marks.s 
-		s'.pathcontents = (head.s').(marks.s').abs :> Blob	+ s.pathcontents - b.(marks.s).abs :> Blob
+		s'.pathcontents = (head.s').(marks.s').abs :> Blob	+ (s.pathcontents - b.(marks.s).abs :> Blob)
 		no merge.s'
 		no unmerge.s'
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
