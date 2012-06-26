@@ -76,7 +76,8 @@ pred rm[s,s':State,f:File]{
 	
 	--file on index and it's contents are the same
 	-- as in the last commit
-	f in index.s
+	f in index.s or f.path in unmerge.s
+
 	f.path -> f.blob in (head.s).(marks.s).abs
 
 	--pos conditions
@@ -86,7 +87,7 @@ pred rm[s,s':State,f:File]{
 	objects.s' = objects.s
 	index.s' = index.s - f
 	merge.s = merge.s'
-  unmerge.s = unmerge.s' - f.path
+  unmerge.s' = unmerge.s - f.path
 }
 
 
@@ -191,46 +192,41 @@ pred merge[s,s' : State, b : Branch] {
 	-- head can't be descedent of b
 	-- no uncommitted changes on head
 	no (head.s).(marks.s).*parent & b.(marks.s)
-	(head.s).(marks.s).abs :> Blob = s.pathcontents	
 
-	/* debug */ not some b.(marks.s).^parent & (head.s).(marks.s)
+	no unmerge.s 
+
+//	/* debug */ not some b.(marks.s).^parent & (head.s).(marks.s)
 
 	-- The fast-forward situation. The current commit is older than of branch
 	-- b so the head will point to the commit pointed by b, and the index is going
   -- to be updated
 	some b.(marks.s).^parent & (head.s).(marks.s) implies { 
+		-- pre condition
+		no ((s.pathcontents - (head.s).(marks.s).abs :> Blob).univ).(b.(marks.s).abs)
 		-- pos conditions
 		(head.s').marks.s' = b.marks.s 
-		s'.pathcontents = (head.s').(marks.s').abs :> Blob	
-		merge.s = merge.s'
-		unmerge.s = unmerge.s'
+		s'.pathcontents = (head.s').(marks.s').abs :> Blob	+ s.pathcontents - b.(marks.s).abs :> Blob
+		no merge.s'
+		no unmerge.s'
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 	}
 
-
-	-- 3-way merge situation. 
+	-- 3-way merge situation... (2 in fact bc alcino didn't want it)
 	else {
-		let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent, 
-				cc'= (ancestors - ancestors.parent), cc = cc'.abs :> Blob,
-				ch = (head.s).(marks.s).abs :> Blob, cb = b.(marks.s).abs :> Blob {	
 					-- pre conditions
-					-- the must be a common ancestor
-					one cc'
-		
-					-- modify conflict
-					-- delete/modify conflict
-					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ - (ch.univ - cb.univ ) - (cb.univ - ch.univ)
+					-- there cannot be uncommited changes
+					(head.s).(marks.s).abs :> Blob = s.pathcontents	
+					-- there must be a common ancestor
+					let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent | one (ancestors - ancestors.parent)
+				  let ch = (head.s).(marks.s), cb = b.(marks.s) {	
+					-- the conflicts
+					unmerge.s' = (ch.abs + cb.abs - ch.abs & cb.abs).univ
 					-- building the index accordingly with the conflicts
-					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc & (cb - ch) 				
+					s'.pathcontents = (ch.abs + cb.abs - unmerge.s' -> univ) :> Blob
+					}
 				
-					//no unmerge.s' => { /* the commit situation */ }
-					some unmerge.s' /* this is temporary* (testing only) */
-				//	else  { 
-										merge.s' = b.(marks.s) + head.s.(marks.s)
-										head.s' = head.s	
-										marks.s' = marks.s
-					//} 
-		}
+					merge.s' = b.(marks.s) + head.s.(marks.s)
+					marks.s' = marks.s 
 	}
 	
 	-- pos conditions
@@ -239,4 +235,4 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s
 }
 
-run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 9 but 2 State
+run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 5 but 2 State
