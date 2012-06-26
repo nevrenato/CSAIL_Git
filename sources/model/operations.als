@@ -192,10 +192,8 @@ pred merge[s,s' : State, b : Branch] {
 	-- head can't be descedent of b
 	-- no uncommitted changes on head
 	no (head.s).(marks.s).*parent & b.(marks.s)
-
+	(head.s).(marks.s).points != b.(marks.s).points
 	no unmerge.s 
-
-//	/* debug */ not some b.(marks.s).^parent & (head.s).(marks.s)
 
 	-- The fast-forward situation. The current commit is older than of branch
 	-- b so the head will point to the commit pointed by b, and the index is going
@@ -211,7 +209,7 @@ pred merge[s,s' : State, b : Branch] {
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 	}
 
-	-- 3-way merge situation... (2 in fact bc alcino didn't want it)
+	-- 3-way merge situation... (2 in fact bc we haven't time for more)
 	else {
 					-- pre conditions
 					-- there cannot be uncommited changes
@@ -220,7 +218,7 @@ pred merge[s,s' : State, b : Branch] {
 					let ancestors = (head.s).(marks.s).^parent & b.(marks.s).^parent | one (ancestors - ancestors.parent)
 				  let ch = (head.s).(marks.s), cb = b.(marks.s) {	
 					-- the conflicts
-					unmerge.s' = (ch.abs + cb.abs - ch.abs & cb.abs).univ
+					unmerge.s' = ((ch.abs + cb.abs - ch.abs & cb.abs) :> Blob).univ
 					-- building the index accordingly with the conflicts
 					s'.pathcontents = (ch.abs + cb.abs - unmerge.s' -> univ) :> Blob
 					}
@@ -235,4 +233,4 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s
 }
 
-run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 5 but 2 State
+run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State

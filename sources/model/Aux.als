@@ -29,5 +29,5 @@ pred invariant[s:State]{
 		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
 		marks.s in branches.s -> one objects.s
 		all s:State, t : objects.s & Tree | some t.contains
-		all c,c': Commit | c.parent = c' => c.points != c'.points  
+		all c,c': Commit | c' in c.parent => c.points != c'.points  
 }
