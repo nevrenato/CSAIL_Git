@@ -20,6 +20,7 @@ fun files : State -> Path {
 -- referential integrity for the content of a tree, commmits and marks
 -- And because git if file oriented, there cannot be
 -- trees (folders) with no sons.
+-- Two commits that are direct relatives cannot have the same content
 pred invariant[s:State]{	
 		some Commit & objects.s <=> some marks.s && one head.s
 		head.s in branches.s & (marks.s).Commit
@@ -28,4 +29,5 @@ pred invariant[s:State]{
 		all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
 		marks.s in branches.s -> one objects.s
 		all s:State, t : objects.s & Tree | some t.contains
+		all c,c': Commit | c.parent = c' => c.points != c'.points  
 }

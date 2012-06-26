@@ -219,7 +219,7 @@ pred merge[s,s' : State, b : Branch] {
 		
 					-- modify conflict
 					-- delete/modify conflict
-					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ 
+					unmerge.s' = (ch+cb).univ - (ch & cb).univ - (ch & cc).univ - (cb & cc).univ - (ch.univ - cb.univ ) - (cb.univ - ch.univ)
 					-- building the index accordingly with the conflicts
 					s'.pathcontents = ch + cb - unmerge.s' -> Blob - cc & (cc - cb) - cc & (cb - ch) 				
 				
@@ -239,4 +239,4 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s
 }
 
-run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 6 but 2 State
+run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 9 but 2 State
