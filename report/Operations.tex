@@ -1,28 +1,13 @@
 \section{Git operations}
 
-In this section we will show the specification of the main Git operations.
-Also we will refer some properties 
-that theses operations are supposed to hold. \par
+\subsection{Add and Remove}
 
-\subsection{Add}
-
-The add operation will just update the content of a file in the index, 
-or add a new file to it, so in the next commit it can be committed. \par
-When we are just updating the content of a file, Git also removes the file
-with the old content.
-
-\begin{lstlisting}
-pred add[s,s' : State, f : File] {
-	
-	head.s' = head.s
-	branches.s' = branches.s
-	marks.s' = marks.s
-	objects.s' = object.s
-
-	index.s' = index.s + f .((f.path).~path -f)
-}
-\end{lstlisting}
-
+When you use the 'git add <file>' command, a file will be
+added to the index. The file added can be a new file, or 
+a file already existing in the index. When the latter is true, 
+git just updates the content of that file. \par
+When you add a file, it will be marked to be committed in the next
+commit. 
 \begin{figure}[h!] 
 	\caption{Before the add}
 	\centering
@@ -37,32 +22,22 @@ pred add[s,s' : State, f : File] {
 
 \pagebreak
 
-\subsection{Remove}
-
-Accordingly to man git-rm, removes files from the index, or from the
-working tree and the index, so in the next commit it can be committed
-it's removal. The file must exist in the previous commit.\par
-
-\begin{lstlisting}
-pred remove[s,s' : State, f:File] {
-	f in index.s
-	f.path -> f.blob in (head.s).(marks.s).abs
-
-	head.s' = head.s
-	branches.s' = branches.s
-	marks.s' = marks.s 
-	objects.s' = objects.s
-	index.s' = index.s - f
-}
-\end{lstlisting}
-
-We can see the remove operation as the inverse of add, thus the rm 
-operation can be represented as the figures 3 and 4, but in a inverse
-order. \par
-
+'git rm <file>' can be seen as the inverse operation of the 'git add <file>'.
+In this case Git, will remove a file from the index, so it won't appear in the
+next commit. Besides being removed from index, it will also be removed from the 
+working directory (if it's still there). \par
+However, there are a few cases that Git prevents you from removing a file : 
+\begin{itemize}
+\item The file must exist in the index.
+\item Removing a file, when the file with it's current content 
+doesn't exist in some commit object.
+\end{itemize}
+The last restriction exists, to avoid the accidental deletion of files. Imagine the
+case where you have a file 'x' with 10k lines of code. You add it to the index,
+but, before committing you accidentally use 'git rm x'. Because Git erases from
+the index and the working directory you would lose it permanently.
 
 \subsection{Add and Remove operation properties}
-
 
 \begin{itemize}
 	\item Adding a file after adding the same file, has no effect
