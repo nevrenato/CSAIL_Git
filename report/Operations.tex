@@ -92,9 +92,12 @@ pred branchDel[s,s':State, b:Branch]{
 
 \subsection{Commit}
 
-Accordingly to man git-commit, the commit operation 
-stores the current contents of the index in a new commit 
-along with a log message from the user describing the changes. \par 
+The 'git commit' operation, stores the current content of the index in a new
+commit. \par
+The only restriction that Git has about this operations 
+it's that your new commit must have something different from the previous
+commit, or, if it's the first commit, then there must exist some content in
+current index. \par
 
 
 \subsection{Checkout}
@@ -104,6 +107,7 @@ working tree, and HEAD to reflect the specified branch or commit". \par
 
 \subsection{Merge}
 
-From man git-merge : "Join two or mode development histories together" \par
-
-
+When you do a 'git merge <branch>', a merge will happen between the current
+branch and the branch selected on the command. That merge can be automatic, or
+must have intervention from the user. There are also, three types of merge. A 
+fast-forward merge a 2-way or a 3-way merge. \par
