@@ -21,13 +21,11 @@ and when connected, can pull/checkout the changes.\\
 \subsection{What is Git?}
 %GIT
 Git is a distributed VCS. It was created in 2005 by Linus Torvalds,
-for the Linux kernel development. The main different when comparing to
+for the Linux kernel development. The main difference when comparing to
 others distributed VCS is that git keeps snapshots of how your system
 looks likes on a certain moment in time, instead of keeping track of
 changes.\\
 \subsection{Our motivation for this manual}
-%ALLOY
-Alloy description goes here\\
 %OUR PROJECT
 Nowadays git is having great success, it is efficient, fast and very
 easy to use. The problem here is that, most of the users do not dive
@@ -35,12 +33,18 @@ into the git internals, they are just happy that it works. The ones
 that actually try to go deep into git to see how it works and why git
 behaves in a specific way, are fronted with the lack of formal or even
 informal specifications.  So, the purpose of this project is to
-formally model the git core using alloy, analyse and model some git
-operations and then check which properties the model does (not)
-guarantee. This report presents to the reader a formal description of
+formally model the git core using a tool called 
+Alloy, analyse and model some git
+operations with that tool, and then check which properties the model does (not)
+guarantee. This manual presents to the reader a formal description of
 git internals, the description of some operations and it ends with
-some properties that the model guarantee.\\
-\subsection{How this manual is structuted}
+some properties that the model guarantee.\par
+%ALLOY
+Alloy is a declarative specification language, used for describing structures in 
+a formal way. After modeling the structures, it is possible to visualize 
+instances of them.
+
+\subsection{How this manual is structured}
 %report organization
 This reports starts by explaining the organization of git, how git is
 structured. Then we cover each component of git. We begin with the
