@@ -40,6 +40,13 @@ the index and the working directory you would lose it permanently.
 
 \subsubsection{Examples}
 
+In these figures, it is shown the process of adding a file to the index. In
+fact, both files showing represent the same file, but with different content at
+a given time. So imagine that, after adding "File1", "File0" is added. "File1"
+would be removed from the index (because there cannot be a file with different
+contents in the index at any given state) and "File0" would be added. What was
+described was the representation of the update of the content of a file in the
+index. \par 
 \begin{figure}[h!] 
 	\caption{Before the add}
 	\centering
@@ -76,7 +83,31 @@ current index. \par
 
 \subsubsection{Examples}
 
+\begin{figure} 
+	\caption{A first commit}
+	\centering
+	\includegraphics[scale=0.65]{images/commit1.png}
+	\label{fig:commit1}
+\end{figure}
 
+The figure \ref{fig:commit1} is a typical example of a RootCommit. There is a file with the path
+Name/Name, and a content Blob. It is currently on the index. The current branch
+is Master, and it is pointing to a commit, which represents the index at current
+state. \par
+
+\begin{figure} 
+	\caption{A Commit}
+	\centering
+	\includegraphics[scale=0.65]{images/commit2.png}
+	\label{fig:commit2}
+\end{figure}
+
+The figure \ref{fig:commit2} represents the case of a normal commit, where the
+newest commit comes after the RootCommit. The line of thought is the same as in
+the last image. We can see that the difference between these two commits, it
+that the only file was moved to a folder named "Name". \par
+We can also see the efficiency of Git, about the sharing property of objects in
+the commits, thus minimizing the space occupied in the repository. \par
 \subsection{Branch}
 
 \subsubsection{What it does?}

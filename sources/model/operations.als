@@ -233,4 +233,5 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s
 }
 
-run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State
+run { some disj s,s' : State  | invariant[s] and  commit[s,s'] } for 5 but 2 State,2 Commit
+--run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State
