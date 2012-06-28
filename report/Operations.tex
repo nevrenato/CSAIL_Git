@@ -67,7 +67,7 @@ is called a RootCommit. \par
 
 \subsubsection{Pre requisites}
 
-The only restriction that Git has about this operations 
+The only restriction that Git has about this operation 
 it's that your new commit must have something different from the previous
 commit, or, if it's the first commit, then there must exist some content in
 current index. \par
@@ -107,22 +107,33 @@ working tree, and HEAD to reflect the specified branch or commit". \par
 \subsubsection{What it does?}
 
 When you do a 'git merge <branch>', a merge will happen between the current
-branch and the branch selected on the command. \par
-There can be three types of merge : 
+branch and the branch selected on the command. The result will be a new merge 
+commit, or a partially merged index. \par
+
+Git knows three types of merge : 
 \begin{itemize}
 \item A fast-forward merge, that will happen when 
 the current commit from the other
-branch, is more recent than the current commit from the current branch.
+branch, is more recent than the current commit from the current branch. \par
+This type is not a true merge, in the sense that the only thing that
+changes it's the pointer of the current branch
+is moved to the newest commit.
+
 \item A 2-way merge, that happens when the conditions for a fast-forward
 don't exist, and there isn't a common ancestor for both commits.
-\item A 3-way merge, that happens when the conditions for a fast-forward
-don't exist, but, there is a common ancestor for both commits.
+
+\item A 3-way merge, happens when the conditions for a fast-forward
+don't exist, but, there is a common ancestor for both commits. \par
+The difference between these two last types, is that the last is much 
+more automatic having much less conflicts than the previous type.
 \end{itemize}
-Besides theses 3 types of merge operation, if a merge has no conflicts then
-it will made automatically by Git, otherwise Git will merge as most possible,
-and leave the rest to the user. When the user, finishes the merging of files, he
+Knowing these 3 types of merge, it's important to know that Git tries to make
+the merge process as automatic as possible. However conflicts do exist, and when
+they happen it leaves to the user the process of resolving those conflicts. \par
+When the Git/user, finishes the merging of files in the index, he
 can commit the resulting merge, in a merge commit. \par
-While there are unmerged files in the index, you can't commit.
+Note that while there are unmerged files in the index, a commit cannot be
+made. \par 
 
 \subsubsection{Pre requisites}
 
