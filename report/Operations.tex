@@ -37,58 +37,15 @@ case where you have a file 'x' with 10k lines of code. You add it to the index,
 but, before committing you accidentally use 'git rm x'. Because Git erases from
 the index and the working directory you would lose it permanently.
 
-\subsection{Add and Remove operation properties}
-
-\begin{itemize}
-	\item Adding a file after adding the same file, has no effect
-	\item Adding a file, committing, removing the same file and 
-	committing brings to a commit equal to before of adding the file
-	\item Removing a file and then adding the same file brings to an
-	index equal to the one before removing the file
-\end{itemize}
-
-\subsection{Branch}
-
-Git branch operation has several forms, that to different things on git.
-The ones which we care are the forms that create and delete branches. \par
-When a new branch is created it will point to the current HEAD by default.
-\par
-
-\begin{lstlisting}
-pred branch[s,s':State,b:Branch]{
-	
-	b not in branches.s
-
-	head.s' = head.s
-	branches.s' = branches.s + b
-	objects.s' = objects.s
-	index.s' = index.s
-
-	marks.s' = marks.s + b -> (head.s).(marks.s)
-}
-\end{lstlisting}
-
-The man git-branch says that when deleting a branch, it must be fully
-merged in its upstream branch, or in HEAD if no upstream was set. \par
-
-\begin{lstlisting}
-pred branchDel[s,s':State, b:Branch]{
-		
-	b in branches.s
-	b not in (head.s)
-	b.marks.s in (head.s).(marks.s).*parent
-
-	head.s' = head.s
-	branches.s' = branches.s - b
-	objects.s' = objects.s
-	index.s' = index.s
-
-	marks.s' = marks.s - b -> Commit
-}
-\end{lstlisting}
-
-
-\subsection{Branch operations properties }
+%\subsection{Add and Remove operation properties}
+%
+%\begin{itemize}
+%	\item Adding a file after adding the same file, has no effect
+%	\item Adding a file, committing, removing the same file and 
+%	committing brings to a commit equal to before of adding the file
+%	\item Removing a file and then adding the same file brings to an
+%	index equal to the one before removing the file
+%\end{itemize}
 
 \subsection{Commit}
 
@@ -99,6 +56,19 @@ it's that your new commit must have something different from the previous
 commit, or, if it's the first commit, then there must exist some content in
 current index. \par
 
+\subsection{Branch}
+
+Git branch operation has several forms, that to different things on git.
+The ones which we care are the forms that create and delete branches. \par
+When a new branch is created it will point to the current HEAD by default.
+\par
+
+
+The man git-branch says that when deleting a branch, it must be fully
+merged in its upstream branch, or in HEAD if no upstream was set. \par
+
+\subsection{Branch operations properties }
+
 
 \subsection{Checkout}
 
@@ -108,6 +78,19 @@ working tree, and HEAD to reflect the specified branch or commit". \par
 \subsection{Merge}
 
 When you do a 'git merge <branch>', a merge will happen between the current
-branch and the branch selected on the command. That merge can be automatic, or
-must have intervention from the user. There are also, three types of merge. A 
-fast-forward merge a 2-way or a 3-way merge. \par
+branch and the branch selected on the command. \par
+There can be three types of merge : 
+\begin{itemize}
+\item A fast-forward merge, that will happen when 
+the current commit from the other
+branch, is more recent than the current commit from the current branch.
+\item A 2-way merge, that happens when the conditions for a fast-forward
+don't exist, and there isn't a common ancestor for both commits.
+\item A 3-way merge, that happens when the conditions for a fast-forward
+don't exist, but, there is a common ancestor for both commits.
+\end{itemize}
+Besides theses 3 types of merge operation, if a merge has no conflicts then
+it will made automatically by Git, otherwise Git will merge as most possible,
+and leave the rest to the user. When the user, finishes the merging of files, he
+can commit the resulting merge, in a merge commit. \par
+While there are unmerged files in the index, you can't commit.
