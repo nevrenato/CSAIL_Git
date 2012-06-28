@@ -1,6 +1,6 @@
 \section{The Git structure}
 The git is divided mainly in three components. The working directory,
-the index and the repository. The connection between this components
+the index and the repository. The connection between these components
 can be seen in figure \ref{fig:git_structure}. 
 
 \begin{figure}[h!]
@@ -9,21 +9,29 @@ can be seen in figure \ref{fig:git_structure}.
    \caption{Git WorkFlow}\label{fig:git_structure}
 \end{figure}
 
+\subsection{Working Directory}
+
 The working directory is a subset of
 a file system that contains the files of the project that you are
 currently working on. When retrieving an older snapshot of the project, the
-working directory is updated to reflect the project that state. The index is a
-component between the repository and the working directory. It
-contains the files that will be on the next commit
-(on the next snapshot). Finally the repository is like a database. It contains 
-all the information about your system, all the snapshots taken till
-the moment. In figure \ref{fig:git_structure} there are a local
-repository and a remote repository. In reality there are no difference
-between them, they have the same structure. Both of them are local
-repository, and at the same time remote repository. Each one sees the 
-other as remote repository.\\
+working directory is updated to reflect the project in that state.
 
-For a matter of time and complexity, in this project we turned our attention 
-mainly to the index and repository. We are not modeling what is going
-on in the working directory. We just model that there are files in the
-working directory, anything else.
+\subsection{Index}
+The index is a component that contains all the files that will be committed
+on the next commit (the next snapshot).
+
+\subsection{Repository}
+As said, Git is a distributed VCS. So we can work not just with a local repository,
+or remote repository, but we can work with both types at the same time. One of 
+the advantages of Git is that we can work off-line and then at the end of day,
+we update the remote repository with our work. \par
+In fact, the definition of local/remote depends only on the perspective of the user,
+as there are no structural differences between local and remote repositories. 
+Imagining two users, where each one has his local repository, 
+one will see the other as the remote repository and vice-versa. \par
+A repository contains all the information needed to store, and stores all snapshots taken.
+%
+%For a matter of time and complexity, in this project we turned our attention 
+%mainly to the index and repository. We are not modeling what is going
+%on in the working directory. We just model that there are files in the
+%working directory, anything else.
