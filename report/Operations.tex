@@ -2,12 +2,44 @@
 
 \subsection{Add and Remove}
 
+\subsubsection{What they do?}
+
 When you use the 'git add <file>' command, a file will be
 added to the index. The file added can be a new file, or 
 a file already existing in the index. When the latter is true, 
 git just updates the content of that file. \par
 When you add a file, it will be marked to be committed in the next
-commit. 
+commit. \par
+'git rm <file>' can be seen as the inverse operation of the 'git add <file>'.
+In this case Git, will remove a file from the index, so it won't appear in the
+next commit. Besides being removed from index, it will also be removed from the 
+working directory (if it's still there). \par
+
+\subsubsection{Pre requisites}
+
+There are a few cases where Git prevents you from removing a file : 
+\begin{itemize}
+\item The file must exist in the index.
+\item Removing a file, when the file with it's current content 
+doesn't exist in some commit object.
+\end{itemize}
+The last restriction exists, to avoid the accidental deletion of files. Imagine the
+case where you have a file 'x' with 10k lines of code. You add it to the index,
+but, before committing you accidentally use 'git rm x'. Because Git erases from
+the index and the working directory you would lose it permanently.
+
+\subsubsection{Properties}
+
+\begin{itemize}
+	\item Adding a file after adding the same file, has no effect
+	\item Adding a file, committing, removing the same file and 
+	committing brings to a commit equal to before of adding the file
+	\item Removing a file and then adding the same file brings to an
+	index equal to the one before removing the file
+\end{itemize}
+
+\subsubsection{Examples}
+
 \begin{figure}[h!] 
 	\caption{Before the add}
 	\centering
@@ -22,45 +54,35 @@ commit.
 
 \pagebreak
 
-'git rm <file>' can be seen as the inverse operation of the 'git add <file>'.
-In this case Git, will remove a file from the index, so it won't appear in the
-next commit. Besides being removed from index, it will also be removed from the 
-working directory (if it's still there). \par
-However, there are a few cases that Git prevents you from removing a file : 
-\begin{itemize}
-\item The file must exist in the index.
-\item Removing a file, when the file with it's current content 
-doesn't exist in some commit object.
-\end{itemize}
-The last restriction exists, to avoid the accidental deletion of files. Imagine the
-case where you have a file 'x' with 10k lines of code. You add it to the index,
-but, before committing you accidentally use 'git rm x'. Because Git erases from
-the index and the working directory you would lose it permanently.
-
-%\subsection{Add and Remove operation properties}
-%
-%\begin{itemize}
-%	\item Adding a file after adding the same file, has no effect
-%	\item Adding a file, committing, removing the same file and 
-%	committing brings to a commit equal to before of adding the file
-%	\item Removing a file and then adding the same file brings to an
-%	index equal to the one before removing the file
-%\end{itemize}
 
 \subsection{Commit}
 
+\subsubsection{What it does?}
+
 The 'git commit' operation, stores the current content of the index in a new
 commit. \par
-The only restriction that Git has about this operations 
-it's that your new commit must have something different from the previous
-commit, or, if it's the first commit, then there must exist some content in
-current index. \par
 When the first commit is created, a branch called "Master" will be created
 and will be marked as the current branch. Also, the first commit of a repository
 is called a RootCommit. \par
 
+\subsubsection{Pre requisites}
+
+The only restriction that Git has about this operations 
+it's that your new commit must have something different from the previous
+commit, or, if it's the first commit, then there must exist some content in
+current index. \par
+
+\subsubsection{Properties}
+
+\subsubsection{Examples}
+
+
 \subsection{Branch}
 
+\subsubsection{What it does?}
+\subsubsection{Pre requisites}
+\subsubsection{Properties}
+\subsubsection{Examples}
 Git branch operation has several forms, that to different things on git.
 The ones which we care are the forms that create and delete branches. \par
 When a new branch is created it will point to the current HEAD by default.
@@ -70,15 +92,19 @@ When a new branch is created it will point to the current HEAD by default.
 The man git-branch says that when deleting a branch, it must be fully
 merged in its upstream branch, or in HEAD if no upstream was set. \par
 
-\subsection{Branch operations properties }
-
 
 \subsection{Checkout}
 
+\subsubsection{What it does?}
+\subsubsection{Pre requisites}
+\subsubsection{Properties}
+\subsubsection{Examples}
 From man git-checkout : "Switches branches by updating the index, 
 working tree, and HEAD to reflect the specified branch or commit". \par
 
 \subsection{Merge}
+
+\subsubsection{What it does?}
 
 When you do a 'git merge <branch>', a merge will happen between the current
 branch and the branch selected on the command. \par
@@ -97,3 +123,19 @@ it will made automatically by Git, otherwise Git will merge as most possible,
 and leave the rest to the user. When the user, finishes the merging of files, he
 can commit the resulting merge, in a merge commit. \par
 While there are unmerged files in the index, you can't commit.
+
+\subsubsection{Pre requisites}
+
+\begin{itemize}
+\item A merge can't be made, if the current commit is more recent then the
+other commit.
+\item A merge can't be made, while there are unmerged files.
+\item In the case of a fast-forward merge, the index can't have uncommitted
+files that can be changed by the merge operation.
+\item In the case of a 2-way or 3-way merge operation there can not be
+uncommitted files. 
+\end{itemize}
+
+\subsubsection{Properties}
+
+\subsubsection{Examples}
