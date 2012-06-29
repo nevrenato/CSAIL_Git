@@ -28,16 +28,6 @@ case where you have a file 'x' with 10k lines of code. You add it to the index,
 but, before committing you accidentally use 'git rm x'. Because Git erases from
 the index and the working directory you would lose it permanently. \par
 
-\subsubsection{Properties}
-
-\begin{itemize}
-	\item Adding a file after adding the same file, has no effect
-	\item Adding a file, committing, removing the same file and 
-	committing brings to a commit equal to before of adding the file
-	\item Removing a file and then adding the same file brings to an
-	index equal to the one before removing the file
-\end{itemize}
-
 \subsubsection{Examples}
 
 In these figures, it is shown the process of adding a file to the index. Note
@@ -79,7 +69,6 @@ it's that your new commit must have something different from the previous
 commit, or, if it's the first commit, then there must exist some content in
 current index. \par
 
-\subsubsection{Properties}
 
 \subsubsection{Examples}
 
@@ -112,7 +101,6 @@ the commits, thus minimizing the space occupied in the repository. \par
 
 \subsubsection{What it does?}
 \subsubsection{Pre requisites}
-\subsubsection{Properties}
 \subsubsection{Examples}
 Git branch operation has several forms, that to different things on git.
 The ones which we care are the forms that create and delete branches. \par
@@ -128,7 +116,6 @@ merged in its upstream branch, or in HEAD if no upstream was set. \par
 
 \subsubsection{What it does?}
 \subsubsection{Pre requisites}
-\subsubsection{Properties}
 \subsubsection{Examples}
 From man git-checkout : "Switches branches by updating the index, 
 working tree, and HEAD to reflect the specified branch or commit". \par
@@ -178,7 +165,6 @@ files that can be changed by the merge operation.
 uncommitted files. 
 \end{itemize}
 
-\subsubsection{Properties}
 
 \subsubsection{Examples}
 \begin{figure} 

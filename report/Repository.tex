@@ -9,6 +9,7 @@ What git keeps is a blob that represents the content of files. The
 relation between the path of a file and the content of that path 
 is kept on the trees corresponding to that path. \par
 
+\subsection{Objects}
 All objects are identified by an hash 
 defined by their contents. Thus, when two files have the same
 content, they will have the same identification. \par
@@ -24,7 +25,11 @@ Also points to previous commit(s) and identifies the user that made the commit.
 version of some program.
 \end{itemize}
 
-Here goes an image of a typical commit....
+\begin{figure}[h!] 
+	\caption{A commit object pointing to a tree}
+	\centering
+	\includegraphics[scale=0.65]{images/commitobject.png}
+\end{figure}
 
 \subsection{Branches}
 One of the trump cards of Git it's his definition of branches. Other VCS
@@ -36,5 +41,9 @@ So, the branches operations in Git turn to be fast and easy to use. \par
 It's important to say that exists a special pointer called "Head" that will 
 always point to the current commit. \par
 
-Here goes an image of a branch visualization....
+\begin{figure}[h!] 
+	\caption{Branches pointing to a commit}
+	\centering
+	\includegraphics[scale=0.65]{images/branchexample.png}
+\end{figure}
 
