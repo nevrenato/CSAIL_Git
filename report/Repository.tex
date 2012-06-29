@@ -13,81 +13,28 @@ All objects are identified by an hash
 defined by their contents. Thus, when two files have the same
 content, they will have the same identification. \par
 
-The objects are defined as in \cite{gitComm} (page 7) wich says: 
-"...and there are four different types of objects: blob,
-tree, commit, and tag."
-Also: "A blob is used to store file data - it is generally a file" 
-\cite{gitComm} (page 8). \par
-For trees: "A tree is basically like a directory 
-- {\bf it references a bunch
-of other trees and/or blobs}..." (page 8) \par 
+There are the following types of objects in the world of Git:
 
+\begin{itemize}
+\item A Blob that stores file data and can be seen as a file
+\item A Tree that stores blobs and other trees, thus can be seen as folders.
+\item A Commit that points to a snapshot of the repository at a given moment.
+Also points to previous commit(s) and identifies the user that made the commit.
+\item A Tag points to special commits. For example, a commit that has the beta
+version of some program.
+\end{itemize}
 
-The tag will be discarded, as it doesn't affect the main operations
-of git. \par 
+Here goes an image of a typical commit....
 
-Now for the commit:  
-"As you can see,a commit is defined by : 
-parent(s):{\bf The SHA1 name of some number of commits which
-represent the immediately previous step(s) in the 
-history of the project}..."
-"...merge commits may have more than one. A commit with no 
-parents is called a root commit, and represents the 
-initial revision of a project. {\bf Each project must have at
-least one root. A project can also have multiple roots,
-though that isn't common (or necessarily a good idea)}". 
-\cite{gitComm} (page12) 
-A commit also points to a certain tree that represents the state of the
-repository at a given state. \par
+\subsection{Branches}
+One of the trump cards of Git it's his definition of branches. Other VCS
+have a copy of the entire repository for each branch made. Thus, branches
+operations in those VCS are slow and hard to use. Now Git, just uses 
+pointers for branches. In fact, when creating a new branch the only thing
+done is the creation of new pointer that will point to the current commit. \par
+So, the branches operations in Git turn to be fast and easy to use. \par
+It's important to say that exists a special pointer called "Head" that will 
+always point to the current commit. \par
 
-
-%\section{Branches in Git}
-%One of the advantages of git compared to others VCS is the operation
-%of creating a new branch. While in others VCS, a copy of the hole project is
-%done each time we create new branch, in git, only a new pointer is created, as
-%said in the next quotations:
-%"A branch in Git is {\bf simply a 
-%lightweight movable pointer to one of these commits}." \cite{progit} (pag 39) \par
-%"The special pointer called {\bf Header 
-%points to the branch we are working on}". \cite{progit} (pag 40) \par
-
-
-%\section{Specification of files}
-%
-%In order to model Git, we need the notion of a file. In our view a file should have
-%a path associated and a content. The path (along with it's parents)
-%will uniquely determine the full name of a file
-%(e.g. /x/y/example.txt), the content will be just a Blob.
-%
-%
-%\begin{figure}[h!] 
-%	\caption{A typical example of a file, where is name is /Name1/Name0 }
-%	\centering
-%	\includegraphics[scale=0.65]{images/image1.png}
-%\end{figure}
-%\pagebreak
-%
-%
-%\section{Index in Git}
-%
-%The definition of Index:
-%"...staging area between your working directory and your
-%repository. You can use the index to {\bf build up a set of 
-%changes that you want to commit together}. When you create
-%a commit, {\bf what is committed is what is currently in the
-%index, not what is in your working directory.}"
-%\cite{gitComm} (page 17). \par
-%
-%Also : ``The index {\bf contains all the information necessary to generate a single
-%(uniquely determined) tree object}'' \cite{gitComm} (pag 121). \par
-%
-%Thus, what is in the index for a given state, is just a set of files.
-%
-%
-%\begin{figure}[h!] 
-%	\caption{A typical example of a file (file1) that is in the index}
-%	\centering
-%	\includegraphics[scale=0.65]{images/image2.png}
-%\end{figure}
-%\pagebreak
+Here goes an image of a branch visualization....
 
