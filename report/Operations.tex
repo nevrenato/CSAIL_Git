@@ -17,16 +17,16 @@ working directory (if it's still there). \par
 
 \subsubsection{Pre requisites}
 
-There are a few cases where Git prevents you from removing a file : 
+There are a few cases where Git prevents you from removing a file, and they are: 
 \begin{itemize}
-\item The file must exist in the index.
+\item The file doesn't exist in the index.
 \item Removing a file, when the file with it's current content 
-doesn't exist in some commit object.
+doesn't exist in last commit.
 \end{itemize}
 The last restriction exists, to avoid the accidental deletion of files. Imagine the
 case where you have a file 'x' with 10k lines of code. You add it to the index,
 but, before committing you accidentally use 'git rm x'. Because Git erases from
-the index and the working directory you would lose it permanently.
+the index and the working directory you would lose it permanently. \par
 
 \subsubsection{Properties}
 
@@ -40,12 +40,12 @@ the index and the working directory you would lose it permanently.
 
 \subsubsection{Examples}
 
-In these figures, it is shown the process of adding a file to the index. In
-fact, both files showing represent the same file, but with different content at
+In these figures, it is shown the process of adding a file to the index. Note
+that both files showing represent the same file, but with different content at
 a given time. So imagine that, after adding "File1", "File0" is added. "File1"
 would be removed from the index (because there cannot be a file with different
 contents in the index at any given state) and "File0" would be added. What was
-described was the representation of the update of the content of a file in the
+just described was the representation of the update of the content of a file in the
 index. \par 
 \begin{figure}[h!] 
 	\caption{Before the add}
@@ -92,7 +92,7 @@ current index. \par
 
 The figure \ref{fig:commit1} is a typical example of a RootCommit. There is a file with the path
 Name/Name, and a content Blob. It is currently on the index. The current branch
-is Master, and it is pointing to a commit, which represents the index at current
+is Master, and it is pointing to a commit, which represents the index at the current
 state. \par
 
 \begin{figure} 
@@ -104,8 +104,8 @@ state. \par
 
 The figure \ref{fig:commit2} represents the case of a normal commit, where the
 newest commit comes after the RootCommit. The line of thought is the same as in
-the last image. We can see that the difference between these two commits, it
-that the only file was moved to a folder named "Name". \par
+the last image. We can see that the difference between these two commits in the
+figure, is that the only file was moved to a folder named "Name". \par
 We can also see the efficiency of Git, about the sharing property of objects in
 the commits, thus minimizing the space occupied in the repository. \par
 \subsection{Branch}
@@ -181,3 +181,16 @@ uncommitted files.
 \subsubsection{Properties}
 
 \subsubsection{Examples}
+\begin{figure} 
+	\caption{A typical case of a fast-forward commit}
+	\centering
+	\includegraphics[scale=0.65]{images/fastforward.png}
+	\label{fig:fastforward}
+\end{figure}
+\begin{figure} 
+	\caption{Normal case of a 3-way merge}
+	\centering
+	\includegraphics[scale=0.65]{images/normalmerge.png}
+	\label{fig:merge}
+\end{figure}
+

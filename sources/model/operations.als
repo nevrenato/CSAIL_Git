@@ -195,6 +195,7 @@ pred merge[s,s' : State, b : Branch] {
 	(head.s).(marks.s).points != b.(marks.s).points
 	no unmerge.s 
 
+	no b.(marks.s).^parent & (head.s).(marks.s) 
 	-- The fast-forward situation. The current commit is older than of branch
 	-- b so the head will point to the commit pointed by b, and the index is going
   -- to be updated
@@ -233,5 +234,5 @@ pred merge[s,s' : State, b : Branch] {
 	head.s' = head.s
 }
 
-run { some disj s,s' : State  | invariant[s] and  commit[s,s'] } for 5 but 2 State,2 Commit
---run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State
+--run { some disj s,s' : State  | invariant[s] and  commit[s,s'] } for 5 but 2 State,2 Commit
+run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State, 2 File, 3 Commit
