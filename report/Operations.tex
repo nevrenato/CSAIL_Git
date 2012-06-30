@@ -180,3 +180,17 @@ uncommitted files.
 	\label{fig:merge}
 \end{figure}
 
+\subsubsection{Git Pull and Git Push}
+
+When working with remote repositories, these two operations will be vastly
+used. They are in fact a sequence of operations, and are used to get content
+from a remote repository and to place your content on the remote repository.
+\par
+If a 'git pull' is done, the branch from the remote repository will be fetched,
+and the local branch and the remote branch will be merged. \par
+If a 'git push' is done, the remote branch will be uploaded to the remote 
+repository and will be merged there. \par
+However, a 'git push' can only be done when the resulting merge will be a
+fast-forward, simply because there is no one on the other side to resolve the 
+merge conflicts. For the case of 'git pull' it's pre requisites are the same of
+the merge operation. \par
