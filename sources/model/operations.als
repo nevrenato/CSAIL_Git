@@ -18,8 +18,9 @@ pred commit[s,s':State]{
 	no head.s =>{
 		head.s' = Master
 		branches.s' = head.s'
-		(head.s').(marks.s') in RootCommit
-		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
+		(head.s').(marks.s') in RootCommit 
+		 marks.s' = head.s' -> (objects.s' & Commit)
+  
 	}
 
 	-- If there are already commits in the repository
@@ -33,6 +34,8 @@ pred commit[s,s':State]{
 		(head.s').(marks.s').parent = (head.s).(marks.s) + merge.s
 	}
 
+	no (head.s').(marks.s') & objects.s
+
 	-- All files on the index must be on the commit also
 	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
 	all f:index.s | f.path -> f.blob in (head.s').(marks.s').abs
@@ -44,10 +47,16 @@ pred commit[s,s':State]{
 
 	-- there is no more merge situation
 	no merge.s'
-  no unmerge.s'
+  	no unmerge.s'
 	-- No changes have been done to the index
 	index.s' = index.s
 }
+
+run { 
+	some disj s,s' : State  | invariant[s] and  commit[s,s'] 
+} for 5 but 2 State,1 Commit
+--run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State, 2 File, 3 Commit
+
 
 -- The representation of the add operation
 -- The only difference from one state to the other is that is guaranteed
@@ -233,7 +242,3 @@ pred merge[s,s' : State, b : Branch] {
 	objects.s' = objects.s
 	head.s' = head.s
 }
-
-run { some disj s,s' : State  | invariant[s] and  commit[s,s'] and  #branches.s' = 2 } 
-for 5 but 2 State,2 Commit,1 File
---run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State, 2 File, 3 Commit
