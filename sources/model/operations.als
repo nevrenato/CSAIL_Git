@@ -52,12 +52,6 @@ pred commit[s,s':State]{
 	index.s' = index.s
 }
 
-run { 
-	some disj s,s' : State  | invariant[s] and  commit[s,s'] 
-} for 5 but 2 State,1 Commit
---run { some disj s,s' : State , b : Branch | invariant[s] and merge[s,s',b] } for 7 but 2 State, 2 File, 3 Commit
-
-
 -- The representation of the add operation
 -- The only difference from one state to the other is that is guaranteed
 -- that the new file is in the index
@@ -242,3 +236,8 @@ pred merge[s,s' : State, b : Branch] {
 	objects.s' = objects.s
 	head.s' = head.s
 }
+
+run { 
+	some disj s,s' : State | invariant[s] and no (objects.s & Commit) and commit[s,s'] 
+} for 7 but 2 State, 1 Commit
+
