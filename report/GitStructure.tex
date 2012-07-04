@@ -1,7 +1,14 @@
 \section{The Git structure}
-The git is divided mainly in three components. The working directory,
+Git, as it was said before, is a distributed version control system.
+It means that each user as a mirror from the repository (local
+repository) and in the case of
+git, there is no need for a central server, even that, each user is able to
+fetch or push updates from other user's repository (remote repository).
+Git is divided mainly in three components. The working directory,
 the index and the repository. The connection between these components
-can be seen in figure \ref{fig:git_structure}. 
+can be seen in Figure \ref{fig:git_structure}. Local and remote
+repository have the same internal structure. What is a local
+repository for an user is a remote repository for other user.
 
 \begin{figure}[h!]
    \centering
@@ -11,10 +18,14 @@ can be seen in figure \ref{fig:git_structure}.
 
 \subsection{Working Directory}
 
-The working directory is a subset of
-a file system that contains the files of the project that you are
-currently working on. When retrieving an older snapshot of the project, the
-working directory is updated to reflect the project in that state.
+The working directory is basically a subset of
+a file system that contains the files of the project you are
+currently working on. This files can be the current files, files
+retrieved from an old snapshot or even files that are not being
+tracked. When retrieving an older snapshot of the project, the
+working directory is updated to reflect the project in that state. It
+is possible to have in the working directory files that are not being
+tracked. This files are just ignored
 
 \subsection{Index}
 The index is a component that contains all the files that will be committed
