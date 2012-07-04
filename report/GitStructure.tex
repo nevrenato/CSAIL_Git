@@ -2,7 +2,7 @@
 Git, as it was said before, is a distributed version control system.
 It means that each user as a mirror of the repository (local
 repository) and in the case of
-git, there is no need for a central server, even that, each user is able to
+\emph{git}, there is no need for a central server, even that, each user is able to
 fetch or push updates from other user's repository (remote repository).
 Git is divided mainly in three components. The working directory,
 the index and the repository. The connection between these components
@@ -28,13 +28,13 @@ present both of them.
 
 
 \subsection{Git Objects}
-As we have presented before git keeps snapshots of how your system
+As we have presented before \emph{git} keeps snapshots of how your system
 looked like on a certain moment in time. This moment in time is
-represented in git by a commit. Each commit points to a tree
+represented in \emph{git} by a commit. Each commit points to a tree
 (corresponding to a directory), that
 represents the structure of your project on that moment. So a tree
-contains others trees and/or blobs. In git the files are not kept. 
-What git keeps is a object called blob that represents the content of files. The
+contains others trees and/or blobs. In \emph{git} the files are not kept. 
+What \emph{git} keeps is a object called blob that represents the content of files. The
 relation between the path of a file and the content of that path 
 is kept on the trees corresponding to that path. \par
 In Figure \ref{fig:snapshot} is possible to see an example of a snapshot. We
@@ -120,23 +120,28 @@ model we did not model this object, because when abstracting it looks
 like a branch, that we will see in next section.
 
 \subsection{Git References}
-
+Basically a reference is just a pointer to a commit. There is much
+more about references, but in this manual, lets keep it simple and
+concentrate on the object model. In this manual, we just speak about
+Branches and the special reference HEAD.
 
 \subsubsection{Branches}
-One of the trump cards of Git it's his definition of branches. Other VCS
-have a copy of the entire repository for each branch made. Thus, branches
-operations in those VCS are slow and hard to use. Now Git, just uses 
-pointers for branches. In fact, when creating a new branch the only thing
-done is the creation of new pointer that will point to the current commit. \par
-So, the branches operations in Git turn to be fast and easy to use. \par
-It's important to say that exists a special pointer called "Head" that will 
-always point to the current commit. \par
+One of the trump cards of Git is its definition of branches. In other
+VCS each time a branch is created a new copy of the entire repository
+has to be done. Thus, branches operations in those VCS are slow and hard to use. 
+In \emph{git}, when a new branch is created the only thing that
+\emph{git} does, is to create a new pointer to the current
+commit. The current commit is marked by a special reference called
+HEAD, that we present next.
 
 \subsubsection{HEAD}
-%git pro 
-%You need to make some changes and commit snapshots of those changes into
-%your repository each time the
-%project reaches a state you want to record.
+HEAD is maybe the most important reference in the repository. It
+indicates where you are situated in the repository. When a commit is
+done, \emph{git} has to know which commit is going to be the parent. 
+It does so, looking into the HEAD. HEAD normally is a
+pointer to a branch, so when the commit is done, the HEAD is kept, but
+the branch points to the new commit. HEAD can point directly to a
+commit, but lets keep it simple.
 
 \section{Working Directory}
 
