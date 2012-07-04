@@ -10,39 +10,135 @@ can be seen in Figure \ref{fig:git_structure}. Local and remote
 repository have the same internal structure. What is a local
 repository for an user is a remote repository for another user.
 
-\begin{figure}[h!]
+\begin{figure}[!t]
    \centering
    \includegraphics[width=0.8\textwidth]{images/data_flow_simplified.png}
-   \caption{Git WorkFlow}\label{fig:git_structure}
+   \caption{Git Workflow}\label{fig:git_structure}
 \end{figure}
 
-\subsection{Repository}
-Git repository is like a database of your system along time. It is
+\section{The Repository}
+Git repository is like a database of a project along construction time. It is
 the place where the snapshots taking during the project construction
 are kept, as well as, all the necessary information to
-allow the users to go through all the snapshots. The snapshot
-structure and snapshots relations are kept using what is called \emph{git
-objects}. The information needed to go through the project is kept in
-what is called \emph{git references}. In the next subsections we
+allow the users to go through all the snapshots. The snapshot's
+structure and snapshots' relations are kept using, what is called, \emph{git
+objects}. The information needed to go through the project is kept in,
+what is called, \emph{git references}. In the next subsections we
 present both of them.
 
-\subsubsection{Git Objects}
+
+\subsection{Git Objects}
 As we have presented before git keeps snapshots of how your system
 looked like on a certain moment in time. This moment in time is
-represented in git by a commit. A commit points to a tree, that
-represents the structure of your system on that moment. So a tree
+represented in git by a commit. Each commit points to a tree
+(corresponding to a directory), that
+represents the structure of your project on that moment. So a tree
 contains others trees and/or blobs. In git the files are not kept. 
-What git keeps is a blob that represents the content of files. The
+What git keeps is a object called blob that represents the content of files. The
 relation between the path of a file and the content of that path 
 is kept on the trees corresponding to that path. \par
+In Figure \ref{fig:snapshot} is possible to see an example of a snapshot. We
+have a commit that points to a tree. This first tree corresponds to
+the root directory of the project. All the other trees (and blobs)
+corresponds to some directory (or file) preserving the relation
+between them. \par
+In the next sections a detailed description about each object is
+given, but for now something that is useful to know is that each
+object is identified by a 40-character string. This string is
+calculated by taking the SHA I hash of the contents of the object.
+This approach has many advantages, being the two more important, in our
+opinion, the
+fact that it is possible to compare two objects only by the name and
+if two objects have the same content then, only one of them is kept.\par
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.8\textwidth]{images/snapshot.png}
+   \caption{A Snapshot}
+   \label{fig:snapshot}
+\end{figure}
+
+\subsubsection{Blob}
+A blob object, as it was said before, represents the content of a
+file and the blob name is calculated from the blob content. So if we
+have two files exactly with the same content, only one blob will be
+kept, even if, they have different names . This happens because the
+blob is not directly associated to a file. The relation between a path
+(of a file) and a blob is kept in the tree object. 
+
+\subsubsection{Tree}
+A tree is nothing else than a map from names to blobs and other trees. This map
+represents the contains relation. Also here, a tree is not associated to any 
+specific directory.
+If two directories have exactly the same content they will be
+represented by the same tree object. Here have the same content means
+that it should have exactly the same relations, or in other words, we
+have exactly the same names in both trees and each name corresponds exactly
+to the same objects in both trees. 
+
+\subsubsection{Commit}
+The commit object, is like a snapshot of the project on a certain moment in
+time. A commit object has more variety of information than the two
+objects addressed before. Looking a commit, it is possible to find out
+the following:
+\begin{itemize}
+   \item Author - The person responsible for the change on the
+   project.
+   \item Committer - The person which actually created the commit. It
+   is possible that the committer is different from the author. An
+   author can create a patch, send it to the committer,
+   which will create the commit.
+   \item Parent - The previous commit, or, the commit from which this
+   one was created. It is possible for this field to be empty, when 
+   the commit is a Root Commit (the first commit to be done). 
+   It is also possible to have two parents, when the commit is a result
+   from a merge operation.
+   \item Comment - It is possible, when creating a commit, write a
+   comment about the commit. This comments can contain details about
+   the changes that were done in the project, as well as, something
+   that the Committer wants to write.
+   \item Tree - It is a pointer for a tree, or in other words, it is a pointer
+   for how the project looked like on a certain moment in time. 
+\end{itemize}
+
+In our model, we concentrated our efforts in the Parent and in the
+Tree fields. We just care about the structure of the object model, so,
+we just removed everything else that does not influences such
+structure. One property that we observed when modeling, is that, we
+cannot have cycles in the parent relation. It means that if we are
+on commit C1 and we go through the parent relation, we will never
+reach C1.
+
+\subsubsection{Tag}
+At last we have the tag object. The tag object is just a pointer to
+a commit with some more information. It can be used to mark a special 
+commit, like a new version of the project. The structure is quite 
+similar to the commit object. It has a tagger (the person who created 
+the tag), a date in which the tag was created, a message (some
+comment from the tagger) and it points to a commit object. In our
+model we did not model this object, because when abstracting it looks
+like a branch, that we will see in next section.
+
+\subsection{Git References}
 
 
+\subsubsection{Branches}
+One of the trump cards of Git it's his definition of branches. Other VCS
+have a copy of the entire repository for each branch made. Thus, branches
+operations in those VCS are slow and hard to use. Now Git, just uses 
+pointers for branches. In fact, when creating a new branch the only thing
+done is the creation of new pointer that will point to the current commit. \par
+So, the branches operations in Git turn to be fast and easy to use. \par
+It's important to say that exists a special pointer called "Head" that will 
+always point to the current commit. \par
+
+\subsubsection{HEAD}
 %git pro 
 %You need to make some changes and commit snapshots of those changes into
 %your repository each time the
 %project reaches a state you want to record.
 
-\subsection{Working Directory}
+\section{Working Directory}
 
 The working directory is basically a subset of
 a file system that contains the files of the project you are
@@ -53,7 +149,7 @@ working directory is updated to reflect the project in that state. It
 is possible to have in the working directory files that are not being
 tracked. This files are just ignored
 
-\subsection{Index}
+\section{Index}
 The index is a component that contains all the files that will be committed
 on the next commit (the next snapshot).
 
