@@ -36,20 +36,40 @@ a given time. So imagine that, after adding "File1", "File0" is added. "File1"
 would be removed from the index (because there cannot be a file with different
 contents in the index at any given state) and "File0" would be added. What was
 just described was the representation of the update of the content of a file in the
-index. \par 
-\begin{figure}[h!] 
-	\caption{Before the add}
+index. \par
+\begin{figure}[h] 
+	\caption{Add operation}
 	\centering
-	\includegraphics[scale=0.65]{images/add1.png}
+	\includegraphics[scale=0.40]{images/add1.png}
 \end{figure}
 
-\begin{figure}[h!] 
-	\caption{After the add}
+\begin{figure}[h] 
+	\caption{Add operation (update)}
 	\centering
-	\includegraphics[scale=0.65]{images/add2.png}
+	\includegraphics[scale=0.40]{images/add2.png}
 \end{figure}
 
-\pagebreak
+pagebreak
+\pagebreak 
+
+\begin{figure}[h] 
+	\caption{Rm operation}
+	\centering
+	\includegraphics[scale=0.40]{images/rm1.png}
+\end{figure}
+
+pagebreak
+\pagebreak 
+
+\begin{figure}[h] 
+	\caption{Rm operation (when the file doesn't exist in the Working
+	Directory)}
+	\centering
+	\includegraphics[scale=0.40]{images/rm2.png}
+\end{figure}
+
+pagebreak
+\pagebreak 
 
 
 \subsection{Commit}
@@ -72,22 +92,30 @@ current index. \par
 
 \subsubsection{Examples}
 
-\begin{figure} 
+%The figure \ref{fig:commit1} is a typical example of a RootCommit. There is a file with the path
+%Name/Name, and a content Blob. It is currently on the index. The current branch
+%is Master, and it is pointing to a commit, which represents the index at the current
+%state. \par
+
+pagebreak
+\pagebreak
+
+\begin{figure}[h] 
 	\caption{A first commit}
 	\centering
-	\includegraphics[scale=0.65]{images/commit1.png}
+	\includegraphics[scale=0.4]{images/commit1.png}
 	\label{fig:commit1}
 \end{figure}
 
-The figure \ref{fig:commit1} is a typical example of a RootCommit. There is a file with the path
-Name/Name, and a content Blob. It is currently on the index. The current branch
-is Master, and it is pointing to a commit, which represents the index at the current
-state. \par
+pagebreak
+\pagebreak
 
-\begin{figure} 
-	\caption{A Commit}
+
+
+\begin{figure}[h] 
+	\caption{A second commit}
 	\centering
-	\includegraphics[scale=0.65]{images/commit2.png}
+	\includegraphics[scale=0.4]{images/commit2.png}
 	\label{fig:commit2}
 \end{figure}
 
@@ -170,13 +198,19 @@ uncommitted files.
 \begin{figure} 
 	\caption{A typical case of a fast-forward commit}
 	\centering
-	\includegraphics[scale=0.65]{images/fastforward.png}
+	\includegraphics[scale=0.45]{images/fastforward.png}
 	\label{fig:fastforward}
 \end{figure}
 \begin{figure} 
 	\caption{Normal case of a 3-way merge}
 	\centering
-	\includegraphics[scale=0.65]{images/normalmerge.png}
+	\includegraphics[scale=0.45]{images/normalmerge.png}
+	\label{fig:merge}
+\end{figure}
+\begin{figure} 
+	\caption{A case where, the merge operation can't be made}
+	\centering
+	\includegraphics[scale=0.45]{images/nomerge.png}
 	\label{fig:merge}
 \end{figure}
 
