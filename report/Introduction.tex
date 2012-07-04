@@ -33,8 +33,7 @@ the users start diving into git, they are faced with a behavior that
 nobody can explain very well. There are not any formal or even informal
 specification of the operations, like what are the pre-requisites and
 what is the result of performing an operation. So normally the users
-when fronted with something they do not understand, they avoid it next
-time.\par
+when fronted with something they do not understand, they avoid it.\par
 The purpose of this project is to
 formally model the \emph{git} core using a tool called 
 Alloy, analyse and model some \emph{git}
@@ -44,12 +43,13 @@ guarantee. This manual presents to the reader semi-formal description of
 some properties that the model guarantee.\par
 %ALLOY
 Alloy is a declarative specification language, used for describing structures in 
-a formal way. After modeling the structures, it is possible to visualize 
-instances of them. \\
+a semi-formal way. After modeling the structures, it is possible to
+check for some properties, look for counter examples and to visualize 
+instances of the model. \\
 
-So, the difference that this manual has from the others, is
+So, the difference of this manual from the others, is
 that, before writing it, we tried to understand and model 
-the \emph{git} concepts from a formal perspective using Alloy. As result 
+the \emph{git} concepts from a semi-formal perspective using Alloy. As result 
 we think that our understanding on some key parts of \emph{git}, is more precise
 and rigorous, than most known manuals. Thus, we try with this manual
 to pass the knowledge obtained. \par 
@@ -57,11 +57,11 @@ to pass the knowledge obtained. \par
 \subsection{Manual Structure}
 %report organization
 This reports starts by explaining the organization of \emph{git}, how
-\emph{git} is
-structured and then we cover each component of \emph{git}, working directory,
-index and repository. For matters
-of time and complexity we focus our model on the index and object
-model. After the presentation of the structure we give the semi-formal
+it is structured and then we cover each component of \emph{git}. 
+Working directory, index and repository. For matters
+of time and complexity we focus our model in the index and in the
+repository more precisely in the object model. 
+After the presentation of the structure we give the semi-formal
 specification of some operations. We finish the report with the
 analysis of some properties.
 

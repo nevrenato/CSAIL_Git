@@ -1,6 +1,6 @@
 \section{The Git structure}
 Git, as it was said before, is a distributed version control system.
-It means that each user as a mirror from the repository (local
+It means that each user as a mirror of the repository (local
 repository) and in the case of
 git, there is no need for a central server, even that, each user is able to
 fetch or push updates from other user's repository (remote repository).
@@ -8,13 +8,39 @@ Git is divided mainly in three components. The working directory,
 the index and the repository. The connection between these components
 can be seen in Figure \ref{fig:git_structure}. Local and remote
 repository have the same internal structure. What is a local
-repository for an user is a remote repository for other user.
+repository for an user is a remote repository for another user.
 
 \begin{figure}[h!]
    \centering
    \includegraphics[width=0.8\textwidth]{images/data_flow_simplified.png}
    \caption{Git WorkFlow}\label{fig:git_structure}
 \end{figure}
+
+\subsection{Repository}
+Git repository is like a database of your system along time. It is
+the place where the snapshots taking during the project construction
+are kept, as well as, all the necessary information to
+allow the users to go through all the snapshots. The snapshot
+structure and snapshots relations are kept using what is called \emph{git
+objects}. The information needed to go through the project is kept in
+what is called \emph{git references}. In the next subsections we
+present both of them.
+
+\subsubsection{Git Objects}
+As we have presented before git keeps snapshots of how your system
+looked like on a certain moment in time. This moment in time is
+represented in git by a commit. A commit points to a tree, that
+represents the structure of your system on that moment. So a tree
+contains others trees and/or blobs. In git the files are not kept. 
+What git keeps is a blob that represents the content of files. The
+relation between the path of a file and the content of that path 
+is kept on the trees corresponding to that path. \par
+
+
+%git pro 
+%You need to make some changes and commit snapshots of those changes into
+%your repository each time the
+%project reaches a state you want to record.
 
 \subsection{Working Directory}
 
@@ -31,18 +57,3 @@ tracked. This files are just ignored
 The index is a component that contains all the files that will be committed
 on the next commit (the next snapshot).
 
-\subsection{Repository}
-As said, Git is a distributed VCS. So we can work not just with a local repository,
-or remote repository, but we can work with both types at the same time. One of 
-the advantages of Git is that we can work off-line and then at the end of day,
-we update the remote repository with our work. \par
-In fact, the definition of local/remote depends only on the perspective of the user,
-as there are no structural differences between local and remote repositories. 
-Imagining two users, where each one has his local repository, 
-one will see the other as the remote repository and vice-versa. \par
-A repository contains all the information needed to store, and stores all snapshots taken.
-%
-%For a matter of time and complexity, in this project we turned our attention 
-%mainly to the index and repository. We are not modeling what is going
-%on in the working directory. We just model that there are files in the
-%working directory, anything else.
