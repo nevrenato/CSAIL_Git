@@ -25,80 +25,106 @@ file besides of being removed from index, it will also be removed from the
 working directory (if it is still exists there).
 
 \subsubsection{Pre requisites}
+The add operation has only one pre-condition. The file has to be in
+the working directory. It means that a file that is
+on the working directory, can be always added to index.
 
-There are a few cases where Git prevents you from removing a file, and they are: 
+Relatively to the remove operation there are a few conditions that
+have to be satisfied for the remove operation be performed, which are: 
 \begin{itemize}
-\item The file doesn't exist in the index.
-\item Removing a file, when the file with it's current content 
-doesn't exist in last commit.
+\item The file that is being removed is currently in index;
+\item The file that is being removed is in the previous commit, exactly with the same
+content.
 \end{itemize}
-The last restriction exists, to avoid the accidental deletion of files. Imagine the
-case where you have a file 'x' with 10k lines of code. You add it to the index,
-but, before committing you accidentally use 'git rm x'. Because Git erases from
-the index and the working directory you would lose it permanently. \par
+
+The first restrictions is quite obvious. It is not possible to remove
+a file if it does not exists. The last restriction exists, to avoid
+the accidental deletion of file's contents. It is possible to have a
+file in index with a certain content that does not exists in the
+repository and since the remove operation removes the file from the index
+and from the working directory, the content would be lost.  
 
 \subsubsection{Result}
+After performing the add operation there is something that will be
+always observed. The file will be in index. Besides, if the file was
+marked as not merged then the mark goes away. More details about
+merged and unmerged files will be given later.\\
+
+The result from performing the remove operation is that the file is
+not anymore in the index. Also here the file will not be marked as
+unmerged anymore.
 
 \subsubsection{Examples}
-
 In these figures, it is shown the process of adding a file to the index. Note
-that both files showing represent the same file, but with different content at
+that both files represent the same file, but with different content at
 a given time. So imagine that, after adding "File1", "File0" is added. "File1"
 would be removed from the index (because there cannot be a file with different
 contents in the index at any given state) and "File0" would be added. What was
 just described was the representation of the update of the content of a file in the
 index. \par
-\begin{figure}[h] 
-	\caption{Add operation}
-	\centering
-	\includegraphics[scale=0.40]{images/add1.png}
-\end{figure}
-
-\begin{figure}[h] 
-	\caption{Add operation (update)}
-	\centering
-	\includegraphics[scale=0.40]{images/add2.png}
-\end{figure}
-
-pagebreak
-\pagebreak 
-
-\begin{figure}[h] 
-	\caption{Rm operation}
-	\centering
-	\includegraphics[scale=0.40]{images/rm1.png}
-\end{figure}
-
-pagebreak
-\pagebreak 
-
-\begin{figure}[h] 
-	\caption{Rm operation (when the file doesn't exist in the Working
-	Directory)}
-	\centering
-	\includegraphics[scale=0.40]{images/rm2.png}
-\end{figure}
-
-pagebreak
-\pagebreak 
-
 
 \subsection{Commit}
-The 'git commit' operation, stores the current content of the index in a new
-commit. \par
-When the first commit is created, a branch called "Master" will be created
-and will be marked as the current branch. Also, the first commit of a repository
-is called a RootCommit. \par
+The commit operation takes the current index and builds a commit
+object. Basically it takes the files from the index, builds a
+structure using trees and blobs objects and creates a new commit
+object pointing to the tree that corresponds to the project's root
+directory. This commit object will have as parent the current commit,
+the commit pointed by the branch indicated in the HEAD.
+When the first commit is created, a branch called "master" will be created
+and it will be marked as the current branch, or in other words, it
+will be indicated by HEAD. Also, the first commit of the repository
+is called a Root Commit, because it has no parents.
 
 \subsubsection{Pre requisites}
+There are three pre-conditions that are required to perform this
+operation:
+\begin{itemize}
+   \item The index is not empty;
+   \item The commit object that will be created is different from the
+   current commit;
+   \item There are not unmerged files.
+\end{itemize}
+The first pre-condition is obvious, because if we do not have files in
+the index, there is anything to commit.\\
 
-The only restriction that Git has about this operation 
-it's that your new commit must have something different from the previous
-commit, or, if it's the first commit, then there must exist some content in
-current index. \par
+The second condition says basically
+that we cannot have two commits objects pointing to the same
+tree object in a row, or in other words, if we have the same files and
+the same content in the index and in the current commit, a commit
+operation cannot be performed. \\
 
+The last condition just says that it is not possible to perform a
+commit, if there are unmerged files in index. As we have said before,
+we will speak about this later.
 
 \subsubsection{Result}
+The result of performing a commit can be different if it is the first
+commit or if there are already some commit in th repository. 
+We start by exposing the observed result when the first commit is
+being performed and then we show the case when there are already some
+commit in the repository. In the end we show some properties that are
+observed in both cases.\\
+
+The first commit object that is being created is a commit with no
+parent. It means that it does not have a parent. At this moment it is
+not possible that we have branches in our repository, so a new branch 
+called "master" is created. This branch is going to be pointing to 
+the commit that has been created. Also the HEAD, that previously was 
+not defined will identify this "master" branch.\\
+
+When there are already some commit in the repository, then it is
+guaranteed that there are at least one branch and the HEAD is
+identifying some existing branch. The branch that is identified by the
+HEAD, is pointing now to the commit created. This commit have now as
+parent the previous commit (the commit pointed by the branch
+identified by the HEAD), unless it is a result from a merge. In this
+case the commit must have two parents. The previous commit and the
+branch that is being merged.\\
+
+The common properties that are observed are that all the files and
+content that were in the index, are now in the current commit with the
+structure from the file system. For this new blobs and trees were
+probably created. The index keeps exactly the same content.
 
 \subsubsection{Examples}
 
@@ -106,28 +132,6 @@ current index. \par
 %Name/Name, and a content Blob. It is currently on the index. The current branch
 %is Master, and it is pointing to a commit, which represents the index at the current
 %state. \par
-
-pagebreak
-\pagebreak
-
-\begin{figure}[h] 
-	\caption{A first commit}
-	\centering
-	\includegraphics[scale=0.4]{images/commit1.png}
-	\label{fig:commit1}
-\end{figure}
-
-pagebreak
-\pagebreak
-
-
-
-\begin{figure}[h] 
-	\caption{A second commit}
-	\centering
-	\includegraphics[scale=0.4]{images/commit2.png}
-	\label{fig:commit2}
-\end{figure}
 
 The figure \ref{fig:commit2} represents the case of a normal commit, where the
 newest commit comes after the RootCommit. The line of thought is the same as in

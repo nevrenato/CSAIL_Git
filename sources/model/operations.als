@@ -10,6 +10,8 @@ pred commit[s,s':State]{
 	(head.s).(marks.s).abs :> Blob != s.pathcontents
 	-- there cannot be unmerge conflicts	
 	no unmerge.s
+	--the commit object does not exists
+	no (head.s').(marks.s') & objects.s
 
 	-- pos conditions
 	-- The case of a first commit
@@ -20,7 +22,6 @@ pred commit[s,s':State]{
 		branches.s' = head.s'
 		(head.s').(marks.s') in RootCommit 
 		 marks.s' = head.s' -> (objects.s' & Commit)
-  
 	}
 
 	-- If there are already commits in the repository
@@ -33,8 +34,6 @@ pred commit[s,s':State]{
 		(Branch - head.s) <: marks.s' = (Branch - head.s) <: marks.s 
 		(head.s').(marks.s').parent = (head.s).(marks.s) + merge.s
 	}
-
-	no (head.s').(marks.s') & objects.s
 
 	-- All files on the index must be on the commit also
 	(index.s).path.*pathparent = (head.s').(marks.s').abs.univ
@@ -90,7 +89,7 @@ pred rm[s,s':State,f:File]{
 	objects.s' = objects.s
 	index.s' = index.s - f
 	merge.s = merge.s'
-  unmerge.s' = unmerge.s - f.path
+  	unmerge.s' = unmerge.s - f.path
 }
 
 
