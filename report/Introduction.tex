@@ -20,44 +20,48 @@ repository and there is not a central server. An user can always commit
 and when connected can pull/checkout the changes.\\
 
 %GIT
-Git is a distributed VCS. It was created in 2005 by Linus Torvalds,
+\emph{Git} is a distributed VCS. It was created in 2005 by Linus Torvalds,
 for the Linux kernel development. The main difference when comparing to
-others distributed VCS is that git keeps snapshots of how your system
+others distributed VCS is that \emph{git} keeps snapshots of how your system
 looks likes on a certain moment in time instead of keeping track of
 changes.\par
 \subsection{Motivation}
 %OUR PROJECT
-Nowadays git is having great success, it is efficient, fast and very
-easy to use. The problem here is that most of the users do not dive
-into the git internals, they are just happy that it works. The ones
-that actually try to go deep into git to see how it works and why git
-behaves in a specific way, are fronted with the lack of formal or even
-informal specifications.  So, the purpose of this project is to
-formally model the git core using a tool called 
-Alloy, analyse and model some git
-operations with that tool and then check which properties the model does (not)
+Nowadays \emph{git} is having great success, it is efficient, fast and
+in the begin it looks easy to understand and to use. When
+the users start diving into git, they are faced with a behavior that
+nobody can explain very well. There are not any formal or even informal
+specification of the operations, like what are the pre-requisites and
+what is the result of performing an operation. So normally the users
+when fronted with something they do not understand, they avoid it.\par
+The purpose of this project is to
+formally model the \emph{git} core using a tool called 
+Alloy, analyse and model some \emph{git}
+operations and then check which properties the model does (not)
 guarantee. This manual presents to the reader semi-formal description of
-git internals, the description of some operations and it ends with
+\emph{git} internals, the description of some operations and it ends with
 some properties that the model guarantee.\par
 %ALLOY
 Alloy is a declarative specification language, used for describing structures in 
-a formal way. After modeling the structures, it is possible to visualize 
-instances of them. \\
+a semi-formal way. After modeling the structures, it is possible to
+check for some properties, look for counter examples and to visualize 
+instances of the model. \\
 
-So, the difference that this manual has from the others, is
+So, the difference of this manual from the others, is
 that, before writing it, we tried to understand and model 
-the git concepts from a formal perspective using Alloy. As result 
-we think that our understanding on some key parts of Git, is more precise
+the \emph{git} concepts from a semi-formal perspective using Alloy. As result 
+we think that our understanding on some key parts of \emph{git}, is more precise
 and rigorous, than most known manuals. Thus, we try with this manual
 to pass the knowledge obtained. \par 
 
 \subsection{Manual Structure}
 %report organization
-This reports starts by explaining the organization of git, how git is
-structured and then we cover each component of git, working directory,
-index and repository. For matters
-of time and complexity we focus our model on the index and object
-model. After the presentation of the structure we give the semi-formal
+This reports starts by explaining the organization of \emph{git}, how
+it is structured and then we cover each component of \emph{git}. 
+Working directory, index and repository. For matters
+of time and complexity we focus our model in the index and in the
+repository more precisely in the object model. 
+After the presentation of the structure we give the semi-formal
 specification of some operations. We finish the report with the
 analysis of some properties.
 
