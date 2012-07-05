@@ -1,19 +1,28 @@
 \section{Git operations}
+In this section we explore some of the git operations. We try to do
+so, in a different way, if comparing with other manuals. Normally the
+manuals we see around just explain how to perform an operation. We
+try to go further, so in this manual, we have divided our operations in
+three parts. In the first part, we give a description about the
+operation. In the second part, we give the pre-conditions, or in other
+words, we explain in which conditions the operations can be performed.
+Finally, in the last part of each operation, we show what is the
+result of perform such operation.
 
 \subsection{Add and Remove}
+The operations add and remove are used to add and remove content from
+index. As we have said before the index contains all the files and
+contents to be added on the next commit.\\
 
-\subsubsection{What they do?}
+\emph{Git} add does not refer directly to the file. Instead it is like
+a map from file to content. If we have a file on the index and we
+modify it on the working directory, for this modification to be visible
+on the next commit, the file has to be added again to the index.\\
 
-When you use the 'git add <file>' command, a file will be
-added to the index. The file added can be a new file, or 
-a file already existing in the index. When the latter is true, 
-git just updates the content of that file. \par
-When you add a file, it will be marked to be committed in the next
-commit. \par
-'git rm <file>' can be seen as the inverse operation of the 'git add <file>'.
-In this case Git, will remove a file from the index, so it won't appear in the
-next commit. Besides being removed from index, it will also be removed from the 
-working directory (if it's still there). \par
+The remove operation removes a file from index, so it will not be
+present if we perform a commit exactly after the remove. The removed
+file besides of being removed from index, it will also be removed from the 
+working directory (if it is still exists there).
 
 \subsubsection{Pre requisites}
 
@@ -27,6 +36,8 @@ The last restriction exists, to avoid the accidental deletion of files. Imagine 
 case where you have a file 'x' with 10k lines of code. You add it to the index,
 but, before committing you accidentally use 'git rm x'. Because Git erases from
 the index and the working directory you would lose it permanently. \par
+
+\subsubsection{Result}
 
 \subsubsection{Examples}
 
@@ -73,9 +84,6 @@ pagebreak
 
 
 \subsection{Commit}
-
-\subsubsection{What it does?}
-
 The 'git commit' operation, stores the current content of the index in a new
 commit. \par
 When the first commit is created, a branch called "Master" will be created
@@ -89,6 +97,8 @@ it's that your new commit must have something different from the previous
 commit, or, if it's the first commit, then there must exist some content in
 current index. \par
 
+
+\subsubsection{Result}
 
 \subsubsection{Examples}
 
@@ -127,8 +137,10 @@ We can also see the efficiency of Git, about the sharing property of objects in
 the commits, thus minimizing the space occupied in the repository. \par
 \subsection{Branch}
 
-\subsubsection{What it does?}
 \subsubsection{Pre requisites}
+
+\subsubsection{Result}
+
 \subsubsection{Examples}
 Git branch operation has several forms, that to different things on git.
 The ones which we care are the forms that create and delete branches. \par
@@ -142,15 +154,16 @@ merged in its upstream branch, or in HEAD if no upstream was set. \par
 
 \subsection{Checkout}
 
-\subsubsection{What it does?}
 \subsubsection{Pre requisites}
+
+\subsubsection{Result}
+
 \subsubsection{Examples}
 From man git-checkout : "Switches branches by updating the index, 
 working tree, and HEAD to reflect the specified branch or commit". \par
 
 \subsection{Merge}
 
-\subsubsection{What it does?}
 
 When you do a 'git merge <branch>', a merge will happen between the current
 branch and the branch selected on the command. The result will be a new merge 
@@ -193,6 +206,7 @@ files that can be changed by the merge operation.
 uncommitted files. 
 \end{itemize}
 
+\subsubsection{Result}
 
 \subsubsection{Examples}
 \begin{figure} 

@@ -1,10 +1,10 @@
 \section{The Git structure}
-Git, as it was said before, is a distributed version control system.
+\emph{Git}, as it was said before, is a distributed version control system.
 It means that each user as a mirror of the repository (local
 repository) and in the case of
 \emph{git}, there is no need for a central server, even that, each user is able to
 fetch or push updates from other user's repository (remote repository).
-Git is divided mainly in three components. The working directory,
+\emph{Git} is divided mainly in three components. The working directory,
 the index and the repository. The connection between these components
 can be seen in Figure \ref{fig:git_structure}. Local and remote
 repository have the same internal structure. What is a local
@@ -17,7 +17,7 @@ repository for an user is a remote repository for another user.
 \end{figure}
 
 \section{The Repository}
-Git repository is like a database of a project along construction time. It is
+\emph{Git} repository is like a database of a project along construction time. It is
 the place where the snapshots taking during the project construction
 are kept, as well as, all the necessary information to
 allow the users to go through all the snapshots. The snapshot's
@@ -126,7 +126,7 @@ concentrate on the object model. In this manual, we just speak about
 Branches and the special reference HEAD.
 
 \subsubsection{Branches}
-One of the trump cards of Git is its definition of branches. In other
+One of the trump cards of \emph{Git} is its definition of branches. In other
 VCS each time a branch is created a new copy of the entire repository
 has to be done. Thus, branches operations in those VCS are slow and hard to use. 
 In \emph{git}, when a new branch is created the only thing that
@@ -155,7 +155,7 @@ untracked files in the working directory are just ignored, unless
 there is a conflict when retrieving files from an older snapshot.\\
 
 When a user starts a repository, all the files are untracked. When a
-new file is created it will be untracked. So, how does git know which
+new file is created it will be untracked. So, how does \emph{git} know which
 files are tracked or not? There exists the index which we present
 next.
 
