@@ -103,7 +103,7 @@ the following:
 
 In our model, we concentrated our efforts in the Parent and in the
 Tree fields. We just care about the structure of the object model, so,
-we just removed everything else that does not influences such
+we removed everything else that does not influences such
 structure. One property that we observed when modeling, is that, we
 cannot have cycles in the parent relation. It means that if we are
 on commit C1 and we go through the parent relation, we will never
@@ -150,11 +150,21 @@ a file system that contains the files of the project you are
 currently working on. This files can be the current files, files
 retrieved from an old snapshot or even files that are not being
 tracked. When retrieving an older snapshot of the project, the
-working directory is updated to reflect the project in that state. It
-is possible to have in the working directory files that are not being
-tracked. This files are just ignored
+working directory is updated to reflect the project in that state. The
+untracked files in the working directory are just ignored, unless
+there is a conflict when retrieving files from an older snapshot.\\
+
+When a user starts a repository, all the files are untracked. When a
+new file is created it will be untracked. So, how does git know which
+files are tracked or not? There exists the index which we present
+next.
 
 \section{Index}
-The index is a component that contains all the files that will be committed
-on the next commit (the next snapshot).
+The index is something in between the working directory and the
+repository. When a file is created if the user wants that file to be
+on the next commit, it has to be on index. Even if the user just
+modifies a file and the user wants that change to be reflected on the
+next commit, it must be added to index, otherwise, what will be
+committed is the older version of the file. So, basically the index
+contains all the files that will be in the next commit.\\
 
