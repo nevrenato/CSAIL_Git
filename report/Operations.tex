@@ -37,7 +37,7 @@ have to be satisfied for the remove operation be performed, which are:
 content.
 \end{itemize}
 
-The first restrictions is quite obvious. It is not possible to remove
+The first restriction is quite obvious. It is not possible to remove
 a file if it does not exists. The last restriction exists, to avoid
 the accidental deletion of file's contents. It is possible to have a
 file in index with a certain content that does not exists in the
@@ -55,33 +55,42 @@ not anymore in the index. Also here the file will not be marked as
 unmerged anymore.
 
 \subsubsection{Examples}
-In these figures, it is shown the process of adding a file to the index. Note
-that both files represent the same file, but with different content at
-a given time. So imagine that, after adding "File1", "File0" is added. "File1"
-would be removed from the index (because there cannot be a file with different
-contents in the index at any given state) and "File0" would be added. What was
-just described was the representation of the update of the content of a file in the
-index. \par
 
-\begin{figure}[!t]
+The figure \ref{fig:add1}, shows a simple case of adding a file to the index. \\
+It can be seen, that no changes are made on the repository or in the working
+directory, just in the index that will contain the new file.
+
+\begin{figure}[!h]
    \centering
    \includegraphics[width=0.4\textwidth]{images/add1.png}
    \caption{Adding a file}\label{fig:add1}
 \end{figure}
 
-\begin{figure}[!t]
+Figure \ref{fig:update1}, contains the case of updating the content of a file.
+\\
+Assuming that the file is already in the index, changing it's content in the 
+working directory, will not change the content in the index. We need to 
+explicitly add the file with the new content in the index. \\ 
+
+Now for the remove operation. Figures \ref{fig:remove1},\ref{fig:remove2} 
+show a simple case of
+removing a file of the index, as the reader can see the file will be
+removed from the index, but also from the working directory, if it's still
+there. The repository stays the same.
+
+\begin{figure}[!h]
    \centering
    \includegraphics[width=0.5\textwidth]{images/update1.png}
    \caption{Updating a file}\label{fig:update1}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[!h]
    \centering
    \includegraphics[width=0.6\textwidth]{images/remove1.png}
    \caption{Removing a file}\label{fig:remove1}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[!h]
    \centering
    \includegraphics[width=0.6\textwidth]{images/remove2.png}
    \caption{Removing a file (alternative)}\label{fig:remove2}
@@ -132,9 +141,9 @@ commit in the repository. In the end we show some properties that are
 observed in both cases.\\
 
 The first commit object that is being created is a commit with no
-parent. It means that it does not have a parent. At this moment it is
-not possible that we have branches in our repository, so a new branch 
-called "master" is created. This branch is going to be pointing to 
+parent. It means that it does not have a parent. There cannot be branches
+at this moment, because they cannot point to any commit, as there are none to be
+pointed, so a new branch called "master" is created. This branch is going to be pointing to 
 the commit that has been created. Also the HEAD, that previously was 
 not defined will identify this "master" branch.\\
 
@@ -154,17 +163,16 @@ probably created. The index keeps exactly the same content.
 
 \subsubsection{Examples}
 
-%The figure \ref{fig:commit1} is a typical example of a RootCommit. There is a file with the path
-%Name/Name, and a content Blob. It is currently on the index. The current branch
-%is Master, and it is pointing to a commit, which represents the index at the current
-%state. \par
-
-The figure \ref{fig:commit2} represents the case of a normal commit, where the
-newest commit comes after the RootCommit. The line of thought is the same as in
-the last image. We can see that the difference between these two commits in the
-figure, is that the only file was moved to a folder named "Name". \par
-We can also see the efficiency of Git, about the sharing property of objects in
-the commits, thus minimizing the space occupied in the repository. \par
+The figure \ref{fig:commit1} shows as typical process where there are added
+some files to the index and then is done a commit. As can be seen the new commit
+reflects, the structure of the index at that point. Also, because the two files
+in the index have the same content in the repository they will share the same
+content. \\ 
+Figure \ref{fig:commit2} is interesting in the way that we can see the new
+commit pointing to previous commit, and the branch pointer and the reference
+pointing now to the new commit. \\
+Figure \ref{fig:commit_pre} has a concrete example of the 2nd pre requisite
+referred above. \\
 
 \begin{figure}[!t]
    \centering
