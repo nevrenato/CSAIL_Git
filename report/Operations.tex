@@ -63,6 +63,32 @@ contents in the index at any given state) and "File0" would be added. What was
 just described was the representation of the update of the content of a file in the
 index. \par
 
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.4\textwidth]{images/add1.png}
+   \caption{Adding a file}\label{fig:add1}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.5\textwidth]{images/update1.png}
+   \caption{Updating a file}\label{fig:update1}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/remove1.png}
+   \caption{Removing a file}\label{fig:remove1}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/remove2.png}
+   \caption{Removing a file (alternative)}\label{fig:remove2}
+\end{figure}
+
+
+
 \subsection{Commit}
 The commit operation takes the current index and builds a commit
 object. Basically it takes the files from the index, builds a
@@ -139,6 +165,24 @@ the last image. We can see that the difference between these two commits in the
 figure, is that the only file was moved to a folder named "Name". \par
 We can also see the efficiency of Git, about the sharing property of objects in
 the commits, thus minimizing the space occupied in the repository. \par
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.8\textwidth]{images/commit1.png}
+   \caption{Doing a commit}\label{fig:commit1}
+\end{figure}
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.8\textwidth]{images/commit2.png}
+   \caption{Doing a second commit}\label{fig:commit2}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/commit_pre.png}
+   \caption{This commit can't be done in \emph{git}}\label{fig:commit_pre}
+\end{figure}
+
 \subsection{Branch}
 
 \subsubsection{Pre requisites}
@@ -155,6 +199,12 @@ When a new branch is created it will point to the current HEAD by default.
 The man git-branch says that when deleting a branch, it must be fully
 merged in its upstream branch, or in HEAD if no upstream was set. \par
 
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/branch.png}
+   \caption{Creating a branch}\label{fig:branch}
+\end{figure}
 
 \subsection{Checkout}
 
@@ -213,23 +263,47 @@ uncommitted files.
 \subsubsection{Result}
 
 \subsubsection{Examples}
-\begin{figure} 
-	\caption{A typical case of a fast-forward commit}
-	\centering
-	\includegraphics[scale=0.45]{images/fastforward.png}
-	\label{fig:fastforward}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.5\textwidth]{images/fast_forward.png}
+   \caption{A fast-forward case}\label{fig:fast_forward}
 \end{figure}
-\begin{figure} 
-	\caption{Normal case of a 3-way merge}
-	\centering
-	\includegraphics[scale=0.45]{images/normalmerge.png}
-	\label{fig:merge}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/2merge.png}
+   \caption{A 2-way merge case}\label{fig:2mergecase}
 \end{figure}
-\begin{figure} 
-	\caption{A case where, the merge operation can't be made}
-	\centering
-	\includegraphics[scale=0.45]{images/nomerge.png}
-	\label{fig:merge}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/3merge.png}
+   \caption{A 3-way merge case}\label{fig:3mergecase}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge1.png}
+   \caption{A fast-forward merge case}\label{fig:ffmerge1}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge_pre.png}
+   \caption{A fast-forward case that can't be done in
+   \emph{git}}\label{fig:ffmergepre}
+\end{figure}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.7\textwidth]{images/merge2way}
+   \caption{A typical 2-way merge}\label{fig:merge2way}
+\end{figure}
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.7\textwidth]{images/merge3way}
+   \caption{A typical 3-way merge}\label{fig:merge3way}
 \end{figure}
 
 \subsubsection{Git Pull and Git Push}
