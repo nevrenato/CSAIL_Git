@@ -191,11 +191,56 @@ referred above. \\
    \caption{This commit can't be done in \emph{git}}\label{fig:commit_pre}
 \end{figure}
 
-\subsection{Branch}
+\subsection{Branch Create and Branch Remove}
+Branches in \emph{git} are very efficient. This happens because a
+branch in \emph{git} is just a pointer to a commit. So, when a branch
+is created or removed there is only a new pointer created or a
+pointer that is removed. As we will see later, there are some
+restrictions when removing branches. When we are referring to
+creating or removing a branch, we mean the operations
+\emph{git branch} and \emph{git branch -d}.
 
 \subsubsection{Pre requisites}
+When creating a branch there are only two restrictions:
+\begin{itemize}
+   \item The HEAD is currently identifying something;
+   \item There is not any branch with the same name.
+\end{itemize}
+The second pre-condition is kind of obvious. We cannot create a branch
+with the same same name as one already in the repository, otherwise we
+would have conflicts. The pre-conditions that could bring some doubts
+is the first one. \emph{Git} does not allow the creation of branches
+before the first commit is done. When the first commit is done, a
+branch called "master" is created and after that it is possible to
+create as many branches as the user wishes.\\
+
+When removing a branch there are also some restrictions:
+\begin{itemize}
+   \item The branch exists;
+   \item The HEAD is not identifying the branch;
+   \item The commit pointed by the branch is accessible from the
+   current commit (the commit pointed by the branch identified by the
+   HEAD).
+\end{itemize}
+
+The first pre-conditions says that it is only possible to remove a
+branch if it exists. The second says, that the branch being removed is
+not the one identified by HEAD, otherwise the HEAD would be point from
+now on to some branch that does not exists anymore. Thus, there would
+not exist a current commit. The last pre-conditions exists to check
+the user does not deletes a branch that is not yet merged with the
+current branch, or in other words, the user does not delete a branch
+that is not accessible from the current commit, through the parent relation. 
+If this pre-condition did not exist it would be possible to loose the
+commit pointed by the branch, as well as, some commits from the parent
+relation.
+
 
 \subsubsection{Result}
+The result of performing this operations are expected. When creating a
+branch, the result is a new branching pointing to the same commit as
+the branch identified by the HEAD. When removing a branch, the result
+is that the branch removed does not exists anymore.
 
 \subsubsection{Examples}
 Git branch operation has several forms, that to different things on git.
@@ -215,8 +260,58 @@ merged in its upstream branch, or in HEAD if no upstream was set. \par
 \end{figure}
 
 \subsection{Checkout}
+The checkout operations is used to update the working directory and
+index with a set of files from a commit. In this project, we have
+explored only the case the checkout operation is used with a branch.
+In this case, all the files from the commit pointed by the branch are
+exported to the working directory and index. This was the most
+difficult operation to explore, because it behaves in a non intuitive
+way. We will try to explain it and in the examples we show you a
+sequence of operations that causes the \emph{git} to loose
+information. This is a proof of the complexity of this operation.
 
 \subsubsection{Pre requisites}
+As we have said before, this operation is not intuitive. In our
+opinion this operation should have as pre-condition something like
+"Everything that is in index should be committed". Instead \emph{git}
+tries to relax this pre-condition and we have the following:
+\begin{itemize}
+   \item The branch we are checking out, exists;
+   \item Everything that is in the index has to be in the current commit with the
+      same content, except if:
+      \begin{enumerate}
+         \item The content of a file is the same in the
+         current and destination commit - in this case
+         the file in the index keeps its content (warning is thrown)
+         \item Exists a file in the index, and that file does not exists
+         neither in the current nor in the destination commit - in
+         this case the file is kept in the index (warning is thrown)
+         \item Content of the file in the index is the same as in the
+         destination commit (no warning is thrown)
+      \end{enumerate}
+\end{itemize}
+
+About the pre-condition there are not much to say. If we want to
+checkout a branch, the branch should exist.\\
+
+The problem here is the second pre-condition. There are a lot of
+exceptions when a file is not in the current commit with the same
+content. To simplify the exposition of this pre-condition, lets assume
+we have a file f, which is not in current commit, or at least it is not
+with the same content. All other files from index are in the current commit, with
+the same content. Relatively to f, if at least one of the exceptions enumerated above
+is satisfied, then the checkout operation will proceed. Now lets
+analyse each one of the exceptions. The first says that, f can 
+be in the commit we are checking out with the same content. So, even
+if f is not commit, but it is in the commit we are checking out, git
+will proceed with the operation. The exception marked as 2, says that
+f does not exists neither in the current commit nor in the commit we
+are checking out. It means that if f has just been created and a
+checkout operation is performed then if the file does not exists in
+the commit being checked out, the operation will proceed. The last
+exception says that if there exists a file with the same path and the
+same content in the commit being checked out, then the operation will
+proceed.
 
 \subsubsection{Result}
 

@@ -4,7 +4,7 @@
 A version control system is a tool that records changes on your
 files over time. The main idea is to keep track of the changes on your
 files and to retrieve them later. There are mainly three kinds of 
-version control system, local, centralized and distributed. On
+version control system. Local, centralized and distributed. On
 a local VCS it is not possible to collaborate with other users and
 the structure that keeps track of the files is kept only locally. The
 need for collaborations with other users brought the centralized VCS.
@@ -15,20 +15,21 @@ first is to have a single point of failure, if a server goes down
 during a certain time, nobody can check out or pull updates. The
 second problem is when you are not connected to the network, you
 cannot pull or commit your changes. To solve this problems, the
-distributed VCS appear. Here each user keeps a mirror of the
+distributed VCS appeared. Here each user keeps a mirror of the
 repository and there is not a central server. An user can always commit
-and when connected can pull/checkout the changes.\\
+and when connected can push/checkout the changes.\\
 
 %GIT
 \emph{Git} is a distributed VCS. It was created in 2005 by Linus Torvalds,
 for the Linux kernel development. The main difference when comparing to
 others distributed VCS is that \emph{git} keeps snapshots of how your system
-looks likes on a certain moment in time instead of keeping track of
+looks like on a certain moment in time instead of keeping track of
 changes.\par
 \subsection{Motivation}
 %OUR PROJECT
-Nowadays \emph{git} is having great success, it is efficient, fast and
-in the begin it looks easy to understand and to use. When
+Nowadays \emph{git} is having great success. It is efficient, fast and
+% in the begin -> when starting unsing it
+in the begin, it looks easy to understand and to use. When
 the users start diving into git, they are faced with a behavior that
 nobody can explain very well. There are not any formal or even informal
 specification of the operations, like what are the pre-requisites and
@@ -47,7 +48,7 @@ a semi-formal way. After modeling the structures, it is possible to
 check for some properties, look for counter examples and to visualize 
 instances of the model. \\
 
-So, the difference of this manual from the others, is
+The difference of this manual from the others, is
 that, before writing it, we tried to understand and model 
 the \emph{git} concepts from a semi-formal perspective using Alloy. As result 
 we think that our understanding on some key parts of \emph{git}, is more precise
@@ -59,8 +60,8 @@ to pass the knowledge obtained. \par
 This reports starts by explaining the organization of \emph{git}, how
 it is structured and then we cover each component of \emph{git}. 
 Working directory, index and repository. For matters
-of time and complexity we focus our model in the index and in the
-repository more precisely in the object model. 
+of time/space and complexity we focus our model in the index and in the
+repository, more precisely in the object model. 
 After the presentation of the structure we give the semi-formal
 specification of some operations. We finish the report with the
 analysis of some properties.
