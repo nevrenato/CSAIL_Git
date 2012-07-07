@@ -281,11 +281,9 @@ tries to relax this pre-condition and we have the following:
       same content, except if:
       \begin{enumerate}
          \item The content of a file is the same in the
-         current and destination commit - in this case
-         the file in the index keeps its content (warning is thrown)
+         current and destination commit (warning is thrown)
          \item Exists a file in the index, and that file does not exists
-         neither in the current nor in the destination commit - in
-         this case the file is kept in the index (warning is thrown)
+         neither in the current nor in the destination commit (warning is thrown)
          \item Content of the file in the index is the same as in the
          destination commit (no warning is thrown)
       \end{enumerate}
@@ -311,9 +309,10 @@ checkout operation is performed then if the file does not exists in
 the commit being checked out, the operation will proceed. The last
 exception says that if there exists a file with the same path and the
 same content in the commit being checked out, then the operation will
-proceed.
+proceed. In this last case does not warns the user.
 
 \subsubsection{Result}
+The result of performing a chekout is also 
 
 \subsubsection{Examples}
 From man git-checkout : "Switches branches by updating the index, 
