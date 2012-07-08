@@ -383,30 +383,95 @@ common ancestor, thus will it be more likely that conflicts appears.
 \end{itemize}
 
 \subsubsection{Pre requisites}
+The merge operation, as all other operations has some pre conditions that
+must be satisfied in order to be possible to do it. As in the checkout,
+\emph{git} let's the user do merges without all information in the index 
+being committed. However,again, it is recommended that no information is 
+left uncommitted :
 
 \begin{itemize}
+\item A merge can't be made, if the current commit is more recent than the
+other. As the current commits takes precedence, no new changes will exist. 
+Thus, the merge is not necessary.
+\item If \emph{git} can't do the merge automatically because of conflicts,
+the user must resolve all those conflicts, before doing another merge.
 
-\item A merge can't be made, if the current commit is more recent then the
-other commit.
-\item A merge can't be made, while there are unmerged files in the index.
-\item In the case of a fast-forward merge, the index can't have uncommitted
-files that can be changed by the merge operation.
-\item In the case of a 2-way or 3-way merge operation there can not be
-uncommitted files.
+\item When it is the case of a fast-forward merge, the index can't have 
+uncommitted files that would be changed by the resulting merge.
 
+\item In the case of a 2-way or 3-way merge operation there simply 
+can not be uncommitted files.
 \end{itemize}
 
 \subsubsection{Result}
+As already said when doing a merge, one of three things can happen. A 
+fast-forward, a successful merge or a partially done merge:
+
+\begin{itemize}
+\item If it's the case of a fast-forward merge. The index and the working directory
+will contain the information of the newest commit. Also, they will contain all 
+information prior to the merge that was uncommitted, as long as that it brings
+no conflicts to it. Of course, the current branch and HEAD will point to the
+newest commit.
+
+\item When a successful merge happens, the index will reflect the new commit,
+and the working directory will contain the information of the commit. Here,
+doesn't exist the question of uncommitted changes, as \emph{git} forbids that
+to happen. In the repository a new commit will appear that has the combined
+changes of the two (possibly three) commits involved in the merge. That new
+commit will have as parents those two commits, and will be pointed the current
+branch and the HEAD.
+
+\item If when doing a merge, a conflict appears that \emph{git} can't resolve,
+it will say that the automatic merge failed, and that the manual merge will
+begin, in other words it leaves to the user the work of resolving the conflicts
+that \emph{git} couldn't solve. At that moment, the index and working directory
+will contain all the information that was merged. For all the files unmerged, they
+will also be maintained in the index and the working directory, but in a
+state where we can see what differs in them, when they belong to a commit or to
+the other. Finally, \emph{git} will mark some fields in the repository, so that
+when the user does the next commit, it will be the son of both parents
+involved in the commit, where it will be pointed by the current branch and HEAD.
+When this new commit is done, the merge process is over.
+
+\end{itemize}
 
 \subsubsection{Examples}
+
+As usual the next figures will show some concrete examples of what happens
+in \emph{git} when a merge is done, we don't involve here cases of 
+uncommitted changes, as we don't recommend to do that and 
+things would turn much more tricky to understand and much less intuitive. \\
+
+Figure \ref{fig:ffmerge1} is a simple case of a merge operation. It shows
+that the Master branch and HEAD point to a commit that is achievable by the
+commit pointed by 'Foo', so this is a case eligible for a fast-forward commit.
+We can see that the result is that the working directory and index will be
+updated accordingly to the commit now pointed by 'Foo' Master and HEAD. As
+known any untracked file will not be changed. \\
+
+Figure \ref{fig:ffmergepre} shows a concrete example of state in the repository
+where it is not possible to do a merge. As the commit pointed by HEAD and Master
+can achieve the commit pointed by 'Foo', thus the current commit taking
+precedence over any data than the other commit could have. \\
+
+The two last figures \ref{fig:merge2way} and \ref{fig:merge3way} demonstrates 
+the difference between a 2-way and a 3-way merge commit. When in the 2-way there
+are conflicts to resolve, in the 3-way the conflicts are resolved by looking to
+the common ancestor. Because the 3-way merge was automatic, a new commit was
+created that represent the merged information. Also, the working directory and
+index were updated accordingly. In the 2-way the user had to resolve the
+conflict by adding new content to the unmerged file and adding it to the index.
+Finally, when 'git commit' was called a new merge commit was created and 
+the merge process successfully finished. In this case the index and working 
+directory were updated just before \emph{git} leaved to the user the merging
+process. \\
 
 \begin{figure}[!t]
    \centering
    \includegraphics[width=0.5\textwidth]{images/fast_forward.png}
    \caption{A fast-forward case}\label{fig:fast_forward}
 \end{figure}
-
-
 
 \begin{figure}[!t]
    \centering
@@ -445,14 +510,16 @@ uncommitted files.
 \subsubsection{Git Pull and Git Push}
 
 When working with remote repositories, these two operations will be vastly
-used. They are in fact a sequence of operations, and are used to get content
-from a remote repository and to place your content on the remote repository.
-\par
+used. They are in fact, a sequence of operations, and are used to get content
+from a remote repository or to upload local content to the remote repository.
+\\
 If a 'git pull' is done, the branch from the remote repository will be fetched,
-and the local branch and the remote branch will be merged. \par
-If a 'git push' is done, the remote branch will be uploaded to the remote 
-repository and will be merged there. \par
-However, a 'git push' can only be done when the resulting merge will be a
-fast-forward, simply because there is no one on the other side to resolve the 
-merge conflicts. For the case of 'git pull' it's pre requisites are the same of
-the merge operation. \par
+and the local branch and the remote (now, also local) branch will be merged. So
+expect this operation to behave exactly like a merge operation and consequently
+all that was referred in the merge applies also here. \\
+If a 'git push' is done, the local branch will be uploaded to the remote 
+repository and will be merged there. \\
+In Push there is an important restriction. A 'git push' 
+can only be done when the resulting merge is a
+fast-forward. This happens because, there is no one on the other side to resolve the 
+merge conflicts, and thus \emph{git} must guarantee what no conflicts happen. 
