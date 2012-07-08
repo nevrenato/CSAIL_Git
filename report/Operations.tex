@@ -56,41 +56,43 @@ unmerged anymore.
 
 \subsubsection{Examples}
 
-The figure \ref{fig:add1}, shows a simple case of adding a file to the index. \\
-It can be seen, that no changes are made on the repository or in the working
-directory, just in the index that will contain the new file.
+The figure \ref{fig:add1}, shows a simple case of adding a file to the 
+index. It can be seen, that no changes are made in the repository nor in the working
+directory. The only effect is that the index will contain the new
+file.\\
 
-\begin{figure}[!h]
-   \centering
-   \includegraphics[width=0.4\textwidth]{images/add1.png}
-   \caption{Adding a file}\label{fig:add1}
+\begin{figure}[tp]
+   \begin{minipage}[b]{0.5\linewidth}
+      \centering
+      \includegraphics[width=0.8\textwidth]{images/add1.png}
+      \caption{Adding a file}\label{fig:add1}
+   \end{minipage}
+   \begin{minipage}[b]{0.5\linewidth}
+      \centering 
+      \includegraphics[width=0.9\textwidth]{images/update1.png}
+      \caption{Updating a file}\label{fig:update1}
+   \end{minipage}
 \end{figure}
 
 Figure \ref{fig:update1}, contains the case of updating the content of a file.
-\\
-Assuming that the file is already in the index, changing it's content in the 
+Assuming that the file is already in the index, changing its content in the 
 working directory, will not change the content in the index. We need to 
 explicitly add the file with the new content in the index. \\ 
 
-Now for the remove operation. Figures \ref{fig:remove1},\ref{fig:remove2} 
+Now lets loot at the remove operation. Figures \ref{fig:remove1},\ref{fig:remove2} 
 show a simple case of
-removing a file of the index. As the reader can see the file will be
-removed from the index, but also from the working directory, if it's still
-there. The repository stays the same in both cases.
+removing a file from the index. As the reader can see the file will be
+removed from the index, but also from the working directory. 
+There are no changes on the repository.
 
-\begin{figure}[!h]
-   \centering
-   \includegraphics[width=0.5\textwidth]{images/update1.png}
-   \caption{Updating a file}\label{fig:update1}
-\end{figure}
 
-\begin{figure}[!h]
+\begin{figure}[tp]
    \centering
    \includegraphics[width=0.6\textwidth]{images/remove1.png}
    \caption{Removing a file}\label{fig:remove1}
 \end{figure}
 
-\begin{figure}[!h]
+\begin{figure}[tp]
    \centering
    \includegraphics[width=0.6\textwidth]{images/remove2.png}
    \caption{Removing a file (alternative)}\label{fig:remove2}
@@ -168,7 +170,7 @@ some files to the index and then is done a commit. As can be seen the new commit
 reflects, the structure of the working directory at that point. 
 The interesting thing here is that, because the two files
 have the same content, they will share the same
-Blob. This is a case where \emph{git} shows it's efficiency. \\
+Blob. This is a case where \emph{git} shows its efficiency. \\
 Figure \ref{fig:commit2} has an example of a commit operation, where in 
 already exists a commit object in the repository. This figure is 
 interesting because it shows what changes are done in the repository when a
@@ -396,7 +398,7 @@ and try to merge them into a new commit that must belong to the current branch.
 As already said, a merge conflict can happen, and if it occurs \emph{git} leaves
 to the user the process of resolving the conflicts. When that process is done,
 the user can notify \emph{git} by doing a 'git commit', and a new merge commit 
-will be made, where it's parents will be both commits trying to be merged. \\
+will be made, where its parents will be both commits trying to be merged. \\
 \emph{Git} tries to be the most autonomous possible when merging, thus it has
 three types of merge
 
@@ -445,7 +447,7 @@ As already said when doing a merge, one of three things can happen. A
 fast-forward, a successful merge or a partially done merge:
 
 \begin{itemize}
-\item If it's the case of a fast-forward merge. The index and the working directory
+\item If it is the case of a fast-forward merge. The index and the working directory
 will contain the information of the newest commit. Also, they will contain all 
 information prior to the merge that was uncommitted, as long as that it brings
 no conflicts to it. Of course, the current branch and HEAD will point to the
