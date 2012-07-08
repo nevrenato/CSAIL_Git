@@ -320,7 +320,44 @@ same content in the commit being checked out, then the operation will
 proceed. In this last case does not warns the user.
 
 \subsubsection{Result}
-The result of performing a chekout is also 
+As we have said before, in this manual we have
+concentrated our efforts in the index and repository, simplifying as
+most as possible the working directory. So, we will just explain what
+happens with the index after a checkout operation is performed. We do
+not make any description about the files that are in the working directory
+but not in index.\\
+
+The first thing the reader should know is that the
+HEAD, after a checkout is performed, identifies the branch which was
+checked out.\\
+
+There is one more alteration. The index when a checkout is performed
+has to be updated to reflect the operation. The result of it is not intuitive. To
+understand it lets assume that the checkout operation has not yet been 
+performed. Consider three relations from file to content. 
+\begin{itemize}
+   \item $CA$: Files from the current commit and their
+   respective content;
+   \item $IA$: Files from index and respective content;
+   \item $CB$: Files from the commit we are trying to checkout
+   and their respective content.
+\end{itemize}
+After understanding this three relations it is simpler to understand
+what happens with the index. Lets also assume that $(IA-CA)$ is a relation that
+contains the files from $IA$ which are not in $CA$ with the same content.
+It mean that $(IA-CA)$ will contain the new files and the modified files relatively to
+the last commit. Now, consider $CB ++ (IA-CA)$ as being all the files
+from $CB$, but if the files is in $(IA-CA)$, the file will keep the
+content from $(IA-CA)$. If when comparing the index with the current
+commit it contains only new files and modified files (not deleted
+files) then it is all. $INDEX = CB ++ (IA-CA)$. When the index
+contains removed files, or in other words, files that are in $CA$ but are not in
+$IA$ ($CA-IA$ is not empty), then case the file that is marked as removed exists
+in CB it will be marked as removed, otherwise the removed information is
+ignored. So, the result of performing a checkout is: $INDEX = (CB ++
+(IA-CA)) - (CA-IA)$. All files from $CB$ are overwritten by the files
+that are in the index but not in CA and from the result of this, the
+files that are marked as removed will not be in index.
 
 \subsubsection{Examples}
 As referred above checkout behaves in a non-intuitive way. We recommend that

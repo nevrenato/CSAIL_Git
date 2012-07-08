@@ -170,7 +170,7 @@ pred checkout[s,s':State,b:Branch]{
 	-- pos conditions
 	-- The new index must accumulate the information of the commit of the new branch and new previous index, with the information
 	-- of the index taking priority over the commit
-		s'.pathcontents = CB ++ (IA - CA)
+		s'.pathcontents = CB ++ (IA - CA) - (CA-IA)	
 	}
 
 	-- pos conditions
@@ -182,7 +182,9 @@ pred checkout[s,s':State,b:Branch]{
 	unmerge.s = unmerge.s'
 }
 
-
+run{
+	some s,s':State, b:Branch | invariant[s] and checkout[s,s',b]
+}for 5 but 2 State
 
 
 -- The representation of the merge operation. A merge has two ways
