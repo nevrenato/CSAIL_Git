@@ -74,9 +74,9 @@ explicitly add the file with the new content in the index. \\
 
 Now for the remove operation. Figures \ref{fig:remove1},\ref{fig:remove2} 
 show a simple case of
-removing a file of the index, as the reader can see the file will be
+removing a file of the index. As the reader can see the file will be
 removed from the index, but also from the working directory, if it's still
-there. The repository stays the same.
+there. The repository stays the same in both cases.
 
 \begin{figure}[!h]
    \centering
@@ -165,13 +165,17 @@ probably created. The index keeps exactly the same content.
 
 The figure \ref{fig:commit1} shows as typical process where there are added
 some files to the index and then is done a commit. As can be seen the new commit
-reflects, the structure of the index at that point. Also, because the two files
-in the index have the same content in the repository they will share the same
-content. \\ 
-Figure \ref{fig:commit2} is interesting in the way that we can see the new
-commit pointing to previous commit, and the branch pointer and the reference
-pointing now to the new commit. \\
-Figure \ref{fig:commit_pre} has a concrete example of the 2nd pre requisite
+reflects, the structure of the working directory at that point. 
+The interesting thing here is that, because the two files
+have the same content, they will share the same
+Blob. This is a case where \emph{git} shows it's efficiency. \\
+Figure \ref{fig:commit2} has an example of a commit operation, where in 
+already exists a commit object in the repository. This figure is 
+interesting because it shows what changes are done in the repository when a
+new (not RootCommit) is done. The new commit points to the previous commit, and
+the branch and HEAD point to the new commit. As expected the new commit reflects
+the working directory structure at the point of commit.\\
+Figure \ref{fig:commit_pre} is just a concrete example of the 2nd pre requisite
 referred above. \\
 
 \begin{figure}[!t]
@@ -203,7 +207,8 @@ creating or removing a branch, we mean the operations
 \subsubsection{Pre requisites}
 When creating a branch there are only two restrictions:
 \begin{itemize}
-   \item The HEAD is currently identifying something;
+   \item Some commit must exist, and consequently the HEAD reference must point
+   to some commit;
    \item There is not any branch with the same name.
 \end{itemize}
 The second pre-condition is kind of obvious. We cannot create a branch
@@ -243,15 +248,18 @@ the branch identified by the HEAD. When removing a branch, the result
 is that the branch removed does not exists anymore.
 
 \subsubsection{Examples}
-Git branch operation has several forms, that to different things on git.
-The ones which we care are the forms that create and delete branches. \par
-When a new branch is created it will point to the current HEAD by default.
-\par
-
-
-The man git-branch says that when deleting a branch, it must be fully
-merged in its upstream branch, or in HEAD if no upstream was set. \par
-
+The changes that happen when creating a branch are minimal. The only thing
+changing is the appearance of a new branch pointing to the current commit, as
+figure \ref{fig:branch} demonstrates. \\ 
+The removal of a branch is also minimal. The only thing changing is that the 
+branch referred must be deleted. If in \ref{fig:branch} we view 
+the grey arrow as pointing up, instead
+pointing down, we automatically view the process of deleting a branch. \\ 
+About the branch removal pre condition, this case
+is legit because the current commit achieves (it is the same) the
+commit pointed by the branch deleted. Even if 'Foo' pointed to any other commit, 
+it could be still deleted, as all commits in this figure
+are achieved by the current commit. \\
 
 \begin{figure}[!t]
    \centering
@@ -315,8 +323,19 @@ proceed. In this last case does not warns the user.
 The result of performing a chekout is also 
 
 \subsubsection{Examples}
-From man git-checkout : "Switches branches by updating the index, 
-working tree, and HEAD to reflect the specified branch or commit". \par
+As referred above checkout behaves in a non-intuitive way. We recommend that
+every time, a checkout is done, all things must be previously committed, or else
+we risk ourselves to pass things that we don't want to other branches, or even
+loose information. \\
+Thus, the example shown in figure \ref{fig:checkout}, contains the case where
+all content in the index and working directory are committed (the safe case).
+When doing the checkout we can see in the figure 
+that the repository and index change to reflect the branch checked out, more
+concretely the most recent commit of the branch. But
+also, the commit referred will now be pointed by the HEAD reference. So, all new
+changes done will belong to the branch checked out. \\
+
+
 \begin{figure}[!t]
    \centering
    \includegraphics[width=0.6\textwidth]{images/checkout.png}
@@ -325,46 +344,56 @@ working tree, and HEAD to reflect the specified branch or commit". \par
 
 \subsection{Merge}
 
+The merge operation is one the of most important operation on \emph{git}. It
+consists on trying to combine information from two commits. Resulting of that
+is a new commit with information from both commits, however there are some cases
+where this will not always be true. A commit information can take precedence
+over another, thus there is no need for a new commit. Also, the process of
+joining information cannot be done, because it is not certain which
+correspondent data in both commits should take precedence (merge conflict).\\
 
-When you do a 'git merge <branch>', a merge will happen between the current
-branch and the branch selected on the command. The result will be a new merge 
-commit, or a partially merged index. \par
+When a 'git merge <branch>' is done, \emph{git} will pick both involving
+commits (the current commit, and the commit pointed by the branch referred)
+and try to merge them into a new commit that must belong to the current branch.
+\\
+As already said, a merge conflict can happen, and if it occurs \emph{git} leaves
+to the user the process of resolving the conflicts. When that process is done,
+the user can notify \emph{git} by doing a 'git commit', and a new merge commit 
+will be made, where it's parents will be both commits trying to be merged. \\
+\emph{Git} tries to be the most autonomous possible when merging, thus it has
+three types of merge
 
-Git knows three types of merge : 
 \begin{itemize}
-\item A fast-forward merge, that will happen when 
-the current commit from the other
-branch, is more recent than the current commit from the current branch. \par
-This type is not a true merge, in the sense that the only thing that
-changes it's the pointer of the current branch
-is moved to the newest commit.
+\item A fast-forward merge (figure \ref{fig:fast_forward}). 
+Happens when the non current commit, can achieve the current commit by the 
+parent relation. If that happens, then the non current commit is more recent
+than the current commit, so the merge commit would be equal to the non current
+commit. Because \emph{Git} tries to be efficient a merge is not made. But, the
+HEAD will point to the newest commit. 
 
-\item A 2-way merge, that happens when the conditions for a fast-forward
-don't exist, and there isn't a common ancestor for both commits.
+\item A 3-way merge (figure \ref{fig:3mergecase}). 
+Happens when a fast-forward is not possible, but, both commits have a common
+ancestor. \emph{Git} will use the common ancestor to minimize potential
+merge conflicts.
 
-\item A 3-way merge, happens when the conditions for a fast-forward
-don't exist, but, there is a common ancestor for both commits. \par
-The difference between these two last types, is that the last is much 
-more automatic having much less conflicts than the previous type.
+\item A 2-way merge (figure \ref{fig:2mergecase}). 
+Happens when both types above are not possible. In this case there are no
+common ancestor, thus will it be more likely that conflicts appears.
+
 \end{itemize}
-Knowing these 3 types of merge, it's important to know that Git tries to make
-the merge process as automatic as possible. However conflicts do exist, and when
-they happen it leaves to the user the process of resolving those conflicts. \par
-When the Git/user, finishes the merging of files in the index, he
-can commit the resulting merge, in a merge commit. \par
-Note that while there are unmerged files in the index, a commit cannot be
-made. \par 
 
 \subsubsection{Pre requisites}
 
 \begin{itemize}
+
 \item A merge can't be made, if the current commit is more recent then the
 other commit.
-\item A merge can't be made, while there are unmerged files.
+\item A merge can't be made, while there are unmerged files in the index.
 \item In the case of a fast-forward merge, the index can't have uncommitted
 files that can be changed by the merge operation.
 \item In the case of a 2-way or 3-way merge operation there can not be
-uncommitted files. 
+uncommitted files.
+
 \end{itemize}
 
 \subsubsection{Result}
@@ -377,18 +406,18 @@ uncommitted files.
    \caption{A fast-forward case}\label{fig:fast_forward}
 \end{figure}
 
-\begin{figure}[!t]
-   \centering
-   \includegraphics[width=0.6\textwidth]{images/2merge.png}
-   \caption{A 2-way merge case}\label{fig:2mergecase}
-\end{figure}
+
 
 \begin{figure}[!t]
    \centering
    \includegraphics[width=0.6\textwidth]{images/3merge.png}
    \caption{A 3-way merge case}\label{fig:3mergecase}
 \end{figure}
-
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/2merge.png}
+   \caption{A 2-way merge case}\label{fig:2mergecase}
+\end{figure}
 \begin{figure}[!t]
    \centering
    \includegraphics[width=0.6\textwidth]{images/fast_forward_merge1.png}
