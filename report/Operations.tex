@@ -1,3 +1,4 @@
+
 \section{Git operations}
 In this section we explore some of the git operations. We try to do
 so, in a different way, if comparing with other manuals. Normally the
@@ -422,6 +423,24 @@ Thus, it has three types of merge:
    appear.
 \end{itemize}
 
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.5\textwidth]{images/fast_forward.png}
+   \caption{A fast-forward case}\label{fig:fast_forward}
+\end{figure}
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/3merge.png}
+   \caption{A 3-way merge case}\label{fig:3mergecase}
+\end{figure}
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/2merge.png}
+   \caption{A 2-way merge case}\label{fig:2mergecase}
+\end{figure}
+
 \subsubsection{Pre requisites}
 The merge operation, as all other operations, has some pre conditions that
 must be satisfied in order to perform it. As in the checkout operation,
@@ -506,10 +525,23 @@ a case eligible for a fast-forward commit.  We can see that the result
 is that the working directory and index will be updated accordingly to
 the new created commit now pointed by 'Foo' and Master.\\
 
+\begin{figure}[htp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge1.png}
+   \caption{A fast-forward merge case}\label{fig:ffmerge1}
+\end{figure}
+
 Figure \ref{fig:ffmergepre} shows a concrete example of a state in
 which it is not possible to perform a merge. This happens because 
 the commit pointed by Master (which is identified by HEAD) takes
 precedence over all files. \\
+
+\begin{figure}[htp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge_pre.png}
+   \caption{A fast-forward case that can't be done in
+   \emph{git}}\label{fig:ffmergepre}
+\end{figure}
 
 The two last figures \ref{fig:merge2way} and \ref{fig:merge3way} demonstrates 
 the difference between a 2-way and a 3-way merge commit. When using
@@ -524,46 +556,19 @@ the unmerged files and adding it to the index.
 Finally, when 'git commit' is performed a new merge commit is created and 
 the merge process terminates.\\
 
-\begin{figure}[!t]
-   \centering
-   \includegraphics[width=0.5\textwidth]{images/fast_forward.png}
-   \caption{A fast-forward case}\label{fig:fast_forward}
-\end{figure}
-
-\begin{figure}[!t]
-   \centering
-   \includegraphics[width=0.6\textwidth]{images/3merge.png}
-   \caption{A 3-way merge case}\label{fig:3mergecase}
-\end{figure}
-\begin{figure}[!t]
-   \centering
-   \includegraphics[width=0.6\textwidth]{images/2merge.png}
-   \caption{A 2-way merge case}\label{fig:2mergecase}
-\end{figure}
-\begin{figure}[!t]
-   \centering
-   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge1.png}
-   \caption{A fast-forward merge case}\label{fig:ffmerge1}
-\end{figure}
-
-\begin{figure}[!t]
-   \centering
-   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge_pre.png}
-   \caption{A fast-forward case that can't be done in
-   \emph{git}}\label{fig:ffmergepre}
-\end{figure}
-
-\begin{figure}[!t]
+\begin{figure}[htp]
    \centering
    \includegraphics[width=0.7\textwidth]{images/merge2way}
    \caption{A typical 2-way merge}\label{fig:merge2way}
 \end{figure}
-\begin{figure}[!t]
+
+\begin{figure}[htp]
    \centering
    \includegraphics[width=0.7\textwidth]{images/merge3way}
    \caption{A typical 3-way merge}\label{fig:merge3way}
 \end{figure}
 
+\newpage
 \subsubsection{Git Pull and Git Push}
 
 When working with remote repositories, these two operations will be vastly
