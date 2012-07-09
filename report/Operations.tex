@@ -386,104 +386,116 @@ identifies the branch that was checked out.\\
 
 \subsection{Merge}
 
-The merge operation is one the of most important operation on \emph{git}. It
-consists on trying to combine information from two commits. Resulting of that
-is a new commit with information from both commits, however there are some cases
-where this will not always be true. A commit information can take precedence
-over another, thus there is no need for a new commit. Also, the process of
-joining information cannot be done, because it is not certain which
-correspondent data in both commits should take precedence (merge conflict).\\
+The merge operation is one the of most important operation in \emph{git}. It
+consists on trying to combine information from two commits. The result of that
+is a new commit with information from both commits. However there are some cases
+where this is not true. One of this cases is when the current commit
+is a precedent from the commit being merged. In this case, it is not
+created a new commit. The current branch (identified by HEAD) is
+updated to point to the commit being merged.\\
 
-When a 'git merge <branch>' is done, \emph{git} will pick both involving
-commits (the current commit, and the commit pointed by the branch referred)
-and try to merge them into a new commit that must belong to the current branch.
-\\
-As already said, a merge conflict can happen, and if it occurs \emph{git} leaves
-to the user the process of resolving the conflicts. When that process is done,
-the user can notify \emph{git} by doing a 'git commit', and a new merge commit 
-will be made, where its parents will be both commits trying to be merged. \\
-\emph{Git} tries to be the most autonomous possible when merging, thus it has
-three types of merge
+Sometimes this operation of joining commits is not possible to do
+automatically because there are conflicts, or in other words, when
+the same file exists in both commits it is
+not possible to say which one is more recent. In this case the merge
+operation has to be finished by the user. The user has to resolve the
+conflicts and then perform a commit.\\
+
+\emph{Git} tries to be as most autonomous as possible when merging.
+Thus, it has three types of merge:
 
 \begin{itemize}
-\item A fast-forward merge (figure \ref{fig:fast_forward}). 
-Happens when the non current commit, can achieve the current commit by the 
-parent relation. If that happens, then the non current commit is more recent
-than the current commit, so the merge commit would be equal to the non current
-commit. Because \emph{Git} tries to be efficient a merge is not made. But, the
-HEAD will point to the newest commit. 
-
-\item A 3-way merge (figure \ref{fig:3mergecase}). 
-Happens when a fast-forward is not possible, but, both commits have a common
-ancestor. \emph{Git} will use the common ancestor to minimize potential
-merge conflicts.
-
-\item A 2-way merge (figure \ref{fig:2mergecase}). 
-Happens when both types above are not possible. In this case there are no
-common ancestor, thus will it be more likely that conflicts appears.
-
+   \item \textbf{Fast-forward merge} (figure \ref{fig:fast_forward}):
+   It happens when the commit being merged, can achieve the current commit by the 
+   parent relation. If that happens, then the commit being merged is more recent
+   than the current commit. The result will be the HEAD pointing to
+   the commit being merged. It is not created a new commit; 
+   
+   \item \textbf{3-way merge} (figure \ref{fig:3mergecase}): 
+   It happens when a fast-forward is not possible, but, both commits have a common
+   ancestor. \emph{Git} will use the common ancestor to minimize potential
+   merge conflicts.
+   
+   \item \textbf{2-way merge} (figure \ref{fig:2mergecase}): 
+   It happens when both types above are not possible. In this case there are no
+   common ancestor, thus it will be more likely that conflicts will
+   appear.
 \end{itemize}
 
 \subsubsection{Pre requisites}
-The merge operation, as all other operations has some pre conditions that
-must be satisfied in order to be possible to do it. As in the checkout,
-\emph{git} let's the user do merges without all information in the index 
-being committed. However,again, it is recommended that no information is 
-left uncommitted :
+The merge operation, as all other operations, has some pre conditions that
+must be satisfied in order to perform it. As in the checkout operation,
+\emph{git} lets the user to perform a merge without all information in the index 
+being committed: 
 
 \begin{itemize}
-\item A merge can't be made, if the current commit is more recent than the
-other. As the current commits takes precedence, no new changes will exist. 
-Thus, the merge is not necessary.
-\item If \emph{git} can't do the merge automatically because of conflicts,
-the user must resolve all those conflicts, before doing another merge.
-
-\item When it is the case of a fast-forward merge, the index can't have 
-uncommitted files that would be changed by the resulting merge.
-
-\item In the case of a 2-way or 3-way merge operation there simply 
-can not be uncommitted files.
+   \item A merge cannot be performed if the current commit is more
+   recent than the commit being merged. As the current commits is more
+   recent, no changes would exist. 
+   
+   \item There cannot exist an unfinished merge on the repository. If
+   the user performed a merge previously and that merge was not
+   automatic, then a commit must be performed before performing a new
+   merge.
+   
+   \item When it is detected that the fast-forward merge will take
+   place, the index cannot have uncommitted files that would would
+   conflict with files from the resulting merge.
+   
+   \item When it is detected that a 2-way or 3-way merge will take
+   place, then it is not possible to exist uncommitted files in index.
 \end{itemize}
 
 \subsubsection{Result}
-As already said when doing a merge, one of three things can happen. A 
-fast-forward, a successful merge or a partially done merge:
+As already said when performing a merge, one of three tactics can be
+applied. In the case of a fast-forward merge, the operation will be
+always automatic. It means that no conflicts will ever be found. In
+the case of a 2-way merge or 3-way merge, the merge operation sometimes cannot
+be resolved automatically because conflicts are found. Next, we give a
+small description of what changes after a merge operation is called.
 
 \begin{itemize}
 \item If it is the case of a fast-forward merge. The index and the working directory
 will contain the information of the newest commit. Also, they will contain all 
-information prior to the merge that was uncommitted, as long as that it brings
-no conflicts to it. Of course, the current branch and HEAD will point to the
+information prior to the merge that was uncommitted, as long as there
+are no conflicts. Of course, the current branch and HEAD will point to the
 newest commit.
 
-\item When a successful merge happens, the index will reflect the new commit,
-and the working directory will contain the information of the commit. Here,
-doesn't exist the question of uncommitted changes, as \emph{git} forbids that
-to happen. In the repository a new commit will appear that has the combined
-changes of the two (possibly three) commits involved in the merge. That new
-commit will have as parents those two commits, and will be pointed the current
-branch and the HEAD.
+\item When it is a 2-way or 3-way automatic merge, the
+index and the working directory will reflect the new
+commit (the created commit). Here, the question of 
+uncommitted changes does not exists because \emph{git} 
+does not allow uncommitted files when applying this tactics. 
+In the repository a new commit is created that has the combined
+changes of the two (possibly three, if it is a 3-way merge) 
+commits involved in the merge. That new commit will have as 
+parents those two commits and it will be pointed by the
+branch identified by the HEAD.
 
-\item If when doing a merge, a conflict appears that \emph{git} can't resolve,
-it will say that the automatic merge failed, and that the manual merge will
-begin, in other words it leaves to the user the work of resolving the conflicts
-that \emph{git} couldn't solve. At that moment, the index and working directory
-will contain all the information that was merged. For all the files unmerged, they
-will also be maintained in the index and the working directory, but in a
-state where we can see what differs in them, when they belong to a commit or to
-the other. Finally, \emph{git} will mark some fields in the repository, so that
-when the user does the next commit, it will be the son of both parents
-involved in the commit, where it will be pointed by the current branch and HEAD.
-When this new commit is done, the merge process is over.
+\item If when performing a merge, it cannot be performed
+automatically, git will throw a message saying that the 
+automatic merge failed and the user has to finish it. In 
+other words it leaves to the user the work of resolving the conflicts
+that \emph{git} could not resolve. At that moment, the index and working directory
+will contain all the files that were merged. The working directory
+will also contain the unmerged files, with marks for the user to solve
+the conflicts. The index contains the 2 (or 3 in the case of a 3-way
+merge) versions of the files. As soon as the user solves the conflicts
+and adds it to the index, this file will be marked as merged. After
+all files are merged, a commit can be performed. In this manual
+process, git keeps somewhere in the repository that a manual merge is
+taking place and it also keeps which commits are being merged. This
+information is used when the commit operation is performed, mainly to
+know which commits will be the parent from the created one. 
 
 \end{itemize}
 
 \subsubsection{Examples}
 
 As usual the next figures will show some concrete examples of what happens
-in \emph{git} when a merge is done, we don't involve here cases of 
-uncommitted changes, as we don't recommend to do that and 
-things would turn much more tricky to understand and much less intuitive. \\
+in \emph{git} when a merge is done. We do not involve here cases of 
+uncommitted files, as we do not recommend that and 
+it would turn much more tricky to understand and much less intuitive. \\
 
 Figure \ref{fig:ffmerge1} is a simple case of a merge operation. It shows
 that the Master branch and HEAD point to a commit that is achievable by the
