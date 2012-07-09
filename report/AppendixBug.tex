@@ -1,0 +1,37 @@
+\section{Git Bug}
+teste $ git init
+   Initialized empty Git repository in /home/smooke/Dropbox/teste/.git/
+teste $ touch f
+teste $ echo a > f
+teste $ git add f
+teste $ git commit -m 'first commit'
+   [master (root-commit) dab04b9] first commit
+   1 files changed, 1 insertions(+), 0 deletions(-)
+   create mode 100644 f
+teste $ git branch b
+teste $ touch something
+teste $ echo b > something
+teste $ git add something
+teste $ git commit -m 'something added'
+   [master 9f2b8ad] something added
+   1 files changed, 1 insertions(+), 0 deletions(-)
+   create mode 100644 something
+teste $ git rm something
+   rm 'something'
+teste $ mkdir something
+teste $ cd something/
+something $ touch f1
+something $ echo c > f1
+something $ cd ..
+teste $ git add something/f1
+teste $ git checkout b
+   Switched to branch 'b'
+teste $ ls
+   f
+teste $ git checkout master
+   Switched to branch 'master'
+teste $ ls
+   f  something
+teste $ cat something
+   b
+
