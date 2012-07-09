@@ -165,36 +165,41 @@ probably created. The index keeps exactly the same content.
 
 \subsubsection{Examples}
 
-The figure \ref{fig:commit1} shows as typical process where there are added
-some files to the index and then is done a commit. As can be seen the new commit
-reflects, the structure of the working directory at that point. 
-The interesting thing here is that, because the two files
+The figure \ref{fig:commit1} shows a typical process where two files
+are added to the index and then a commit is performed. It can be seen
+that the new commit reflects the working directory's structure
+with these two files. The interesting point is that, because these two files
 have the same content, they will share the same
 Blob. This is a case where \emph{git} shows its efficiency. \\
-Figure \ref{fig:commit2} has an example of a commit operation, where in 
-already exists a commit object in the repository. This figure is 
-interesting because it shows what changes are done in the repository when a
-new (not RootCommit) is done. The new commit points to the previous commit, and
-the branch and HEAD point to the new commit. As expected the new commit reflects
-the working directory structure at the point of commit.\\
-Figure \ref{fig:commit_pre} is just a concrete example of the 2nd pre requisite
-referred above. \\
 
-\begin{figure}[!t]
+The previous commit shows the case, in which the first commit is being
+performed. In Figure \ref{fig:commit2} it is possible to see an example 
+of a commit operation, in which the only difference from the previous 
+commit is a removed file. This figure is 
+interesting because it shows which changes are made in the repository when a
+new (not RootCommit) is created. The new commit points to the previous commit and
+the branch and HEAD identifies to the created commit. As expected the new commit reflects
+the working directory's structure for the existing files.\\
+
+Figure \ref{fig:commit_pre} is just a concrete example of the second pre requisite
+referred above. In this case the commit cannot be performed.\\
+
+\begin{figure}[hp]
    \centering
    \includegraphics[width=0.8\textwidth]{images/commit1.png}
    \caption{Doing a commit}\label{fig:commit1}
 \end{figure}
-\begin{figure}[!t]
+\begin{figure}[hp]
    \centering
    \includegraphics[width=0.8\textwidth]{images/commit2.png}
    \caption{Doing a second commit}\label{fig:commit2}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[tp]
    \centering
    \includegraphics[width=0.6\textwidth]{images/commit_pre.png}
-   \caption{This commit can't be done in \emph{git}}\label{fig:commit_pre}
+   \caption{An index which does not satisfies the commit
+   pre-conditions}\label{fig:commit_pre}
 \end{figure}
 
 \subsection{Branch Create and Branch Remove}
@@ -250,18 +255,15 @@ the branch identified by the HEAD. When removing a branch, the result
 is that the branch removed does not exists anymore.
 
 \subsubsection{Examples}
-The changes that happen when creating a branch are minimal. The only thing
-changing is the appearance of a new branch pointing to the current commit, as
-figure \ref{fig:branch} demonstrates. \\ 
-The removal of a branch is also minimal. The only thing changing is that the 
-branch referred must be deleted. If in \ref{fig:branch} we view 
-the grey arrow as pointing up, instead
-pointing down, we automatically view the process of deleting a branch. \\ 
-About the branch removal pre condition, this case
-is legit because the current commit achieves (it is the same) the
-commit pointed by the branch deleted. Even if 'Foo' pointed to any other commit, 
-it could be still deleted, as all commits in this figure
-are achieved by the current commit. \\
+As we wrote before the changes of creating a branch are minimal. The only thing
+changing in the repository is the new branch pointing to the current commit, as
+it can be seen in figure \ref{fig:branch}. \\
+
+When removing a branch the changes are also minimal. The only thing
+changing in the repository is that the 
+branch referred must be deleted. If instead of looking at Figure
+\ref{fig:branch} from top to bottom, we look at it from bottom to top,
+it shows the case when a branch is removed. \\ 
 
 \begin{figure}[!t]
    \centering
@@ -363,16 +365,17 @@ files that are marked as removed will not be in index.
 
 \subsubsection{Examples}
 As referred above checkout behaves in a non-intuitive way. We recommend that
-every time, a checkout is done, all things must be previously committed, or else
-we risk ourselves to pass things that we don't want to other branches, or even
-loose information. \\
-Thus, the example shown in figure \ref{fig:checkout}, contains the case where
-all content in the index and working directory are committed (the safe case).
-When doing the checkout we can see in the figure 
-that the repository and index change to reflect the branch checked out, more
-concretely the most recent commit of the branch. But
-also, the commit referred will now be pointed by the HEAD reference. So, all new
-changes done will belong to the branch checked out. \\
+before performing a checkout, the user ensures that all the files from
+the index are committed, otherwise there is a risk to pass content to other branches or even
+to loose information. \\
+
+Thus, the example shown in figure \ref{fig:checkout}, contains an
+example in which all content in the index and working directory are committed (the safe case).
+When performing a checkout we can see in this figure 
+that the repository and index are updated to reflect the branch checked out, more
+concretely the commit pointed by the branch. Something the reader can
+also observe is that, after the checkout is performed, the HEAD
+identifies the branch that was checked out.\\
 
 
 \begin{figure}[!t]
