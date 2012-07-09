@@ -497,29 +497,32 @@ in \emph{git} when a merge is done. We do not involve here cases of
 uncommitted files, as we do not recommend that and 
 it would turn much more tricky to understand and much less intuitive. \\
 
-Figure \ref{fig:ffmerge1} is a simple case of a merge operation. It shows
-that the Master branch and HEAD point to a commit that is achievable by the
-commit pointed by 'Foo', so this is a case eligible for a fast-forward commit.
-We can see that the result is that the working directory and index will be
-updated accordingly to the commit now pointed by 'Foo' Master and HEAD. As
-known any untracked file will not be changed. \\
+Figure \ref{fig:ffmerge1} is a simple case of a merge operation with
+the branch ''Foo''. The figure
+shows that the Master branch (which is identified by HEAD) points to
+a commit that is achievable by the commit pointed by 'Foo' and the
+parent relation. So this is
+a case eligible for a fast-forward commit.  We can see that the result
+is that the working directory and index will be updated accordingly to
+the new created commit now pointed by 'Foo' and Master.\\
 
-Figure \ref{fig:ffmergepre} shows a concrete example of state in the repository
-where it is not possible to do a merge. As the commit pointed by HEAD and Master
-can achieve the commit pointed by 'Foo', thus the current commit taking
-precedence over any data than the other commit could have. \\
+Figure \ref{fig:ffmergepre} shows a concrete example of a state in
+which it is not possible to perform a merge. This happens because 
+the commit pointed by Master (which is identified by HEAD) takes
+precedence over all files. \\
 
 The two last figures \ref{fig:merge2way} and \ref{fig:merge3way} demonstrates 
-the difference between a 2-way and a 3-way merge commit. When in the 2-way there
-are conflicts to resolve, in the 3-way the conflicts are resolved by looking to
+the difference between a 2-way and a 3-way merge commit. When using
+2-way merge there
+are conflicts that cannot be solved automatically, in the 3-way merge
+the conflicts are resolved automatically by looking at
 the common ancestor. Because the 3-way merge was automatic, a new commit was
-created that represent the merged information. Also, the working directory and
-index were updated accordingly. In the 2-way the user had to resolve the
-conflict by adding new content to the unmerged file and adding it to the index.
-Finally, when 'git commit' was called a new merge commit was created and 
-the merge process successfully finished. In this case the index and working 
-directory were updated just before \emph{git} leaved to the user the merging
-process. \\
+created that represents the merged information. Also, the working directory and
+index were updated accordingly. In the 2-way merge the system is left
+in a state for the user to solve the conflicts manually by updating
+the unmerged files and adding it to the index.
+Finally, when 'git commit' is performed a new merge commit is created and 
+the merge process terminates.\\
 
 \begin{figure}[!t]
    \centering
