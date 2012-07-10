@@ -132,18 +132,74 @@ Formal Methods in Software Engineering}
 
 
 \section{Working Directory}
-\begin{frame}
+\begin{frame}[fragile]
    \frametitle{Working Directory}
+   \begin{itemize}
+      \item Subset of a file system with the content of a project;
+      \item These files can be the current files or files retrieved
+      from the repository.
+   \end{itemize}
+   \tiny
+   \color{blue}
+   \begin{lstlisting}
+                        sig Path {
+                           pathparent: lone Path,
+                           name: Name,
+                           unmerge: set State
+                        }
+
+                        one sig Root extends Path{}
+   \end{lstlisting}
 \end{frame}
 
 \section{Index}
-\begin{frame}
+\begin{frame}[fragile]
    \frametitle{Index}
+   \begin{itemize}
+      \item Something in between the working directory and repository;
+      \item It keeps a relation from file to content;
+      \item The files in index will be in the next commit;
+   \end{itemize}
+   \vspace{10mm}
+   \tiny
+   \color{blue}
+   \begin{lstlisting}
+                        sig File{
+                           path: Path,
+                           blob: Blob,
+                           index: set State
+                        }
+
+   \end{lstlisting}
+
 \end{frame}
 
 \section{Operations}
-\begin{frame}
-   \frametitle{Operations}
+\begin{frame}[fragile]
+   \frametitle{Modeled Operations}
+   \begin{itemize}
+      \item Add and Remove
+      \item Commit
+      \item Branch and Branch Remove
+      \item Checkout
+      \item Merge
+   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Add}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.3\textwidth]{images/add1.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Remove}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/remove1.png}
+   \end{figure}
 \end{frame}
 
 \end{document}
