@@ -43,6 +43,13 @@ Formal Methods in Software Engineering}
 	\end{itemize}
 	\end{block}
 \end{frame}
+\begin{frame}
+   \frametitle{Git as VCS}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.5\textwidth]{images/VCS.png}
+   \end{figure}
+\end{frame}
 
 \section{Project motivation and objectives}
 \begin{frame}
@@ -51,33 +58,43 @@ Formal Methods in Software Engineering}
 		\begin{itemize}
 		\item Lack of precise descriptions
 		\item Contradictions in some manuals
-		\item Developers could benefit from a manual
-		that is precise and rigorous
 		\end{itemize}
+	\end{block}
+	\begin{block}{An opportunity  appears}
+	\begin{itemize}
+	\item Developers could benefit from a manual
+		that is precise and rigorous
+	\end{itemize}
 	\end{block}
 \end{frame}
 
 \begin{frame}
+	\frametitle{The dark world of Git}
+	\begin{block}{The common (and above average) knowledge of Git }
 	\begin{itemize}
 	\item "if there are any uncommitted changes when you run git checkout,
-	 Git will behave very strangely." \footnote{Understanding Git}
+	 Git will behave very strangely." \footnote{"Understanding Git" Manual}
 	\item "When you create a branch, it will contain everything
          committed on the branch you created it from at that given
          point. So if you commit more things on the master branch like
          you have done (after creating b), then switch to branch b,
          they won't appear. This is the correct behavior. Does that
-         answer your question?" \footnote{An average user of Git} 
+         answer your question?" \footnote{An user of Git development 
+	 mailing list} 
 	\end{itemize}
+	\end{block}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Objectives of this project}
-	\begin{block}{Shine some light in the dark world of Git}
+	\begin{block}{Shine some light in Git internals}
 		\begin{itemize}
-			\item Build a precise model of how Git works
-			\item Analyze the model
-			\item Build a user manual based on specification a
-			analysis 
+			\item Build a precise model of how Git works, using 
+			Alloy
+			\item Analyze the model and verify which properties
+			does (not) guarantee
+			\item Help others to understand Git better, building
+			a manual with public access
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -89,10 +106,17 @@ Formal Methods in Software Engineering}
    \frametitle{The Git Structure}
    \begin{figure}
       \centering
-      \includegraphics[width=0.5\textwidth]{images/git_workflow.png}
+      \includegraphics[width=0.45\textwidth]{images/git_workflow.png}
    \end{figure}
 \end{frame}
 
+\begin{frame}
+   \frametitle{Repository}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.4\textwidth]{images/workflow2.png}
+   \end{figure}
+\end{frame}
 
 \begin{frame}
 \frametitle{Repository}
@@ -106,8 +130,8 @@ Formal Methods in Software Engineering}
    \frametitle{Blob and Tree}
    \begin{block}{Blob}
       \begin{itemize}
-         \item Represents the content of a file;
-         \item The name is calculated from its content;
+         \item Represents the content of a file
+         \item The name is calculated from its content
       \end{itemize}
       \tiny
       \color{blue}
@@ -117,8 +141,8 @@ Formal Methods in Software Engineering}
    \end{block}
    \begin{block}{Tree}
       \begin{itemize}
-         \item Relation from names to Blobs or/and Trees;
-         \item Used to represent the file system structure;
+         \item Relation from names to Blobs or/and Trees
+         \item Used to represent the file system structure
       \end{itemize}
       \tiny
       \color{blue}
@@ -139,10 +163,10 @@ Formal Methods in Software Engineering}
    \frametitle{Commit}
    \begin{itemize}
       \item It is like a snapshot of the project on a certain moment
-      in time;
-      \item Author, Committer, Comment - Not important for us;
-      \item Parent - The Commit which originated the current;
-      \item Tree - Pointer to a Tree Object;
+      in time
+      \item Author, Committer, Comment - Not important for us
+      \item Parent - The Commit which originated the current
+      \item Tree - Pointer to a Tree Object
    \end{itemize}
    \tiny
    \color{blue}
@@ -162,12 +186,12 @@ Formal Methods in Software Engineering}
 \frametitle{Branch and HEAD}
    \begin{block}{Branch}
       \begin{itemize}
-         \item It is just a pointer to a commit;
+         \item It is just a pointer to a commit
       \end{itemize}
    \end{block}
    \begin{block}{HEAD}
       \begin{itemize} 
-         \item Special reference that identifies the current Branch;
+         \item Special reference that identifies the current Branch
       \end{itemize}
    \end{block}
    \tiny
@@ -187,16 +211,25 @@ Formal Methods in Software Engineering}
 	\frametitle{Repository}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.5\textwidth]{images/object_assoc.png}
+		\includegraphics[width=0.4\textwidth]{images/object_assoc.png}
 	\end{figure}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Working Directory}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.4\textwidth]{images/workflow3.png}
+   \end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Working Directory}
    \begin{itemize}
-      \item Subset of a file system with the content of a project;
-      \item These files can be the current files or files retrieved
-      from the repository.
+      \item Subset of a file system
+      \item Has the content of a project
+      \item Files can be the current files or files retrieved
+      from the repository
    \end{itemize}
    \tiny
    \color{blue}
@@ -211,12 +244,22 @@ Formal Methods in Software Engineering}
    \end{lstlisting}
 \end{frame}
 
+\begin{frame}
+   \frametitle{Repository}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.4\textwidth]{images/workflow1.png}
+   \end{figure}
+\end{frame}
+
 \begin{frame}[fragile]
    \frametitle{Index}
    \begin{itemize}
-      \item Something in between the working directory and repository;
-      \item It keeps a relation from file to content;
-      \item The files in index will be in the next commit;
+      \item Contains all files that are going to be committed on the next
+      commit 
+      \item The index is not necessarily equal to the working directory
+      \item If an user wants to commit a new file or a newly modified file,
+      first he must add it to the index
    \end{itemize}
    \vspace{10mm}
    \tiny
@@ -234,6 +277,17 @@ Formal Methods in Software Engineering}
 
 
 \section{Specification of operations}
+
+\begin{frame}[fragile]
+   \frametitle{Modeled Operations}
+   \begin{itemize}
+      \item Add and Remove
+      \item Commit
+      \item Branch and Branch Remove
+      \item Checkout
+      \item Merge (2-way and fast-forward)
+   \end{itemize}
+\end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Add}
@@ -276,6 +330,22 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}[fragile]
+	\frametitle{Checkout}
+	\begin{block}{The most difficult operation to specify}
+	\begin{itemize}
+		\item Expected pre-conditions were not found
+		\item Instead we found weaker pre-conditions
+		\item Strange behaviour caught. Discussed about it 
+		with the Git mailing list. Concluded that was a bug
+	\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Pre-conditions found}
+\end{frame}
+
+\begin{frame}[fragile]
    \frametitle{ A fast-forward Merge}
    \begin{figure}
       \centering
@@ -292,27 +362,32 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}[fragile]
-   \frametitle{Modeled Operations}
-   \begin{itemize}
-      \item Add and Remove
-      \item Commit
-      \item Branch and Branch Remove
-      \item Checkout
-      \item Merge (2-way and fast-forward)
-   \end{itemize}
+   \frametitle{A 3-way Merge}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/merge2way.png}
+   \end{figure}
 \end{frame}
 
-\section{Documentation}
-
-\begin{frame}
-	\frametitle{Manual}
-	\begin{block}{Built a manual that describes}
+\begin{frame}[fragile]
+	\frametitle{Merge}
+	\begin{block}{The la la} 
 	\begin{itemize}
-		\item Git internals
-		\item Git operations
+		\item aaawith the Git mailing list. Concluded that was a bug
 	\end{itemize}
 	\end{block}
 \end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Merge}
+	\begin{block}{The la la} 
+	\begin{itemize}
+		\item aaawith the Git mailing list. Concluded that was a bug
+	\end{itemize}
+	\end{block}
+\end{frame}
+
+\section{Documentation}
 
 \begin{frame}
 	\frametitle{Website}
