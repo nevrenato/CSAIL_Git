@@ -58,7 +58,16 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}
-	Quotation
+	\begin{itemize}
+	\item "if there are any uncommitted changes when you run git checkout,
+	 Git will behave very strangely." \footnote{Understanding Git}
+	\item "When you create a branch, it will contain everything
+         committed on the branch you created it from at that given
+         point. So if you commit more things on the master branch like
+         you have done (after creating b), then switch to branch b,
+         they won't appear. This is the correct behavior. Does that
+         answer your question?" \footnote{An average user of Git} 
+	\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -242,16 +251,44 @@ Formal Methods in Software Engineering}
    \end{figure}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Commit}
+\begin{frame}[fragile]
+   \frametitle{Commit}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/commit1.png}
+   \end{figure}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Checkout}
+\begin{frame}[fragile]
+   \frametitle{Commit}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/commit2.png}
+   \end{figure}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Merge}
+\begin{frame}[fragile]
+   \frametitle{Checkout}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/checkout.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{ A fast-forward Merge}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/fastforwardmerge.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{A 2-way Merge}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/merge2way.png}
+   \end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -271,7 +308,6 @@ Formal Methods in Software Engineering}
 	\frametitle{Manual}
 	\begin{block}{Built a manual that describes}
 	\begin{itemize}
-		\item Motivation for the manual
 		\item Git internals
 		\item Git operations
 	\end{itemize}
@@ -292,10 +328,7 @@ Formal Methods in Software Engineering}
 \begin{frame}
 	\frametitle{Future Work}
 	\begin{itemize}
-	\item Model more operations 
-		\begin{itemize}
-			rebase, fetch, 3-way merge....
-		\end{itemize}
+	\item Model more operations (rebase, fetch, 3-way merge...) 
 	\item Specify more properties that the model does (not) guarantee
 	\item Build interactive diagrams of concrete examples of operations 
 	\end{itemize}
