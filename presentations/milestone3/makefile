@@ -1,5 +1,5 @@
 UNAME := $(shell uname -s)
-REL=milestone2Alt
+REL=milestone3
 PDF=$(REL).pdf
 TEX=$(REL).tex
 SECS="abstract.tex $(shell find sections)"
