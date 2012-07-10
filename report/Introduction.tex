@@ -20,7 +20,7 @@ repository and there is not a central server. An user can always commit
 and when connected can push/checkout the changes.\\
 
 %GIT
-\emph{Git} is a distributed VCS. It was created in 2005 by Linus Torvalds,
+\emph{Git} (\cite{progit}, \cite{gitComm}) is a distributed VCS. It was created in 2005 by Linus Torvalds,
 for the Linux kernel development. The main difference when comparing to
 others distributed VCS is that \emph{git} keeps snapshots of how your system
 looks like on a certain moment in time instead of keeping track of
@@ -43,7 +43,7 @@ guarantee. This manual presents to the reader semi-formal description of
 \emph{git} internals, the description of some operations and it ends with
 some properties that the model guarantee.\par
 %ALLOY
-Alloy is a declarative specification language, used for describing structures in 
+Alloy (\cite{Jackson:2006:SAL:1146359}) is a declarative specification language, used for describing structures in 
 a formal way. After modeling the structures, it is possible to
 check for some properties, look for counter examples and to visualize 
 instances of the model. \\
@@ -64,7 +64,13 @@ of time/space and complexity we focus our model in the index and in the
 repository, more precisely in the object model. 
 After the presentation of the structure we give the semi-formal
 specification of some operations. We finish the report with the
-analysis of some properties.
-
-% can we trust in git to manage projects of big value ? 
+analysis of some properties. \\
+Also, for a more intuitive explanation, many diagrams will be used that follow
+the convention specified in figure \ref{fig:notation}. 
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.8\textwidth]{images/Legenda.png}
+   \caption{Convention specified in this manual}
+   \label{fig:notation}
+\end{figure}
 
