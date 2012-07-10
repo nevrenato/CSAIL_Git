@@ -93,7 +93,7 @@ Formal Methods in Software Engineering}
 			Alloy
 			\item Analyze the model and verify which properties
 			does (not) guarantee
-			\item Help others to understand Git better, building
+			\item Help others understand Git, building
 			a manual with public access
 		\end{itemize}
 	\end{block}
@@ -131,7 +131,8 @@ Formal Methods in Software Engineering}
    \begin{block}{Blob}
       \begin{itemize}
          \item Represents the content of a file
-         \item The name is calculated from its content
+         \item The identifier is calculated from its content, thus files with
+	 same content will share the same blob
       \end{itemize}
       \tiny
       \color{blue}
@@ -141,8 +142,10 @@ Formal Methods in Software Engineering}
    \end{block}
    \begin{block}{Tree}
       \begin{itemize}
-         \item Relation from names to Blobs or/and Trees
+         \item Contains Blobs or other Trees 
          \item Used to represent the file system structure
+	 \item The identifier is calculated in a similar way to the Blobs. Thus, 
+	 for Trees sharing also exists
       \end{itemize}
       \tiny
       \color{blue}
@@ -162,11 +165,13 @@ Formal Methods in Software Engineering}
 \begin{frame}[fragile]
    \frametitle{Commit}
    \begin{itemize}
-      \item It is like a snapshot of the project on a certain moment
+      	\item A snapshot of the project on a certain moment
       in time
-      \item Author, Committer, Comment - Not important for us
-      \item Parent - The Commit which originated the current
-      \item Tree - Pointer to a Tree Object
+      	\item Has a set of parents, that are considered the previous commits 
+	\item Points to a Tree that is equivalent to the root folder in the
+	working directory
+	\item An auxiliar relation named "Abstract" was specified to be easy to
+	model the commit operation
    \end{itemize}
    \tiny
    \color{blue}
@@ -186,7 +191,8 @@ Formal Methods in Software Engineering}
 \frametitle{Branch and HEAD}
    \begin{block}{Branch}
       \begin{itemize}
-         \item It is just a pointer to a commit
+         \item Pointer to a commit, unlike other VCS where a branch is a full
+	 copy of the repository
       \end{itemize}
    \end{block}
    \begin{block}{HEAD}
