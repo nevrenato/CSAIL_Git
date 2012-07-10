@@ -30,7 +30,61 @@ Formal Methods in Software Engineering}
    \tableofcontents 
 }
 
-\section{Git Structure}
+\section{Git as VCS}
+
+\begin{frame}
+	\frametitle{Git as VCS}
+	\begin{block}{Git is one of many Version Control Systems}
+		\begin{itemize}
+		\item Fast
+		\item Efficient
+		\item Oriented to snapshots, not differences
+		\item Widely used
+	\end{itemize}
+	\end{block}
+\end{frame}
+
+\section{Project motivation and objectives}
+\begin{frame}
+	\frametitle{Motivation for this project}
+	\begin{block}{Gap in the understanding of Git}
+		\begin{itemize}
+		\item Lack of precise descriptions
+		\item Contradictions in some manuals
+		\item Developers could benefit from a manual
+		that is precise and rigorous
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	\begin{itemize}
+	\item "if there are any uncommitted changes when you run git checkout,
+	 Git will behave very strangely." \footnote{Understanding Git}
+	\item "When you create a branch, it will contain everything
+         committed on the branch you created it from at that given
+         point. So if you commit more things on the master branch like
+         you have done (after creating b), then switch to branch b,
+         they won't appear. This is the correct behavior. Does that
+         answer your question?" \footnote{An average user of Git} 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Objectives of this project}
+	\begin{block}{Shine some light in the dark world of Git}
+		\begin{itemize}
+			\item Build a precise model of how Git works
+			\item Analyze the model
+			\item Build a user manual based on specification a
+			analysis 
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+
+\section{Git internals}
+
 \begin{frame}
    \frametitle{The Git Structure}
    \begin{figure}
@@ -39,9 +93,9 @@ Formal Methods in Software Engineering}
    \end{figure}
 \end{frame}
 
-\section{Repository}
+
 \begin{frame}
-   \frametitle{Repository}
+\frametitle{Repository}
    \begin{figure}
       \centering
       \includegraphics[width=0.5\textwidth]{images/legenda2.png}
@@ -77,6 +131,8 @@ Formal Methods in Software Engineering}
       \end{lstlisting}
    \end{block}
 \end{frame}
+
+
 
 
 \begin{frame}[fragile]
@@ -127,8 +183,14 @@ Formal Methods in Software Engineering}
    \end{lstlisting}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Repository}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{images/object_assoc.png}
+	\end{figure}
+\end{frame}
 
-\section{Working Directory}
 \begin{frame}[fragile]
    \frametitle{Working Directory}
    \begin{itemize}
@@ -149,7 +211,6 @@ Formal Methods in Software Engineering}
    \end{lstlisting}
 \end{frame}
 
-\section{Index}
 \begin{frame}[fragile]
    \frametitle{Index}
    \begin{itemize}
@@ -171,17 +232,8 @@ Formal Methods in Software Engineering}
 
 \end{frame}
 
-\section{Operations}
-\begin{frame}[fragile]
-   \frametitle{Modeled Operations}
-   \begin{itemize}
-      \item Add and Remove
-      \item Commit
-      \item Branch and Branch Remove
-      \item Checkout
-      \item Merge
-   \end{itemize}
-\end{frame}
+
+\section{Specification of operations}
 
 \begin{frame}[fragile]
    \frametitle{Add}
@@ -198,5 +250,93 @@ Formal Methods in Software Engineering}
       \includegraphics[width=0.45\textwidth]{images/remove1.png}
    \end{figure}
 \end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Commit}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/commit1.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Commit}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/commit2.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Checkout}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/checkout.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{ A fast-forward Merge}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/fastforwardmerge.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{A 2-way Merge}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.45\textwidth]{images/merge2way.png}
+   \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+   \frametitle{Modeled Operations}
+   \begin{itemize}
+      \item Add and Remove
+      \item Commit
+      \item Branch and Branch Remove
+      \item Checkout
+      \item Merge (2-way and fast-forward)
+   \end{itemize}
+\end{frame}
+
+\section{Documentation}
+
+\begin{frame}
+	\frametitle{Manual}
+	\begin{block}{Built a manual that describes}
+	\begin{itemize}
+		\item Git internals
+		\item Git operations
+	\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Website}
+	\begin{itemize}
+	\item Website created based on the manual 
+	\item http://nevrenato.github.com/CSAIL\_Git
+	\end{itemize}
+
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}
+	\frametitle{Future Work}
+	\begin{itemize}
+	\item Model more operations (rebase, fetch, 3-way merge...) 
+	\item Specify more properties that the model does (not) guarantee
+	\item Build interactive diagrams of concrete examples of operations 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Conclusions}
+\end{frame}
+
 
 \end{document}
