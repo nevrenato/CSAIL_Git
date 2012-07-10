@@ -1,4 +1,4 @@
-\section{The Git structure}
+\chapter{The Git structure}
 \emph{Git}, as it was said before, is a distributed version control system.
 It means that each user has a mirror of the repository (local
 repository) and in the case of
@@ -10,7 +10,7 @@ can be seen in Figure \ref{fig:git_structure}. Local and remote
 repository have the same internal structure. What is a local
 repository for an user is a remote repository for another user.
 
-\begin{figure}[!t]
+\begin{figure}[h]
    \centering
    \includegraphics[width=0.8\textwidth]{images/git_workflow.png}
    \caption{Git WorkFlow}\label{fig:git_structure}
@@ -18,18 +18,18 @@ repository for an user is a remote repository for another user.
 
 \pagebreak
 
-\section{The Repository}
+\chapter{The Repository}
 \emph{Git} repository is like a database of a project along construction time. It is
 the place where the snapshots taken during the project construction
 are kept, as well as, all the necessary information to
 allow the users to go through all the snapshots. The snapshot's
 structure and snapshots' relations are kept using, what is called, \emph{git
 objects}. The information needed to go through the project is kept in,
-what is called, \emph{git references}. In the next subsections we
+what is called, \emph{git references}. In the next sections we
 present both of them.
 
 
-\subsection{Git Objects}
+\section{Git Objects}
 As we have presented before \emph{git} keeps snapshots of how your system
 looked like on a certain moment in time. This moment in time is
 represented in \emph{git} by a commit. Each commit points to a tree
@@ -44,7 +44,7 @@ have a commit that points to a tree. This first tree corresponds to
 the root directory of the project. All the other trees (and blobs)
 corresponds to some directory (or file) preserving the relation
 between them. \par
-In the next sections a detailed description about each object is
+In the next chapters a detailed description about each object is
 given, but for now something that is useful to know is that each
 object is identified by a 40-character string. This string is
 calculated by taking the SHA I hash of the contents of the object.
@@ -60,7 +60,7 @@ if two objects have the same content then, only one of them is kept.\par
    \label{fig:snapshot}
 \end{figure}
 
-\subsubsection{Blob}
+\subsection{Blob}
 A blob object, as it was said before, represents the content of a
 file and the blob name is calculated from the blob content. So if we
 have two files exactly with the same content, only one blob will be
@@ -68,7 +68,7 @@ kept, even if, they have different names . This happens because the
 blob is not directly associated to a file. The relation between a path
 (of a file) and a blob is kept in the tree object. 
 
-\subsubsection{Tree}
+\subsection{Tree}
 A tree is nothing else than a map from names to blobs and other trees. This map
 represents the contains relation. Also here, a tree is not associated to any 
 specific directory.
@@ -78,7 +78,7 @@ that it should have exactly the same relations, or in other words, we
 have exactly the same names in both trees and each name corresponds exactly
 to the same objects in both trees. 
 
-\subsubsection{Commit}
+\subsection{Commit}
 The commit object, is like a snapshot of the project on a certain moment in
 time. A commit object has more variety of information than the two
 objects addressed before. Looking a commit, it is possible to find out
@@ -111,7 +111,7 @@ cannot have cycles in the parent relation. It means that if we are
 on commit C1 and we go through the parent relation, we will never
 reach C1.
 
-\subsubsection{Tag}
+\subsection{Tag}
 At last we have the tag object. The tag object is just a pointer to
 a commit with some more information. It can be used to mark a special 
 commit, like a new version of the project. The structure is quite 
@@ -119,15 +119,15 @@ similar to the commit object. It has a tagger (the person who created
 the tag), a date in which the tag was created, a message (some
 comment from the tagger) and it points to a commit object. In our
 model we did not model this object, because when abstracting it looks
-like a branch, that we will see in next section.
+like a branch, that we will see in next chapter.
 
-\subsection{Git References}
+\section{Git References}
 Basically a reference is just a pointer to a commit. There is much
 more about references, but in this manual, lets keep it simple and
 concentrate on the object model. In this manual, we just speak about
 Branches and the special reference HEAD.
 
-\subsubsection{Branches}
+\subsection{Branches}
 One of the trump cards of \emph{Git} is its definition of branches. In other
 VCS each time a branch is created a new copy of the entire repository
 has to be done. Thus, branches operations in those VCS are slow and hard to use. 
@@ -136,7 +136,7 @@ In \emph{git}, when a new branch is created the only thing that
 commit. The current commit is marked by a special reference called
 HEAD, that we present next.
 
-\subsubsection{HEAD}
+\subsection{HEAD}
 HEAD is maybe the most important reference in the repository. It
 indicates where you are situated in the repository. When a commit is
 done, \emph{git} has to know which commit is going to be the parent. 
@@ -145,7 +145,7 @@ pointer to a branch, so when the commit is done, the HEAD is kept, but
 the branch points to the new commit. HEAD can point directly to a
 commit, but lets keep it simple.
 
-\section{Working Directory}
+\chapter{Working Directory}
 
 The working directory is basically a subset of
 a file system that contains the files of the project you are
@@ -161,7 +161,7 @@ new file is created it will be untracked. So, how does \emph{git} know which
 files are tracked or not? There exists the index which we present
 next.
 
-\section{Index}
+\chapter{Index}
 The index is something in between the working directory and the
 repository. When a file is created if the user wants that file to be
 on the next commit, it has to be on index. Even if the user just

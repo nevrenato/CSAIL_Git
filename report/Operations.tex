@@ -1,5 +1,5 @@
 
-\section{Git operations}
+\chapter{Git operations}
 In this section we explore some of the git operations. We try to do
 so, in a different way, if comparing with other manuals. Normally the
 manuals we see around just explain how to perform an operation. We
@@ -10,7 +10,7 @@ words, we explain in which conditions the operations can be performed.
 Finally, in the last part of each operation, we show what is the
 result of perform such operation.
 
-\subsection{Add and Remove}
+\section{Add and Remove}
 The operations add and remove are used to add and remove content from
 index. As we have said before the index contains all the files and
 contents to be added on the next commit.\\
@@ -25,7 +25,7 @@ present if we perform a commit exactly after the remove. The removed
 file besides of being removed from index, it will also be removed from the 
 working directory (if it is still exists there).
 
-\subsubsection{Pre requisites}
+\subsection{Pre requisites}
 The add operation has only one pre-condition. The file has to be in
 the working directory. It means that a file that is
 on the working directory, can be always added to index.
@@ -45,7 +45,7 @@ file in index with a certain content that does not exists in the
 repository and since the remove operation removes the file from the index
 and from the working directory, the content would be lost.  
 
-\subsubsection{Result}
+\subsection{Result}
 After performing the add operation there is something that will be
 always observed. The file will be in index. Besides, if the file was
 marked as not merged then the mark goes away. More details about
@@ -55,7 +55,7 @@ The result from performing the remove operation is that the file is
 not anymore in the index. Also here the file will not be marked as
 unmerged anymore.
 
-\subsubsection{Examples}
+\subsection{Examples}
 
 The figure \ref{fig:add1}, shows a simple case of adding a file to the 
 index. It can be seen, that no changes are made in the repository nor in the working
@@ -101,7 +101,7 @@ There are no changes on the repository.
 
 
 
-\subsection{Commit}
+\section{Commit}
 The commit operation takes the current index and builds a commit
 object. Basically it takes the files from the index, builds a
 structure using trees and blobs objects and creates a new commit
@@ -113,7 +113,7 @@ and it will be marked as the current branch, or in other words, it
 will be indicated by HEAD. Also, the first commit of the repository
 is called a Root Commit, because it has no parents.
 
-\subsubsection{Pre requisites}
+\subsection{Pre requisites}
 There are three pre-conditions that are required to perform this
 operation:
 \begin{itemize}
@@ -135,7 +135,7 @@ The last condition just says that it is not possible to perform a
 commit, if there are unmerged files in index. As we have said before,
 we will speak about this later.
 
-\subsubsection{Result}
+\subsection{Result}
 The result of performing a commit can be different if it is the first
 commit or if there are already some commit in th repository. 
 We start by exposing the observed result when the first commit is
@@ -164,7 +164,7 @@ content that were in the index, are now in the current commit with the
 structure from the file system. For this new blobs and trees were
 probably created. The index keeps exactly the same content.
 
-\subsubsection{Examples}
+\subsection{Examples}
 
 The figure \ref{fig:commit1} shows a typical process where two files
 are added to the index and then a commit is performed. It can be seen
@@ -203,7 +203,7 @@ referred above. In this case the commit cannot be performed.\\
    pre-conditions}\label{fig:commit_pre}
 \end{figure}
 
-\subsection{Branch Create and Branch Remove}
+\section{Branch Create and Branch Remove}
 Branches in \emph{git} are very efficient. This happens because a
 branch in \emph{git} is just a pointer to a commit. So, when a branch
 is created or removed there is only a new pointer created or a
@@ -212,7 +212,7 @@ restrictions when removing branches. When we are referring to
 creating or removing a branch, we mean the operations
 \emph{git branch} and \emph{git branch -d}.
 
-\subsubsection{Pre requisites}
+\subsection{Pre requisites}
 When creating a branch there are only two restrictions:
 \begin{itemize}
    \item Some commit must exist, and consequently the HEAD reference must point
@@ -249,13 +249,13 @@ commit pointed by the branch, as well as, some commits from the parent
 relation.
 
 
-\subsubsection{Result}
+\subsection{Result}
 The result of performing this operations are expected. When creating a
 branch, the result is a new branching pointing to the same commit as
 the branch identified by the HEAD. When removing a branch, the result
 is that the branch removed does not exists anymore.
 
-\subsubsection{Examples}
+\subsection{Examples}
 As we wrote before the changes of creating a branch are minimal. The only thing
 changing in the repository is the new branch pointing to the current commit, as
 it can be seen in figure \ref{fig:branch}. \\
@@ -272,7 +272,7 @@ it shows the case when a branch is removed. \\
    \caption{Creating a branch}\label{fig:branch}
 \end{figure}
 
-\subsection{Checkout}
+\section{Checkout}
 The checkout operations is used to update the working directory and
 index with a set of files from a commit. In this project, we have
 explored only the case the checkout operation is used with a branch.
@@ -283,7 +283,7 @@ way. We will try to explain it and in the examples we show you a
 sequence of operations that causes the \emph{git} to loose
 information. This is a proof of the complexity of this operation.
 
-\subsubsection{Pre requisites}
+\subsection{Pre requisites}
 As we have said before, this operation is not intuitive. In our
 opinion this operation should have as pre-condition something like
 "Everything that is in index should be committed". Instead \emph{git}
@@ -324,7 +324,7 @@ exception says that if there exists a file with the same path and the
 same content in the commit being checked out, then the operation will
 proceed. In this last case does not warns the user.
 
-\subsubsection{Result}
+\subsection{Result}
 As we have said before, in this manual we have
 concentrated our efforts in the index and repository, simplifying as
 most as possible the working directory. So, we will just explain what
@@ -364,7 +364,7 @@ ignored. So, the result of performing a checkout is: $INDEX = (CB ++
 that are in the index but not in CA and from the result of this, the
 files that are marked as removed will not be in index.
 
-\subsubsection{Examples}
+\subsection{Examples}
 As referred above checkout behaves in a non-intuitive way. We recommend that
 before performing a checkout, the user ensures that all the files from
 the index are committed, otherwise there is a risk to pass content to other branches or even
@@ -385,7 +385,7 @@ identifies the branch that was checked out.\\
    \caption{A simple checkout}\label{fig:checkout}
 \end{figure}
 
-\subsection{Merge}
+\section{Merge}
 
 The merge operation is one the of most important operation in \emph{git}. It
 consists on trying to combine information from two commits. The result of that
@@ -441,7 +441,7 @@ Thus, it has three types of merge:
    \caption{A 2-way merge case}\label{fig:2mergecase}
 \end{figure}
 
-\subsubsection{Pre requisites}
+\subsection{Pre requisites}
 The merge operation, as all other operations, has some pre conditions that
 must be satisfied in order to perform it. As in the checkout operation,
 \emph{git} lets the user to perform a merge without all information in the index 
@@ -465,7 +465,7 @@ being committed:
    place, then it is not possible to exist uncommitted files in index.
 \end{itemize}
 
-\subsubsection{Result}
+\subsection{Result}
 As already said when performing a merge, one of three tactics can be
 applied. In the case of a fast-forward merge, the operation will be
 always automatic. It means that no conflicts will ever be found. In
@@ -509,7 +509,7 @@ know which commits will be the parent from the created one.
 
 \end{itemize}
 
-\subsubsection{Examples}
+\subsection{Examples}
 
 As usual the next figures will show some concrete examples of what happens
 in \emph{git} when a merge is done. We do not involve here cases of 
@@ -569,7 +569,7 @@ the merge process terminates.\\
 \end{figure}
 
 \newpage
-\subsubsection{Git Pull and Git Push}
+\subsection{Git Pull and Git Push}
 
 When working with remote repositories, these two operations will be vastly
 used. They are in fact, a sequence of operations and they are used to get content
