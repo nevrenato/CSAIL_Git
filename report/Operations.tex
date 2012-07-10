@@ -572,16 +572,15 @@ the merge process terminates.\\
 \subsubsection{Git Pull and Git Push}
 
 When working with remote repositories, these two operations will be vastly
-used. They are in fact, a sequence of operations, and are used to get content
-from a remote repository or to upload local content to the remote repository.
-\\
-If a 'git pull' is done, the branch from the remote repository will be fetched,
-and the local branch and the remote (now, also local) branch will be merged. So
-expect this operation to behave exactly like a merge operation and consequently
-all that was referred in the merge applies also here. \\
-If a 'git push' is done, the local branch will be uploaded to the remote 
-repository and will be merged there. \\
-In Push there is an important restriction. A 'git push' 
-can only be done when the resulting merge is a
-fast-forward. This happens because, there is no one on the other side to resolve the 
-merge conflicts, and thus \emph{git} must guarantee what no conflicts happen. 
+used. They are in fact, a sequence of operations and they are used to get content
+from a remote repository or to push local content to a remote repository.\\
+
+If a pull operation is performed, the branch from the remote repository will be fetched
+and it will be merged with the local branch. So, it is expected from
+this operation to behave exactly as a merge operation and consequently
+everything that was referred in the merge operation applies also here. \\
+
+If a push operation is performed, the local branch will be uploaded to
+a remote repository. A pre-condition of this operation is that the
+local branch contains the remote branch. This happens to ensures that
+the local user resolves the conflicts.

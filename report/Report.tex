@@ -10,26 +10,31 @@
 \usepackage{draftwatermark}
 \usepackage[normalem]{ulem}
 \usepackage{hyperref}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{appendix}
 
 \lstset{
 	basicstyle=\footnotesize,
-	frame=shadowbox,
+	frame=none,
 	backgroundcolor=\color{white}
 }
 
 
-\title{Modelling the Git core system with Alloy }
-\author{Cláudio Lourenço, Renato Neves \\ Universidade do Minho}
+\title{The Truth About Git}
+\author{Cláudio Lourenço \and Renato Neves}
 
 \begin{document}
 
 \date{\today}
 \maketitle
+Supervised by:\par
+Manuel Alcino Cunha, José Bernardo Barros, Eunsuk Kang
 \input{Abstract}
 \newpage
 \tableofcontents
 \newpage
-%----- Sections ------ 
+%----- Sections ------
 \input{Introduction}
 
 \input{GitStructure}
@@ -41,5 +46,10 @@
 \bibliographystyle{plain}
 
 \bibliography{biblio}
+
+\appendix 
+\appendixpage
+\addappheadtotoc
+\input{AppendixBug}
 
 \end{document}
