@@ -43,13 +43,6 @@ Formal Methods in Software Engineering}
 	\end{itemize}
 	\end{block}
 \end{frame}
-\begin{frame}
-   \frametitle{Git as VCS}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.5\textwidth]{images/VCS.png}
-   \end{figure}
-\end{frame}
 
 \section{Project motivation and objectives}
 \begin{frame}
@@ -232,10 +225,11 @@ Formal Methods in Software Engineering}
 \begin{frame}[fragile]
    \frametitle{Working Directory}
    \begin{itemize}
-      \item Subset of a file system
-      \item Has the content of a project
-      \item Files can be the current files or files retrieved
-      from the repository
+      	\item Subset of a file system, that is tracked by Git
+   	\item Was not modeled in this project
+	\item However files were modeled. 
+	\item Our convention dictates, if a file exists on an Alloy
+	instance, then automatically exists in the Working Directory
    \end{itemize}
    \tiny
    \color{blue}
@@ -251,7 +245,7 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}
-   \frametitle{Repository}
+   \frametitle{Index}
    \begin{figure}
       \centering
       \includegraphics[width=0.4\textwidth]{images/workflow1.png}
@@ -263,7 +257,7 @@ Formal Methods in Software Engineering}
    \begin{itemize}
       \item Contains all files that are going to be committed on the next
       commit 
-      \item The index is not necessarily equal to the working directory
+      \item The index is not necessarily equal to the Working Directory.
       \item If an user wants to commit a new file or a newly modified file,
       first he must add it to the index
    \end{itemize}
@@ -290,9 +284,31 @@ Formal Methods in Software Engineering}
       \item Add and Remove
       \item Commit
       \item Branch and Branch Remove
-      \item Checkout
-      \item Merge (2-way and fast-forward)
+      \item {\bf Checkout}
+      \item {\bf Merge (2-way and fast-forward) }
    \end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Add and remove}
+
+	\begin{block}{Add}
+	\begin{itemize}
+		\item Adds a file to the index
+		\item Updates the content of a file
+		also in the index
+		\item Those changes will be stored in the next commit
+	\end{itemize}
+	\end{block}
+
+	\begin{block}{Remove}
+	\begin{itemize}
+		\item Removes a file of the index, and from the
+		Working Directory (if it's still there)
+		\item In the next commmit the file deleted will not appear
+	\end{itemize}
+	\end{block}
+
 \end{frame}
 
 \begin{frame}[fragile]
@@ -309,6 +325,21 @@ Formal Methods in Software Engineering}
       \centering
       \includegraphics[width=0.45\textwidth]{images/remove1.png}
    \end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Commit}
+
+	\begin{block}{Commit}
+	\begin{itemize}
+	\item A snapshot of a project on a certain moment in time
+	\item In the first version of the model it was 
+	getting almost impossible to specify the operation
+	\item The latest version included a relation that associated
+	the objects in a commit with the correspondent paths
+	\end{itemize}
+	\end{block}
+
 \end{frame}
 
 \begin{frame}[fragile]
@@ -328,6 +359,43 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}[fragile]
+	\frametitle{Checkout}
+	\begin{block}{The most difficult operation to specify}
+	\begin{itemize}
+		\item No manual was found that 
+		fully described checkout
+		\item Expected pre-conditions were not found. Founding instead
+		weaker pre conditions
+		\item Strange behaviour caught. Discussed about it 
+		with the Git mailing list. Concluded that was a bug
+	\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Checkout pre-conditions}
+	\begin{block}{Pre condition expected}
+	\begin{itemize}
+		\item No uncommitted files
+	\end{itemize}
+	\end{block}
+	\begin{block}{Pre conditions found}
+	\begin{itemize}
+		\item Everything that is in the index has to be
+		in the current commit with the same content, except if
+		\begin{itemize}
+		\item The content of a file is the same in the current
+		and destination commit (warning is thrown)
+		\item Exists a file in the index, and that file doest not
+		exist neither in the current nor in the destination commit
+		(warning is thrown)
+		\item Content of the file in the index is the same as in the
+		destination commit (no warning is thrown)
+		\end{itemize}
+	\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}[fragile]
    \frametitle{Checkout}
    \begin{figure}
       \centering
@@ -335,20 +403,25 @@ Formal Methods in Software Engineering}
    \end{figure}
 \end{frame}
 
-\begin{frame}[fragile]
-	\frametitle{Checkout}
-	\begin{block}{The most difficult operation to specify}
+\begin{frame}
+	\frametitle{Merge - The last operation modeled}
+	\begin{block}{Merge}
 	\begin{itemize}
-		\item Expected pre-conditions were not found
-		\item Instead we found weaker pre-conditions
-		\item Strange behaviour caught. Discussed about it 
-		with the Git mailing list. Concluded that was a bug
+	\item The current commit and the commit pointed by the specified branch
+	will, be merged into a possibly a new commit
 	\end{itemize}
 	\end{block}
-\end{frame}
-
-\begin{frame}[fragile]
-   \frametitle{Pre-conditions found}
+	\begin{block}{Merge types}
+	\begin{itemize}
+		\item The commit pointed by the branch, is more recent then
+		the current, thus the newest commit will take always precedence
+		\item The typical 2-way merge, that will create a new commit
+		resulting from both commits specified
+		\item The 3-way merge, that will also create a new merge commit.
+		However this type has much less potential for merge conflicts
+		then the last type
+	\end{itemize}
+	\end{block}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -376,21 +449,35 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}[fragile]
-	\frametitle{Merge}
-	\begin{block}{The la la} 
+	\frametitle{Merge specification}
 	\begin{itemize}
-		\item aaawith the Git mailing list. Concluded that was a bug
+	\item Modeled the 2-way and fast-forward merge
+	\item Not enough time for 3-way, however there is a semi-tested
+	version
+	\item Created two new relations
+	\begin{itemize}
+		\item Which files are unmerged
+		\item Which commits are going to be parents in the next commit
 	\end{itemize}
-	\end{block}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-	\frametitle{Merge}
-	\begin{block}{The la la} 
+	\frametitle{Merge specification}
+	\begin{block}{Most important pre-conditions specified}
 	\begin{itemize}
-		\item aaawith the Git mailing list. Concluded that was a bug
+		\item The current commit cannot be more recent than the commit
+		pointed by the branch specified
+		\item There cannot be an unfinished merge
+		\item When it's a fast-forward case, the index cannot have
+		uncommitted files that would conflict with files from the 
+		resulting merge
+		\item When it's a 2-way or 3-way merge, it is not possible
+		to exist uncommitted files in the index
 	\end{itemize}
 	\end{block}
+
+
 \end{frame}
 
 \section{Documentation}
@@ -398,8 +485,10 @@ Formal Methods in Software Engineering}
 \begin{frame}
 	\frametitle{Website}
 	\begin{itemize}
-	\item Website created based on the manual 
-	\item http://nevrenato.github.com/CSAIL\_Git
+	\item A manual was created using the knowledge obtained
+	\item Website was created based on the manual 
+	\item Also, all project documentation was put available
+	\item \url{http://nevrenato.github.com/CSAIL\_Git}
 	\end{itemize}
 
 \end{frame}
@@ -417,6 +506,13 @@ Formal Methods in Software Engineering}
 
 \begin{frame}
 	\frametitle{Conclusions}
+	\begin{itemize}
+	\item Not near enough time to specify all Git operations
+	\item It would be nice to have completeness in the model verification
+	\item Model stable and documented 
+	enough to be extended with other operations by outsiders
+	\item Manuals are difficult to do
+	\end{itemize}
 \end{frame}
 
 
