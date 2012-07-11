@@ -38,25 +38,24 @@ Formal Methods in Software Engineering}
 		\begin{itemize}
 		\item Fast
 		\item Efficient
-		\item Oriented to snapshots, not differences
+		\item Oriented to snapshots - Not differences
 		\item Widely used
 	\end{itemize}
 	\end{block}
 \end{frame}
 
-\section{Project motivation and objectives}
+\section{Project Motivation and Objectives}
 \begin{frame}
-	\frametitle{Motivation for this project}
-	\begin{block}{Gap in the understanding of Git}
+	\frametitle{Project Motivation}
+	\begin{block}{Gap in the description of Git}
 		\begin{itemize}
 		\item Lack of precise descriptions
-		\item Contradictions in some manuals
+		\item Contradictions between manuals
 		\end{itemize}
 	\end{block}
 	\begin{block}{An opportunity  appears}
 	\begin{itemize}
-	\item Developers could benefit from a manual
-		that is precise and rigorous
+	\item Git users could benefit from a manual that is precise and rigorous
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -80,20 +79,19 @@ Formal Methods in Software Engineering}
 
 \begin{frame}
 	\frametitle{Objectives of this project}
-	\begin{block}{Shine some light in Git internals}
+	\begin{block}{Shine some light into Git internals}
 		\begin{itemize}
-			\item Build a precise model of how Git works, using 
-			Alloy
-			\item Analyze the model and verify which properties
+			\item Build a precise model of how Git works using Alloy
+			\item Analyze the model and verify which properties it
 			does (not) guarantee
-			\item Help others understand Git, building
-			a manual with public access
+			\item Help others understanding Git, building a manual with public
+         access
 		\end{itemize}
 	\end{block}
 \end{frame}
 
 
-\section{Git internals}
+\section{Git Internals}
 
 \begin{frame}
    \frametitle{The Git Structure}
@@ -124,8 +122,8 @@ Formal Methods in Software Engineering}
    \begin{block}{Blob}
       \begin{itemize}
          \item Represents the content of a file
-         \item The identifier is calculated from its content, thus files with
-	 same content will share the same blob
+         \item The identifier is calculated from its content
+         \item Files with same content will be represented by the same blob
       \end{itemize}
       \tiny
       \color{blue}
@@ -137,16 +135,14 @@ Formal Methods in Software Engineering}
       \begin{itemize}
          \item Contains Blobs or other Trees 
          \item Used to represent the file system structure
-	 \item The identifier is calculated in a similar way to the Blobs. Thus, 
-	 for Trees sharing also exists
+	      \item The identifier is calculated in a similar way to the Blobs
+         \item Sharing is done as in Blobs - Same content same Tree
       \end{itemize}
       \tiny
       \color{blue}
       \begin{lstlisting}
       sig Tree extends Object {
-         
          contains: Name -> lone(Tree+Blob)
-      
       }
       \end{lstlisting}
    \end{block}
@@ -161,10 +157,10 @@ Formal Methods in Software Engineering}
       	\item A snapshot of the project on a certain moment
       in time
       	\item Has a set of parents, that are considered the previous commits 
-	\item Points to a Tree that is equivalent to the root folder in the
-	working directory
-	\item An auxiliar relation named "Abstract" was specified to be easy to
-	model the commit operation
+	\item Points to a Tree that represents the root folder in the
+	Working Directory
+   \item An auxiliary abstract relation was specified
+   to simplify the commit operation
    \end{itemize}
    \tiny
    \color{blue}
@@ -184,8 +180,7 @@ Formal Methods in Software Engineering}
 \frametitle{Branch and HEAD}
    \begin{block}{Branch}
       \begin{itemize}
-         \item Pointer to a commit, unlike other VCS where a branch is a full
-	 copy of the repository
+         \item Pointer to a commit - Unlike other VCS, where a branch is a full copy of the repository
       \end{itemize}
    \end{block}
    \begin{block}{HEAD}
@@ -225,11 +220,11 @@ Formal Methods in Software Engineering}
 \begin{frame}[fragile]
    \frametitle{Working Directory}
    \begin{itemize}
-      	\item Subset of a file system, that is tracked by Git
-   	\item Was not modeled in this project
-	\item However files were modeled. 
-	\item Our convention dictates, if a file exists on an Alloy
-	instance, then automatically exists in the Working Directory
+      \item Subset of a file system that is tracked by Git
+   	\item In our model we simplify this component using the notion
+      of path
+	   \item Our convention dictates that if a file exists in an Alloy
+	   instance, then it automatically exists in the Working Directory
    \end{itemize}
    \tiny
    \color{blue}
@@ -257,7 +252,7 @@ Formal Methods in Software Engineering}
    \begin{itemize}
       \item Contains all files that are going to be committed on the next
       commit 
-      \item The index is not necessarily equal to the Working Directory.
+      \item The index is not necessarily equal to the Working Directory
       \item If an user wants to commit a new file or a newly modified file,
       first he must add it to the index
    \end{itemize}
@@ -295,17 +290,16 @@ Formal Methods in Software Engineering}
 	\begin{block}{Add}
 	\begin{itemize}
 		\item Adds a file to the index
-		\item Updates the content of a file
-		also in the index
+		\item Updates the content of a file in the index
 		\item Those changes will be stored in the next commit
 	\end{itemize}
 	\end{block}
 
 	\begin{block}{Remove}
 	\begin{itemize}
-		\item Removes a file of the index, and from the
-		Working Directory (if it's still there)
-		\item In the next commmit the file deleted will not appear
+		\item Removes a file from index, and from the
+		Working Directory
+		\item The removed file will not be present in the next commit
 	\end{itemize}
 	\end{block}
 
@@ -333,10 +327,10 @@ Formal Methods in Software Engineering}
 	\begin{block}{Commit}
 	\begin{itemize}
 	\item A snapshot of a project on a certain moment in time
-	\item In the first version of the model it was 
-	getting almost impossible to specify the operation
-	\item The latest version included a relation that associated
-	the objects in a commit with the correspondent paths
+	\item In the first version of the model it was very difficult to
+   model such operation
+	\item An abstract relation was then modeled to map objects on a
+   certain commit with a path
 	\end{itemize}
 	\end{block}
 
@@ -362,12 +356,14 @@ Formal Methods in Software Engineering}
 	\frametitle{Checkout}
 	\begin{block}{The most difficult operation to specify}
 	\begin{itemize}
-		\item No manual was found that 
-		fully described checkout
-		\item Expected pre-conditions were not found. Founding instead
-		weaker pre conditions
-		\item Strange behaviour caught. Discussed about it 
-		with the Git mailing list. Concluded that was a bug
+		\item No manual was found with a full description
+		\item No references to the existing pre-conditions - ''if there
+      are any uncommitted changes when you run git checkout, Git will
+      behave very strangely. The strangeness is predictable and
+      sometimes useful, but it is best to avoid it...''
+      \footnote{http://www.sbf5.com/~cduan/technical/git/git-2.shtml}
+		\item Bug was found and reported to the Git Mailing List
+      \footnote{git@vger.kernel.org}
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -395,6 +391,7 @@ Formal Methods in Software Engineering}
 	\end{itemize}
 	\end{block}
 \end{frame}
+
 \begin{frame}[fragile]
    \frametitle{Checkout}
    \begin{figure}
@@ -404,22 +401,24 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Merge - The last operation modeled}
+	\frametitle{Merge - The Last Operation Modeled}
 	\begin{block}{Merge}
-	\begin{itemize}
-	\item The current commit and the commit pointed by the specified branch
-	will, be merged into a possibly a new commit
-	\end{itemize}
+	   \begin{itemize}
+	      \item The current commit and the commit pointed by the specified branch
+	      will be merged into a possible new commit
+	   \end{itemize}
 	\end{block}
-	\begin{block}{Merge types}
-	\begin{itemize}
-		\item The commit pointed by the branch, is more recent then
-		the current, thus the newest commit will take always precedence
-		\item The typical 2-way merge, that will create a new commit
-		resulting from both commits specified
-		\item The 3-way merge, that will also create a new merge commit.
-		However this type has much less potential for merge conflicts
-		then the last type
+	\small
+   \begin{block}{Merge Tactics}
+	   \begin{itemize}
+		   \item The commit being merged is more recent than
+		   the current commit - It is not created a new commit because the
+         commit being merged takes precedence - \textbf{Fast-Forward Merge}
+		   \item The typical \textbf{2-way merge} will create a new commit
+		   resulting from both commits
+		   \item The \textbf{3-way merge} will also create a new commit, however 
+         it uses the most recent common ancestor to solve automatically 
+         some conflicts that not solved with 2-way merge
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -444,21 +443,22 @@ Formal Methods in Software Engineering}
    \frametitle{A 3-way Merge}
    \begin{figure}
       \centering
-      \includegraphics[width=0.45\textwidth]{images/merge2way.png}
+      \includegraphics[width=0.4\textwidth]{images/merge2way.png}
    \end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
 	\frametitle{Merge specification}
+   \normalsize
 	\begin{itemize}
-	\item Modeled the 2-way and fast-forward merge
-	\item Not enough time for 3-way, however there is a semi-tested
-	version
-	\item Created two new relations
-	\begin{itemize}
-		\item Which files are unmerged
-		\item Which commits are going to be parents in the next commit
-	\end{itemize}
+      \item Fast-Forward Merge and 2-way Merge are modeled
+	   \item 3-way Merge partially modeled
+	   \item Two relations had to be created for the case a manual
+      merge takes place:
+	   \begin{itemize}
+		   \item Unmerged Files
+		   \item A relation to identify the branch being merged
+	   \end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -467,13 +467,13 @@ Formal Methods in Software Engineering}
 	\begin{block}{Most important pre-conditions specified}
 	\begin{itemize}
 		\item The current commit cannot be more recent than the commit
-		pointed by the branch specified
+		being merged
 		\item There cannot be an unfinished merge
-		\item When it's a fast-forward case, the index cannot have
+		\item When the fast-forward tactic is applied, the index cannot have
 		uncommitted files that would conflict with files from the 
 		resulting merge
-		\item When it's a 2-way or 3-way merge, it is not possible
-		to exist uncommitted files in the index
+		\item When a 2-way or 3-way merge is applied, it is not possible
+		to have uncommitted files in the index
 	\end{itemize}
 	\end{block}
 
@@ -487,7 +487,7 @@ Formal Methods in Software Engineering}
 	\begin{itemize}
 	\item A manual was created using the knowledge obtained
 	\item Website was created based on the manual 
-	\item Also, all project documentation was put available
+	\item Project documentation is also available
 	\item \url{http://nevrenato.github.com/CSAIL\_Git}
 	\end{itemize}
 
@@ -498,8 +498,8 @@ Formal Methods in Software Engineering}
 \begin{frame}
 	\frametitle{Future Work}
 	\begin{itemize}
-	\item Model more operations (rebase, fetch, 3-way merge...) 
-	\item Specify more properties that the model does (not) guarantee
+	\item Model some more operations: 3-way merge, rebase, fetch, etc. 
+	\item Check for some more properties that the model does (not) guarantee
 	\item Build interactive diagrams of concrete examples of operations 
 	\end{itemize}
 \end{frame}
@@ -507,11 +507,9 @@ Formal Methods in Software Engineering}
 \begin{frame}
 	\frametitle{Conclusions}
 	\begin{itemize}
-	\item Not near enough time to specify all Git operations
+	\item Not enough time (not even close) to specify the whole Git
 	\item It would be nice to have completeness in the model verification
-	\item Model stable and documented 
-	enough to be extended with other operations by outsiders
-	\item Manuals are difficult to do
+	\item Model is stable and documented enough to be extended with other operations by outsiders
 	\end{itemize}
 \end{frame}
 

@@ -10,7 +10,7 @@ can be seen in Figure \ref{fig:git_structure}. Local and remote
 repository have the same internal structure. What is a local
 repository for an user is a remote repository for another user.
 
-\begin{figure}[b]
+\begin{figure}[thp]
    \centering
    \includegraphics[width=0.8\textwidth]{images/git_workflow.png}
    \caption{Git Workflow}\label{fig:git_structure}
@@ -18,7 +18,7 @@ repository for an user is a remote repository for another user.
 
 \pagebreak
 
-\chapter{The Repository}
+\section{The Repository}
 \emph{Git} repository mirrors the evolution of a project during its lifetime. It is
 the place where the snapshots taken during the project construction
 are kept, as all the necessary information to
@@ -29,7 +29,7 @@ what is called, \emph{git references}. In the next sections we
 present both of them.
 
 
-\section{Git Objects}
+\subsection{Git Objects}
 As we have presented before, \emph{git} keeps snapshots of how your system
 looked like on a certain moment in time. This moment in time is
 represented in \emph{git} by a commit. Each commit points to a tree
@@ -62,7 +62,7 @@ if two objects have the same content then only one of them is kept.
    \label{fig:snapshot}
 \end{figure}
 
-\subsection{Blob}
+\subsubsection{Blob}
 A blob object, as said before, represents the content of a
 file and the blob identifier is calculated from the blob content. So if we
 have two files exactly with the same content, only one blob will be
@@ -71,7 +71,7 @@ blob is not directly associated to a file. The relation between a path
 (of a file) and a blob is kept in the tree object.  Figure \ref{fig:snapshot} 
 shows an example of a blob representing two files.
 
-\subsection{Tree}
+\subsubsection{Tree}
 A tree is nothing else than a map from names to blobs and other trees. Also here, a tree is not associated to any 
 specific directory. If two directories have exactly the same content they will be
 represented by the same tree object. Having the same content means
@@ -79,7 +79,7 @@ having exactly the same relations, or in other words, we
 have exactly the same names in both trees and each name corresponds exactly
 to the same objects in both trees. 
 
-\subsection{Commit}
+\subsubsection{Commit}
 The commit object, is like a snapshot of the project on a certain moment in
 time. A commit object has more variety of information than the two
 objects addressed before. Looking a commit, it is possible to find out
@@ -109,7 +109,7 @@ we removed everything else that does not influences such
 structure. One property that we observed when modeling, is that, we
 cannot have cycles in the parent relation.
 
-\subsection{Tag}
+\subsubsection{Tag}
 At last we have the tag object. The tag object is just a pointer to
 a commit with some more information. It can be used to mark a special 
 commit, like a new version of the project. The structure is quite 
@@ -119,12 +119,12 @@ comment from the tagger) and it points to a commit object. In our
 model we did not model this object, because when abstracting it looks
 like a branch, that we will see in next chapter.
 
-\section{Git References}
+\subsection{Git References}
 Basically a reference is just a pointer to a commit. There is much
 more about references, but in this manual we will focus on
 Branches and the special reference HEAD.
 
-\subsection{Branches}
+\subsubsection{Branches}
 One of the trump cards of \emph{Git} is its definition of branches. In other
 VCS each time a branch is created a new copy of the entire repository
 has to be done. Thus, branch operations in those VCS are slow and hard to use. 
@@ -133,7 +133,7 @@ In \emph{git}, when a new branch is created the only thing that
 commit. The current commit is marked by a special reference called
 HEAD, that we present next.
 
-\subsection{HEAD}
+\subsubsection{HEAD}
 HEAD is maybe the most important reference in the repository. It
 indicates where you are situated in the repository. When a commit is
 done, \emph{git} has to know which commit is going to be the parent. 
@@ -142,7 +142,7 @@ pointer to a branch, so when the commit is done, the HEAD is kept, but
 the branch points to the new commit. HEAD can identify directly a
 commit, like for example, when a checkout is performed using a commit hash. But in this document lets keep it simple, HEAD will identify always a branch.
 
-\chapter{Working Directory}
+\section{Working Directory}
 
 The working directory is basically a subset of
 a file system that contains the files of the project you are
@@ -158,7 +158,7 @@ new file is created it will be untracked. So, how does \emph{git} know which
 files are tracked or not? That is the role of index which we present
 next.
 
-\chapter{Index}
+\section{Index}
 The index is something in between the working directory and the
 repository. When a file is created if the user wants that file to be
 on the next commit, it has to be on index. Even if the user just
