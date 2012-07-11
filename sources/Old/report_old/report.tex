@@ -1,0 +1,53 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{xspace}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{draftwatermark}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+\usepackage[toc]{glossaries}
+
+\lstset{
+	basicstyle=\footnotesize,
+	frame=shadowbox,
+	backgroundcolor=\color{white}
+}
+
+\makeglossaries
+
+\newglossaryentry{checkout}{name={checkout},description={Creating/updating a local
+working copy of the repository. Also can be used as a noun for a working copy}}
+
+\newglossaryentry{version control system}
+{name={version control system}, description={Management
+of changes to documents, computer programs, large web sites, and other collections
+of information}}
+
+
+
+\title{Modelling the Git core system with Alloy }
+\author{Cláudio Lourenço, Renato Neves \\ Universidade do Minho}
+
+\begin{document}
+
+\date{\today}
+\maketitle
+
+%----- Sections ------ 
+\input{Abstract}
+\input{Introduction}
+\input{Static}
+\input{Dynamic}
+\input{Conclusions}
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+\printglossary
+
+\end{document}

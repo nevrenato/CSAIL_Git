@@ -1,0 +1,596 @@
+
+\chapter{Git operations}
+In this section we explore some of the git operations. We try do
+so, in a different way, when comparing with other manuals. Normally the
+manuals we see around just explain how to perform an operation. We
+try to go further, so in this manual, we have divided the description of an operation in four parts.
+The first part, gives an high level description of the
+operation. In the second part, we give the pre-conditions or, in other
+words, we explain in which conditions the operation can be performed.
+In the third part, we show what is the result of performing such operation.
+Finally, in the last part, we show some examples of the operation being performed. 
+
+\section{Add and Remove}
+The operations add and remove are used to add and remove content from
+index. As we have said before the index contains all the files and
+contents to be added on the next commit.\\
+
+\emph{Git} add operation does not simply refers of adding a file to the file. 
+Instead it refers of adding a file with a certain content to the index. If we have a file in the index and we
+modify it on the working directory, for this modification to be visible
+on the next commit, the file must be added again to the index.\\
+
+The remove operation removes a file from index, so it will not be
+present in the next commit and will stop being tracked. The removed
+file besides of being removed from index, will also be removed from the 
+working directory (if it still exists there).
+
+\subsection{Pre requisites}
+The add operation has only one pre-condition. The file has to be in
+the working directory. It means that any file that is
+in the working directory can be always added to index.\\
+
+Relatively to the remove operation there are a few conditions that
+have to be satisfied for the remove operation be performed, which are: 
+\begin{itemize}
+\item The file that is being removed is currently in index;
+\item The file that is being removed is in the current commit 
+(the commit pointed by the branch identified by HEAD) exactly with the same
+content.
+\end{itemize}
+
+The first restriction is quite obvious. It is not possible to remove
+a file if it does not exists. The last restriction exists to avoid
+the accidental deletion of a file's contents. It is possible to have a
+file in the index with a certain content that does not exists in the
+repository and since the remove operation removes the file from the index
+and from the working directory, the content would be lost.  
+
+\subsection{Result}
+After performing the add operation there is something that will be
+always observed. The file will be in index. Besides, the add operation 
+is also used to resolve conflicts. If a file was
+marked as unmerged, when performing an add operation, the file with 
+the current content is added to index and the unmerged mark is removed. 
+A file is marked as unmerged when it results from a conflict in a 
+merge operation. More details about merged and unmerged files will be given later.\\
+
+
+The result from performing the remove operation is that the file is
+not anymore in the index. If the file was marked as unmerged, 
+remove resolves the conflict by deleting the file.
+
+\subsection{Examples}
+Figure \ref{fig:add1}, shows a simple case of adding a file to the 
+index. It can be seen, that no changes are made in the repository nor in the working
+directory. The only effect is that the index will contain the new
+file. The dots means that the content is kept.\\
+
+\begin{figure}[tp]
+   \begin{minipage}[b]{0.5\linewidth}
+      \centering
+      \includegraphics[width=0.8\textwidth]{images/add1.png}
+      \caption{Adding a file}\label{fig:add1}
+   \end{minipage}
+   \begin{minipage}[b]{0.5\linewidth}
+      \centering 
+      \includegraphics[width=0.9\textwidth]{images/update1.png}
+      \caption{Updating a file}\label{fig:update1}
+   \end{minipage}
+\end{figure}
+
+Figure \ref{fig:update1}, contains the case of updating the content of a file.
+Assuming that the file is already in the index, changing its content in the 
+working directory, will not change the content in the index. We need to 
+explicitly add the file with the new content in the index. \\ 
+
+Now lets loot at the remove operation. Figures \ref{fig:remove1},\ref{fig:remove2} 
+show a simple case of
+removing a file from the index. As the reader can see the file will be
+removed from the index, but also from the working directory. 
+There are no changes on the repository.
+
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/remove1.png}
+   \caption{Removing a file}\label{fig:remove1}
+\end{figure}
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/remove2.png}
+   \caption{Removing a file (alternative)}\label{fig:remove2}
+\end{figure}
+
+
+
+\section{Commit}
+The commit operation takes the current index and builds a commit
+object. Basically it takes the files from the index, builds a
+structure using trees and blobs objects and creates a new commit
+object pointing to the tree that corresponds to the project's root
+directory. This commit object will have as parent the current commit,
+the commit pointed by the branch indicated in the HEAD.
+When the first commit is created, a branch called "master" will be created
+and it will be marked as the current branch, or in other words, it
+will be indicated by HEAD. Also, the first commit of the repository
+is called a Root Commit, because it has no parents.
+
+\subsection{Pre requisites}
+There are three pre-conditions that are required to perform this
+operation:
+\begin{itemize}
+   \item The index is not empty;
+   \item The commit object that will be created is different from the
+   current commit;
+   \item There are not unmerged files.
+\end{itemize}
+The first pre-condition is obvious, because if we do not have files in
+the index, there is not anything to commit.\\
+
+The second condition says basically
+that we cannot have two commits objects pointing to the same
+tree object in a row, or in other words, if we have the same files and
+the same content in the index and in the current commit, a commit
+operation cannot be performed. \\
+
+The last condition just says that it is not possible to perform a
+commit, if there are unmerged files in index. As we have said before,
+we will speak about this later.
+
+\subsection{Result}
+The result of performing a commit can be different if it is the first
+commit or if there are already some commits in th repository. 
+We start by exposing the observed result when the first commit is
+being performed and then we show the case when there is already some
+commit in the repository. In the end we show some properties that are
+observed in both cases.\\
+
+The first commit object that is being created is a commit with no
+parent. There cannot be branches
+at this moment, because they cannot point to any commit, as there are none to be
+pointed, so a new branch called "master" is created. This branch is going to point to 
+the commit that has been created. Also the HEAD, that previously was 
+not defined will identify this "master" branch.\\
+
+When there are already some commits in the repository, then it is
+guaranteed that there is at least one branch and the HEAD is
+identifying some existing branch. The branch that is identified by the
+HEAD, is pointing now to the commit created. This commit have now as
+parent the previous commit (the commit that was previously pointed by the branch
+identified by HEAD), unless it is a result from a merge. In this
+case the commit must have two parents: the previous commit and the
+branch that is being merged.\\
+
+The common properties that are observed are that all the files and
+content that were in the index, are now in the current commit with the
+structure from the file system. For this new blobs and trees were
+probably created. The index keeps exactly the same content.
+
+\subsection{Examples}
+
+The figure \ref{fig:commit1} shows a typical process where two files
+are added to the index and then a commit is performed. It can be seen
+that the new commit reflects the working directory's structure
+with these two files. The interesting point is that, because these two files
+have the same content, they will share the same
+Blob. This is a case where \emph{git} shows its efficiency. \\
+
+The previous commit illustrates the case in which the first commit of the repository is being
+performed. In Figure \ref{fig:commit2} it is possible to see an example 
+of a commit operation, in which the only difference from the previous 
+commit is a removed file. This figure is 
+interesting because it shows which changes are made in the repository when a
+new (non root) commit is created. The new commit points to the previous commit and
+the branch (which is identified by HEAD) points to the just created commit.
+As expected the new commit reflects
+the working directory's structure for the existing files.\\
+
+Figure \ref{fig:commit_pre} is just a concrete example of the second pre requisite
+referred above. In this case the commit cannot be performed.\\
+
+\begin{figure}[hp]
+   \centering
+   \includegraphics[width=0.8\textwidth]{images/commit1.png}
+   \caption{Doing a commit}\label{fig:commit1}
+\end{figure}
+\begin{figure}[hp]
+   \centering
+   \includegraphics[width=0.8\textwidth]{images/commit2.png}
+   \caption{Doing a second commit}\label{fig:commit2}
+\end{figure}
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/commit_pre.png}
+   \caption{An index which does not satisfies the commit
+   pre-conditions}\label{fig:commit_pre}
+\end{figure}
+
+\section{Branch Create and Branch Remove}
+Branches in \emph{git} are very efficient. This happens because a
+branch in \emph{git} is just a pointer to a commit. So, when a branch
+is created or removed there is only a new pointer created or a
+pointer that is removed. As we will see later, there are some
+restrictions when removing branches. When we are referring to
+creating or removing a branch, we mean the operations
+\emph{git branch} and \emph{git branch -d}.
+
+\subsection{Pre requisites}
+When creating a branch there are only two restrictions:
+\begin{itemize}
+   \item Some commit must exist, and consequently the HEAD reference must point
+   to some commit;
+   \item There is not any branch with the same name.
+\end{itemize}
+The second pre-condition is kind of obvious. We cannot create a branch
+with the same name as one already in the repository, otherwise we
+would have conflicts. The pre-condition that could bring some doubts
+is the first one. \emph{Git} does not allow the creation of branches
+before the first commit is done. When the first commit is done, a
+branch called "master" is created and after that it is possible to
+create as many branches as the user wishes.\\
+
+When removing a branch there are also some restrictions:
+\begin{itemize}
+   \item The branch exists;
+   \item The HEAD is not identifying the branch;
+   \item The commit pointed by the branch is accessible from the
+   current commit (the commit pointed by the branch identified by the
+   HEAD).
+\end{itemize}
+
+The first pre-conditions says that it is only possible to remove a
+branch if it exists. The second says, that the branch being removed is
+not the one identified by HEAD, otherwise the HEAD would point from
+now on to some branch that does not exists anymore. Thus, there would
+not exist a current commit. The last pre-condition exists to enforce that
+the user does not deletes a branch that is not yet merged with the
+current branch, or in other words, the user does not delete a branch
+that is not accessible from the current commit, through the parent relation. 
+If this pre-condition did not exist it would be possible to loose all 
+commits only accessible from this branch.
+
+
+\subsection{Result}
+The result of performing this operations are the expected. When creating a
+branch, the result is a new branch pointing to the same commit as
+the branch identified by the HEAD. When removing a branch, the result
+is that the removed branch does not exists anymore.
+
+\subsection{Examples}
+As we wrote before, the changes of creating a branch are minimal. The only thing
+changing in the repository is the new branch pointing to the current commit, as
+can be seen in Figure \ref{fig:branch}. \\
+
+When removing a branch the changes are also minimal. The only thing
+changing in the repository is that the 
+branch referred must be deleted. If instead of looking at Figure
+\ref{fig:branch} from top to bottom, we look at it from bottom to top,
+it shows the case when a branch is removed. \\ 
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/branch.png}
+   \caption{Creating a branch}\label{fig:branch}
+\end{figure}
+
+\section{Checkout}
+The checkout operation is used to update the working directory and
+index with a set of files from a commit. In this project, we have
+explored only the case the checkout operation is used with a branch.
+In this case, all the files from the commit pointed by the branch are
+exported to the working directory and index. This was the most
+difficult operation to explore, because it behaves in a non intuitive
+way. We will try to explain it and in the examples we show you a
+sequence of operations that causes the \emph{git} to loose
+information. This is a proof of the complexity of this operation.
+
+\subsection{Pre requisites}
+As we have said before, this operation is not intuitive. In our
+opinion this operation should have as pre-condition something like
+"Everything that is in index should be committed". Instead \emph{git}
+tries to relax this pre-condition and we have the following:
+\begin{itemize}
+   \item The branch we are checking out exists;
+   \item Everything that is in the index has to be in the current commit with the
+      same content, except if:
+      \begin{enumerate}
+         \item The content of a file is the same in the
+         current and destination commit (warning is thrown)
+         \item Exists a file in the index, and that file does not exists
+         neither in the current nor in the destination commit (warning is thrown)
+         \item Content of the file in the index is the same as in the
+         destination commit (no warning is thrown)
+      \end{enumerate}
+\end{itemize}
+
+About the first pre-condition there are not much to say. If we want to
+checkout a branch, the branch should exist.\\
+
+The problem here is the second pre-condition. There are a lot of
+exceptions when a file is not in the current commit with the same
+content. To simplify the exposition of this pre-condition, lets assume
+we have a file f, which is not in current commit, or at least it is not
+with the same content. All other files from index are in the current commit, with
+the same content. Relatively to f, if at least one of the exceptions enumerated above
+is satisfied, then the checkout operation will proceed. Now lets
+analyse each one of the exceptions. The last says that f can 
+be in the commit we are checking out with the same content. So, even
+if f is not commit, but it is in the commit we are checking out, git
+will proceed with the operation. The exception marked as 2, says that
+f does not exists neither in the current commit nor in the commit we
+are checking out. It means that if f has just been created and a
+checkout operation is performed then if the file does not exists in
+the commit being checked out, the operation will proceed. The last
+exception says that if there exists a file with the same path and the
+same content in the commit being checked out, then the operation will
+proceed. In this last case git does not warns the user.
+
+\subsection{Result}
+As we have said before, in this manual we have
+concentrated our efforts in the index and repository, simplifying as
+most as possible the working directory. So, we will just explain what
+happens with the index after a checkout operation is performed. We do
+not make any description about the files that are in the working directory
+but not in index.\\
+
+The first thing the reader should know is that the
+HEAD, after a checkout is performed, identifies the branch which was
+checked out.\\
+
+There is one more alteration. The index when a checkout is performed
+has to be updated to reflect the target commit object. The result of it is not intuitive. To
+understand it lets assume that the checkout operation has not yet been 
+performed. Consider three relations from file to content. 
+\begin{itemize}
+   \item $CA$: Files from the current commit and their
+   respective content;
+   \item $IA$: Files from index and respective content;
+   \item $CB$: Files from the commit we are trying to checkout
+   and their respective content.
+\end{itemize}
+After understanding this three relations it is simpler to understand
+what happens with the index. Lets also assume that $(IA-CA)$ is a relation that
+contains the files from $IA$ which are not in $CA$ with the same content.
+It mean that $(IA-CA)$ will contain the new files and the modified files relatively to
+the last commit. Now, consider $CB ++ (IA-CA)$ as being all the files
+from $CB$, but if the files are in $(IA-CA)$, they will keep the
+content from $(IA-CA)$. If when comparing the index with the current
+commit it contains only new files and modified files (not deleted
+files) then it is all. $INDEX = CB ++ (IA-CA)$. When the index
+contains removed files, or in other words, files that are in $CA$ but are not in
+$IA$ ($CA-IA$ is not empty), then case the file that is marked as removed exists
+in CB it will be marked as removed, otherwise the removed information is
+ignored. So, the result of performing a checkout is: $INDEX = (CB ++
+(IA-CA)) - (CA-IA)$. All files from $CB$ are overwritten by the files
+that are in the index but not in CA and from the result of this, the
+files that are marked as removed will not be in index.
+
+\subsection{Examples}
+As referred above checkout behaves in a non-intuitive way. We recommend that
+before performing a checkout, the user ensures that all the files from
+the index are committed, otherwise it is not be easy to guess what will happen.\\
+
+Thus, the example shown in figure \ref{fig:checkout}, contains an
+example in which all content in the index and working directory are committed (the safe case).
+When performing a checkout we can see in this figure 
+that the repository and index are updated to reflect the branch checked out, more
+concretely the commit pointed by the branch. Something the reader can
+also observe is that, after the checkout is performed, the HEAD
+identifies the branch that was checked out.\\
+
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/checkout.png}
+   \caption{A simple checkout}\label{fig:checkout}
+\end{figure}
+
+\section{Merge}
+
+The merge operation is one the of most important operation in \emph{git}. It
+consists on trying to combine information from two commits. The result of that
+is a new commit with information from both commits. However there are some cases
+where this is not true. One of this cases is when the current commit
+is a precedent from the commit being merged. In this case, it is not
+created a new commit. The current branch (identified by HEAD) is
+updated to point to the commit being merged.\\
+
+Sometimes this operation of joining commits is not possible to do
+automatically because there are conflicts, or in other words, when
+the same file exists in both commits it is
+not possible to say which one is more recent. In this case the merge
+operation has to be finished by the user. The user has to resolve the
+conflicts and then perform a commit.\\
+
+\emph{Git} tries to be as most autonomous as possible when merging.
+Thus, it has three types of merge:
+
+\begin{itemize}
+   \item \textbf{Fast-forward merge} (figure \ref{fig:fast_forward}):
+   It happens when the commit being merged is accessible from the current commit by the 
+   parent relation. If that happens, then the commit being merged is more recent
+   than the current commit. The result will be the HEAD pointing to
+   the commit being merged. A new commit is not created;
+   
+   \item \textbf{3-way merge} (figure \ref{fig:3mergecase}): 
+   It happens when a fast-forward is not possible, but both commits have a common
+   ancestor. \emph{Git} will use the common ancestor to minimize potential
+   merge conflicts.
+   
+   \item \textbf{2-way merge} (figure \ref{fig:2mergecase}): 
+   It happens when there is no
+   common ancestor, thus it will be more likely that conflicts will
+   appear.
+\end{itemize}
+
+The reason why a 3-way merge can solve automatically more conflicts than a 2-way
+merge is because it can verify if one of the versions was not modified
+relatively to the common ancestor. For example, if we have a file in
+both commits with diferrent content, but one of them is equal to the
+common ancestor, then the 3-way tactic assumes the file was not modified. Thus,
+the file from the other commit takes precedence.
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.5\textwidth]{images/fast_forward.png}
+   \caption{A fast-forward case}\label{fig:fast_forward}
+\end{figure}
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/3merge.png}
+   \caption{A 3-way merge case}\label{fig:3mergecase}
+\end{figure}
+
+\begin{figure}[tp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/2merge.png}
+   \caption{A 2-way merge case}\label{fig:2mergecase}
+\end{figure}
+
+\subsection{Pre requisites}
+The merge operation, as all other operations, has some pre conditions that
+must be satisfied in order to be performed. As in the checkout operation,
+\emph{git} lets the user to perform a merge without all information in the index 
+being committed: 
+
+\begin{itemize}
+   \item A merge cannot be performed if the current commit is more
+   recent than the commit being merged. As the current commits is more
+   recent, no changes would exist. 
+   
+   \item There cannot exist an unfinished merge on the repository. If
+   the user performed a merge previously and that merge was not
+   automatic, then a commit must be performed before performing a new
+   merge.
+   
+   \item When it is detected that the fast-forward merge will take
+   place, the index cannot have uncommitted files that would would
+   conflict with files from the resulting merge.
+   
+   \item When it is detected that a 2-way or 3-way merge will take
+   place, then uncommitted files cannot exist in the index.
+\end{itemize}
+
+\subsection{Result}
+As already said when performing a merge, one of three tactics can be
+applied. In the case of a fast-forward merge, the operation will be
+always automatic. It means that no conflicts will ever be found. In
+the case of a 2-way merge or 3-way merge, the merge operation sometimes cannot
+be resolved automatically because conflicts are found. Next, we give a
+small description of what changes after a merge operation is called.
+
+\begin{itemize}
+\item If it is the case of a fast-forward merge, the index and the working directory
+will contain the information of the newest commit. Also, they will contain all 
+information prior to the merge that was uncommitted, as long as there
+are no conflicts. Of course, the current branch and HEAD will point to the
+newest commit.
+
+\item When it is a 2-way or 3-way automatic merge, the
+index and the working directory will reflect the new
+commit (the created commit). Here, the question of 
+uncommitted changes does not exists because \emph{git} 
+does not allow uncommitted files when applying these tactics. 
+In the repository a new commit is created that has the combined
+changes of the two (possibly three, if it is a 3-way merge) 
+commits involved in the merge. That new commit will have as 
+parents those two commits and it will be pointed by the
+branch identified by the HEAD.
+
+\item If when performing a merge, it cannot be performed
+automatically, git will throw a message saying that the 
+automatic merge failed and the user has to finish it. In 
+other words it leaves to the user the work of resolving the conflicts
+that \emph{git} could not resolve. At that moment, the index and working directory
+will contain all the files that were merged. The working directory
+will also contain the unmerged files, with marks for the user to solve
+the conflicts. The index contains the 2 (or 3 in the case of a 3-way
+merge) versions of the files. As soon as the user solves the conflicts
+and adds it to the index, this file will be marked as merged. After
+all files are merged, a commit can be performed. In this manual
+process, git keeps somewhere in the repository that a manual merge is
+taking place and it also keeps which commits are being merged. This
+information is used when the commit operation is performed, mainly to
+know which commits will be the parent from the created one. 
+
+\end{itemize}
+
+\subsection{Examples}
+
+As usual the next figures will show some concrete examples of what happens
+in \emph{git} when a merge is done. We do not involve here cases of 
+uncommitted files, as we do not recommend that and 
+it would turn much more tricky to understand and much less intuitive. \\
+
+Figure \ref{fig:ffmerge1} is a simple case of a merge operation with
+the branch ''Foo''. The figure
+shows that the Master branch (which is identified by HEAD) points to
+a commit that is accessible by the commit pointed by 'Foo' by the
+parent relation. So this is
+a case eligible for a fast-forward commit.  We can see that the result
+is that the working directory and index will be updated accordingly to
+the new created commit now pointed by 'Foo' and Master.\\
+
+\begin{figure}[htp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge1.png}
+   \caption{A fast-forward merge case}\label{fig:ffmerge1}
+\end{figure}
+
+Figure \ref{fig:ffmergepre} shows a concrete example of a state in
+which it is not possible to perform a merge. This happens because 
+the commit pointed by Master (which is identified by HEAD) takes
+precedence over all files. \\
+
+\begin{figure}[htp]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/fast_forward_merge_pre.png}
+   \caption{A fast-forward case that can't be done in
+   \emph{git}}\label{fig:ffmergepre}
+\end{figure}
+
+The two last figures \ref{fig:merge2way} and \ref{fig:merge3way} demonstrates 
+the difference between a 2-way and a 3-way merge commit. When using
+2-way merge there
+are conflicts that cannot be solved automatically, in the 3-way merge
+the conflicts are resolved automatically by looking at
+the common ancestor. Because the 3-way merge was automatic, a new commit was
+created that represents the merged information. Also, the working directory and
+index were updated accordingly. In the 2-way merge the system is left
+in a state for the user to solve the conflicts manually by updating
+the unmerged files and adding it to the index.
+Finally, when 'git commit' is performed a new merge commit is created and 
+the merge process terminates.\\
+
+\begin{figure}[htp]
+   \centering
+   \includegraphics[width=0.7\textwidth]{images/merge2way}
+   \caption{A typical 2-way merge}\label{fig:merge2way}
+\end{figure}
+
+\begin{figure}[htp]
+   \centering
+   \includegraphics[width=0.7\textwidth]{images/merge3way}
+   \caption{A typical 3-way merge}\label{fig:merge3way}
+\end{figure}
+
+\newpage
+\subsection{Git Pull and Git Push}
+
+When working with remote repositories, these two operations will be vastly
+used. They are in fact, a sequence of operations and they are used to get content
+from a remote repository or to push local content to a remote repository.\\
+
+If a pull operation is performed, the branch from the remote repository will be fetched
+and it will be merged with the local branch. So, it is expected from
+this operation to behave exactly as a merge operation and consequently
+everything that was referred in the merge operation applies also here. \\
+
+If a push operation is performed, the local branch will be uploaded to
+a remote repository. A pre-condition of this operation is that the
+local branch contains the remote branch. This happens to ensures that
+the local user resolves the conflicts.

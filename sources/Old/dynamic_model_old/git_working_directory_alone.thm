@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<projection> <type name="state/State"/> </projection>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Int"/>
+   <type name="Root"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="WDObject"/>
+   <type name="seq/Int"/>
+   <type name="state/State"/>
+   <set name="wdobjects" type="WDObject"/>
+</node>
+
+<node shape="House" color="Blue">
+   <type name="Dir"/>
+</node>
+
+<node shape="House" color="Red">
+   <type name="File"/>
+</node>
+
+<edge layout="yes">
+   <relation name="wdparent"> <type name="WDObject"/> <type name="Dir"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
