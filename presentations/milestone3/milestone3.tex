@@ -84,8 +84,7 @@ Formal Methods in Software Engineering}
 			\item Build a precise model of how Git works using Alloy
 			\item Analyze the model and verify which properties it
 			does (not) guarantee
-			\item Help others understanding Git, building a manual with public
-         access
+			\item Help others understanding Git, building a manual
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -136,7 +135,7 @@ Formal Methods in Software Engineering}
          \item Contains Blobs or other Trees 
          \item Used to represent the file system structure
 	      \item The identifier is calculated in a similar way to the Blobs
-         \item Sharing is done as in Blobs - Same content same Tree
+         \item Sharing is done as in Blobs - Same content, same Tree
       \end{itemize}
       \tiny
       \color{blue}
@@ -154,12 +153,12 @@ Formal Methods in Software Engineering}
 \begin{frame}[fragile]
    \frametitle{Commit}
    \begin{itemize}
-      	\item A snapshot of the project on a certain moment
+      \item A snapshot of the project on a certain moment
       in time
-      	\item Has a set of parents, that are considered the previous commits 
-	\item Points to a Tree that represents the root folder in the
+      \item It has a set of parents, that are considered the previous commits 
+	   \item Points to a Tree that represents the root folder in the
 	Working Directory
-   \item An auxiliary abstract relation was specified
+      \item An auxiliary abstract relation was specified
    to simplify the commit operation
    \end{itemize}
    \tiny
@@ -180,7 +179,7 @@ Formal Methods in Software Engineering}
 \frametitle{Branch and HEAD}
    \begin{block}{Branch}
       \begin{itemize}
-         \item Pointer to a commit - Unlike other VCS, where a branch is a full copy of the repository
+         \item It is just a pointer to a commit - Unlike other VCS, where a branch is a full copy of the repository
       \end{itemize}
    \end{block}
    \begin{block}{HEAD}
@@ -253,7 +252,7 @@ Formal Methods in Software Engineering}
       \item Contains all files that are going to be committed on the next
       commit 
       \item The index is not necessarily equal to the Working Directory
-      \item If an user wants to commit a new file or a newly modified file,
+      \item If an user wants to commit a new file or a modified file,
       first he must add it to the index
    \end{itemize}
    \vspace{10mm}
@@ -271,7 +270,7 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 
-\section{Specification of operations}
+\section{Specification of Operations}
 
 \begin{frame}[fragile]
    \frametitle{Modeled Operations}
