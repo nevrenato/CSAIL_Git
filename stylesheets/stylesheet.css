@@ -114,7 +114,10 @@ header h2 {
   -moz-border-radius: 30px;
   -webkit-border-radius: 30px;                     
   border-radius: 30px;
-/*  border-top: solid 1px #cbcbcb;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
+  /*  border-top: solid 1px #cbcbcb;
   border-left: solid 1px #b7b7b7;
   border-right: solid 1px #b7b7b7;
   border-bottom: solid 1px #b3b3b3;

@@ -14,11 +14,11 @@
   </head>
 
 	<nav>
-		<li><a href="#">Home</a></li>
-		<li><a href="#">The Alloy Tool</a></li>
-		<li><a href="#">Introduction to Git</a></li>
+		<li><a href="index.html">Home</a></li>
+		<li><a href="pages/alloy.html">The Alloy Tool</a></li>
+		<li><a href="pages/introduction.html">Introduction to Git</a></li>
 		<li><a href="pages/gitworkflow.html">The Git WorkFlow</a></li>
-		<li><a href="#">The Git Object Model</a></li>
+		<li><a href="pages/object_model.html">The Git Object Model</a></li>
 		<ul> </ul>
 		<li><a href="#">Git Basic Operations</a></li>
 	<ul class="expanded">
@@ -55,32 +55,33 @@
         
 	
 	<h3>About this project</h3>
-	<p>	Nowadays git is having great success, it is efficient, fast and very
-	easy to use. The problem here is that, most of the users do not dive
-	into the git internals, they are just happy that it works. The ones
-	that actually try to go deep into git to see how it works and why git
-	behaves in a specific way, are fronted with the lack of formal or even
-	informal specifications.  So, the purpose of this project is to
-	formally model the git core using a tool called 
-	Alloy, analyse and model some git
-	operations with that tool, and then 
-	check which properties the model does (not)
-	guarantee. This manual presents to the reader a informal description of
-	git internals, the description of some operations and it ends with
-	some properties that the model guarantee. </p>
+	<p> It is unthinkable to think about the world of software with no version control systems. 
+	Git was born in 2005 and since then it is having a great success. 
+	The problem is that there are not any formal or even informal specification about its internals. 
+	With this manual, we try to give a semi-formal specification about git and explain the behavior of some operations. 
+	The manual is based on a model built by us using a modeling tool called Alloy.
+	</p>
 
 	<h3>Structure of the manual</h3>
-	<p>This reports starts by explaining the organization of git, how git is
-	structured. Then we cover each component of git. We begin with the
-	object model, following the index and working directory. For matters
-	of time and complexity we focus our model on the index and object
-	model. After the presentation of the structure we give the informal
-	specification of some operations. We finish the report with the
-	analysis of some properties. </p>
+	<p>	This reports starts by explaining the organization of git, how it is structured 
+	and then we cover each component of git: working directory, index and repository. 
+	For matters of time/space and complexity we focus the object model in 
+	the index and in the repository. After the presentation of the structure we give the 
+	semi-formal specification of some operations. 
+	We finish the report with the analysis of some properties.For a more intuitive explanation, 
+	diagrams will be used following the convention specified in following
+	figure.
+	</p>
+	<!-- A image block -->
+	<p>
+	<img src = "./images/Legenda.png" label="Convention used
+	in this manual"/> 
+	<font size="1" style="float:right;"> Figure 1 </font>
+	</p>
 
 	<h3>Authors and Contributors</h3>
 	<p>	
-	This projects was developed by Cláudio Lourenço and Renato Neves. It was
+	This project was developed by Cláudio Lourenço and Renato Neves. It was
 	also supervised by Alcino Cunha, Eunsuk Kang and José Barros.</p>
 	
 	
