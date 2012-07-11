@@ -40,11 +40,16 @@ What \emph{git} keeps is an object called blob that represents the content of fi
 relation between the path of a file and the content of that path 
 is kept on the trees corresponding to that path. \\
 
-Figure \ref{fig:snapshot} presents an example of a snapshot. We
-have a commit that points to a tree. This first tree corresponds to
-the root directory of the project. All the other trees (and blobs)
-corresponds to some directory (or file) preserving the relation
-between them. \\
+Figure \ref{fig:snapshot} presents an example of two snapshots. We
+have two branches (the gray round square) pointing to two different
+commits (the blue circles). The ''master'' branch is pointing to the
+current commit, because it is identified by HEAD. It has as parent the commit ''ff12''
+that is also pointed by the branch ''Foo''. We can see from the current
+commit that when it was performed only the files ''file1.txt'' and the
+''file3.txt'' were
+in the index. It is also possible to see that in the root folder there was
+a file called ''file3.txt'' and a folder called ''conn''. Inside this
+folder there was a file ''file1.txt''.\\
 
 In the next sections a detailed description about each object is
 given, but for now something that is useful to know is that each
@@ -58,7 +63,8 @@ if two objects have the same content then only one of them is kept.
 \begin{figure}[!h]
    \centering
    \includegraphics[width=0.4\textwidth]{images/object_assoc.png}
-   \caption{A Snapshot}
+   \caption{A Snapshot\color{red}se isto for alterado, tem que se
+   alterar a descrição\color{black}}
    \label{fig:snapshot}
 \end{figure}
 
@@ -160,10 +166,21 @@ next.
 
 \section{Index}
 The index is something in between the working directory and the
-repository. When a file is created if the user wants that file to be
-on the next commit, it has to be on index. Even if the user just
-modifies a file and the user wants that change to be reflected on the
-next commit, it must be added to index, otherwise, what will be
-committed is the older version of the file. So, basically the index
-contains all the files that will be in the next commit.\\
+repository. It has mainly two functions: to control which files are
+being tracked, and to stage a file with the respective content to be
+committed.\\
+
+When a file is created if the user wants that file to be
+tracked it has to be added to the index. Each time the user modifies
+the file's content and does not add it to index, the content in
+index will diverge from the content in the working directory. The
+file staged in index (file and respective content) is what is stored 
+when a commit is created, independently if it is the same as in the
+working directory.\\
+
+It is important to notice that the index contains
+just files. Directories are not tracked or staged, even if, the user
+can still use the add operation with a
+folder as parameter: instead of adding the folder to index, \emph{git} adds the files
+from that folder to index.
 
