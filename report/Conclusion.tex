@@ -1,24 +1,25 @@
 \chapter{Conclusion}
 In this project we started by modeling the git internals using Alloy
 \cite{Jackson:2006:SAL:1146359}. When we reached
-a stable model we started modeling some operations, as for example, git
-add, git rm, git commit, etc. Such model and such
-operations were modeled based on \cite{gitComm}, \cite{progit} git man
-pages and using git to perform tests. After some operations were
-modeled, we checked for some properties, as for example, invariant
-preservation, idempotence, etc.\\
+a stable model, we started modeling the most used operations: git
+add, git rm, git commit, git checkot...Such model and such
+operations were modeled based on \cite{gitComm}, \cite{progit}, git man
+pages and performing tests on \emph{git}. After some operations were
+modeled, we checked for some properties, like invariant
+preservation, idempotence...\\
 
 When the operations were being modeled many
 difficulties were faced due to the lack of precise descriptions. 
 Many tests had to be performed to find a general behavior for each
-operation. During those tests a bug in git was found. In
+operation. During those tests a bug in git was found. In appendix
 \ref{bugappend}, we describe a
-sequence of operations to reach a state were information is lost. This
+sequence of operations to reach a state were information is lost in the
+checkout operation. This
 bug was reported in the \href{mailto:git@vger.kernel.org}{Git Mailing
-List} and it was proof that a lot of people are confused with the
-operations' behavior. In the begin we received some answers saying it
-was the normal behavior and then the \emph{git} maintainer assumed it
-looked like a bug.\\
+List} and by the replies we received many people seemed confused with the
+exact operation behavior. First, we received some answers saying it
+was the normal behavior and then the \emph{git} maintainer concluded that
+it looked like a bug.\\
 
 This report as well as
 \href{http://nevrenato.github.com/CSAIL_Git/}{http://nevrenato.github.com/CSAIL\_Git/},
@@ -29,5 +30,5 @@ everybody can read it, even if, they have never heard about Alloy.\\
 The time we had to work on this project was not enough (not even close) to
 go through the whole \emph{git}. Some choices were made trying to
 simplify the model and choosing the most important operations. The
-model is stable, so as future work, we suggest to model some more
-operations.
+model is considered by us, to be stable and ready to be extended with
+more operations.\\

@@ -68,9 +68,9 @@ file and the blob identifier is calculated from the blob content. So if we
 have two files exactly with the same content, only one blob will be
 stored, even if, they have different names. This happens because the
 blob is not directly associated to a file. The relation between a path
-(of a file) and a blob is kept in the tree object. 
-\color{red}{Figure \ref{fig:snapshot} shows an example of a blob representing two files.}
-\color{black}
+(of a file) and a blob is kept in the tree object.  Figure \ref{fig:snapshot} 
+shows an example of a blob representing two files.
+
 \subsection{Tree}
 A tree is nothing else than a map from names to blobs and other trees. Also here, a tree is not associated to any 
 specific directory. If two directories have exactly the same content they will be
