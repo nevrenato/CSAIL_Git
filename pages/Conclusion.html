@@ -13,7 +13,6 @@
     <title>Csail git</title>
   </head>
 
-
 	<nav>
 		<li><a href="../index.html">Home</a></li>
 		<li><a href="alloy.html">The Alloy Tool</a></li>
@@ -34,29 +33,40 @@
 	</nav>
 
 
-
   <body>
     <div id="container">
       <div class="inner">
 
         <header>
           <h1>The truth about Git</h1>
-          <h2>Alloy</h2>
+          <h2>Conclusion</h2>
         </header>
 
         <hr>
 
         <section id="main_content">
         	
-	<h3>What is Alloy</h3>
 	<p>
-	<a href="http://alloy.mit.edu/alloy/">Alloy</a> is a formal modeling language, 
-	used for describing structures in a formal way. 
-	After modeling the structures, it is possible to check for some properties, 
-	look for counter examples and to visualize instances of the model.
+	In this project we started by modeling the git internals using Alloy. 
+	When we reached a stable model, we started modeling the most used
+	operations: git add, git rm, git commit, git checkout...
+	Such model and such operations were modeled based on online manuals, git man pages and performing tests on git. 
+	After some operations were modeled, we checked for some properties, like
+	invariant preservation, idempotence...</p>
+	<p>When the operations were being modeled many difficulties were faced due to the lack of precise descriptions. Many 
+	tests had to be performed to find a general behavior for each operation.
+	During those tests a bug in git was found. We describe a sequence of operations to reach a state were information is lost 
+	in the checkout operation. This bug was reported in the Git Mailing List 
+	and by the replies we received many people seemed confused with the exact operation behavior. First
+	, we received some answers saying it was the normal behavior and then
+	the git maintainer concluded that it looked like a bug.</p><p>
+	This manual as well the project report, show a detailed description from the work we have done analysing the model we built. We tried to write it without using Alloy, so 
+	everybody can read it, even if, they have never heard about Alloy.
+	</p><p>The time we had to work on this project was not enough (not even close) to go through the whole git. 
+	Some choices were made trying to simplify the model and choosing the most important operations. The model is 
+	considered by us, to be stable and ready to be extended with more operations.
 	</p>
-	
-        </section>
+	</section>
 
         <footer>
 	<p>  Csail git is maintained by Cláudio Lourenço and Renato Neves. 

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Csail git</title>
+  </head>
+	<nav>
+		<li><a href="../index.html">Home</a></li>
+		<li><a href="alloy.html">The Alloy Tool</a></li>
+		<li><a href="introduction.html">Introduction to Git</a></li>
+		<li><a href="gitworkflow.html">The Git WorkFlow</a></li>
+		<li><a href="object_model.html">The Git Object Model</a></li>
+		<li><a href="operations.html">Git Operations</a></li>
+	<ul class="expanded">
+		<li><a href="Addrm.html"> Git Add and Remove</a></li>
+		<li><a href="Commit.html"> Git Commit </a></li>
+		<li><a href="Branch.html">Git Branch</a> </li>
+		<li><a href="Checkout.html"> Git Checkout</a> </li>
+		<li><a href="Merge.html"> Git Merge </a></li>
+	</ul>
+	<li><a href="Conclusion.html"> Conclusion </a></li>
+	<li><a href="ABugInGit.html"> Appendix </a></li> 
+
+	</nav>
+
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>The truth about Git</h1>
+          <h2>Branch</h2>
+        </header>
+
+        <hr>
+
+        <section id="main_content">
+        	
+	<h3>Description</h3>
+	<p>Branches in git are very efficient. This 
+	happens because a branch in Git is just a pointer to a commit. 
+	So, when a branch is created or removed there is only a new 
+	pointer created or a pointer that is removed. 
+	As we will see later, there are some restrictions when removing branches. 
+	When we are referring to creating or removing a branch, 
+	we mean the operations git branch and git branch -d. </p>
+	<h3> Pre-conditions </h3>
+	<p>
+	When creating a branch there are only two restrictions
+	:</p><ol><li><p>
+	Some commit must exist, and consequently the HEAD reference must point
+	to some commit; </p></li>
+	<li><p>There is not any branch with the same name. </p></li></ol>
+	<p>
+	The second pre-condition is kind of obvious. 
+	We cannot create a branch with the same name as one already in the 
+	repository, otherwise we would have conflicts. 
+	The pre-condition that could bring some doubts is the first one. 
+	Git does not allow the creation of branches before the first commit is done. 
+	When the first commit is done, a branch called "master" is created and after that 
+	it is possible to create as many branches as the user wishes.
+	</p>
+	<p>When removing a branch there are also some restrictions:
+	<ol><li><p>The branch exists; </p></li>
+	<li><p>The HEAD is not identifying the branch; </p></li>
+	<li><p>The commit pointed by the branch is accessible from the current commit 
+	(the commit pointed by the branch identified by the HEAD). </p></li></ol>
+	<p>The first pre-conditions says that it is only possible to remove a branch if it exists. 
+	The second says, that the branch being removed is not the one identified by HEAD,
+	otherwise the HEAD would point from now on to some branch that does not exists anymore. 
+	Thus, there would not exist a current commit. 
+	The last pre-condition exists to enforce that the user does not 
+	deletes a branch that is not yet merged with the current branch, 
+	or in other words, the user does not delete a branch that is not 
+	accessible from the current commit, through the parent relation. 
+	If this pre-condition did not exist it would be possible to 
+	loose all commits only accessible from this branch. </p>
+	<h3> Result </h3>
+	<p>	The result of performing this operations are the expected. 
+	When creating a branch, the result is a new branch pointing to the same commit 
+	as the branch identified by the HEAD. 
+	When removing a branch, the result is that the removed branch 
+	does not exists anymore. </p>
+	<h3> Examples </h3>
+	<p>	As we wrote before, the changes of creating a branch are minimal. 
+	The only thing changing in the repository is the new branch 
+	pointing to the current commit, as can be seen in Figure 11 </p>
+	<p>When removing a branch the changes are also minimal. 
+	The only thing changing in the repository is that the branch referred must be deleted. 
+	If instead of looking at Figure 11 from top to bottom, 
+	we look at it from bottom to top, it shows the case when a branch is removed.
+	</p>
+	<!-- A image block -->
+	<p>
+	<img src = "../images/branch.png" width=370 height=440 label="Creating a branch"/> 
+	<font size="1" style="float:right;"> Figure 11 </font>
+	</p>
+
+	</section>
+
+        <footer>
+	<p>  Csail git is maintained by Cláudio Lourenço and Renato Neves. 
+	Project supervised by Alcino Cunha, Eunsuk Kang and José Barros.</p>	
+	This page was generated by <a href="http://pages.github.com">GitHub Pages</a>.
+	<br>
+	Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>
+	and altered by  Cláudio Lourenço and Renato Neves.
+        </footer>
+
+      </div>
+    </div>
+  </body>
