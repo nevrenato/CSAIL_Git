@@ -1,0 +1,15 @@
+*.log
+*.aux
+*.out
+*.swp
+*.nav
+*.snm
+*.toc
+.DS_Store
+*.glo
+*.ist
+*.vrb
+*.bbl
+*.blg
+*.fdb_latexmk
+notes
