@@ -1,66 +1,70 @@
 
 \chapter{Git operations}
-In this section we explore some of the git operations. We try to do
-so, in a different way, if comparing with other manuals. Normally the
+In this section we explore some of the git operations. We try do
+so, in a different way, when comparing with other manuals. Normally the
 manuals we see around just explain how to perform an operation. We
-try to go further, so in this manual, we have divided our operations in
-three parts. In the first part, we give a description about the
-operation. In the second part, we give the pre-conditions, or in other
-words, we explain in which conditions the operations can be performed.
-Finally, in the last part of each operation, we show what is the
-result of perform such operation.
+try to go further, so in this manual, we have divided the description of an operation in four parts.
+The first part, gives an high level description of the
+operation. In the second part, we give the pre-conditions or, in other
+words, we explain in which conditions the operation can be performed.
+In the third part, we show what is the result of performing such operation.
+Finally, in the last part, we show some examples of the operation being performed. 
 
 \section{Add and Remove}
 The operations add and remove are used to add and remove content from
 index. As we have said before the index contains all the files and
 contents to be added on the next commit.\\
 
-\emph{Git} add does not refer directly to the file. Instead it is like
-a map from file to content. If we have a file on the index and we
+\emph{Git} add operation does not simply refers of adding a file to the file. 
+Instead it refers of adding a file with a certain content to the index. If we have a file in the index and we
 modify it on the working directory, for this modification to be visible
-on the next commit, the file has to be added again to the index.\\
+on the next commit, the file must be added again to the index.\\
 
 The remove operation removes a file from index, so it will not be
-present if we perform a commit exactly after the remove. The removed
-file besides of being removed from index, it will also be removed from the 
-working directory (if it is still exists there).
+present in the next commit and will stop being tracked. The removed
+file besides of being removed from index, will also be removed from the 
+working directory (if it still exists there).
 
 \subsection{Pre requisites}
 The add operation has only one pre-condition. The file has to be in
-the working directory. It means that a file that is
-on the working directory, can be always added to index.
+the working directory. It means that any file that is
+in the working directory can be always added to index.\\
 
 Relatively to the remove operation there are a few conditions that
 have to be satisfied for the remove operation be performed, which are: 
 \begin{itemize}
 \item The file that is being removed is currently in index;
-\item The file that is being removed is in the previous commit, exactly with the same
+\item The file that is being removed is in the current commit 
+(the commit pointed by the branch identified by HEAD) exactly with the same
 content.
 \end{itemize}
 
 The first restriction is quite obvious. It is not possible to remove
-a file if it does not exists. The last restriction exists, to avoid
-the accidental deletion of file's contents. It is possible to have a
-file in index with a certain content that does not exists in the
+a file if it does not exists. The last restriction exists to avoid
+the accidental deletion of a file's contents. It is possible to have a
+file in the index with a certain content that does not exists in the
 repository and since the remove operation removes the file from the index
 and from the working directory, the content would be lost.  
 
 \subsection{Result}
 After performing the add operation there is something that will be
-always observed. The file will be in index. Besides, if the file was
-marked as not merged then the mark goes away. More details about
-merged and unmerged files will be given later.\\
+always observed. The file will be in index. Besides, the add operation 
+is also used to resolve conflicts. If a file was
+marked as unmerged, when performing an add operation, the file with 
+the current content is added to index and the unmerged mark is removed. 
+A file is marked as unmerged when it results from a conflict in a 
+merge operation. More details about merged and unmerged files will be given later.\\
+
 
 The result from performing the remove operation is that the file is
-not anymore in the index. Also here the file will not be marked as
-unmerged anymore.
+not anymore in the index. If the file was marked as unmerged, 
+remove resolves the conflict by deleting the file.
 
 \subsection{Examples}
-
-The figure \ref{fig:add1}, shows a simple case of adding a file to the 
+Figure \ref{fig:add1}, shows a simple case of adding a file to the 
 index. It can be seen, that no changes are made in the repository nor in the working
 directory. The only effect is that the index will contain the new
-file.\\
+file. The dots means that the content is kept.\\
 
 \begin{figure}[tp]
    \begin{minipage}[b]{0.5\linewidth}
@@ -123,7 +127,7 @@ operation:
    \item There are not unmerged files.
 \end{itemize}
 The first pre-condition is obvious, because if we do not have files in
-the index, there is anything to commit.\\
+the index, there is not anything to commit.\\
 
 The second condition says basically
 that we cannot have two commits objects pointing to the same
@@ -137,26 +141,26 @@ we will speak about this later.
 
 \subsection{Result}
 The result of performing a commit can be different if it is the first
-commit or if there are already some commit in th repository. 
+commit or if there are already some commits in th repository. 
 We start by exposing the observed result when the first commit is
-being performed and then we show the case when there are already some
+being performed and then we show the case when there is already some
 commit in the repository. In the end we show some properties that are
 observed in both cases.\\
 
 The first commit object that is being created is a commit with no
-parent. It means that it does not have a parent. There cannot be branches
+parent. There cannot be branches
 at this moment, because they cannot point to any commit, as there are none to be
-pointed, so a new branch called "master" is created. This branch is going to be pointing to 
+pointed, so a new branch called "master" is created. This branch is going to point to 
 the commit that has been created. Also the HEAD, that previously was 
 not defined will identify this "master" branch.\\
 
-When there are already some commit in the repository, then it is
-guaranteed that there are at least one branch and the HEAD is
+When there are already some commits in the repository, then it is
+guaranteed that there is at least one branch and the HEAD is
 identifying some existing branch. The branch that is identified by the
 HEAD, is pointing now to the commit created. This commit have now as
-parent the previous commit (the commit pointed by the branch
-identified by the HEAD), unless it is a result from a merge. In this
-case the commit must have two parents. The previous commit and the
+parent the previous commit (the commit that was previously pointed by the branch
+identified by HEAD), unless it is a result from a merge. In this
+case the commit must have two parents: the previous commit and the
 branch that is being merged.\\
 
 The common properties that are observed are that all the files and
@@ -173,13 +177,14 @@ with these two files. The interesting point is that, because these two files
 have the same content, they will share the same
 Blob. This is a case where \emph{git} shows its efficiency. \\
 
-The previous commit shows the case, in which the first commit is being
+The previous commit illustrates the case in which the first commit of the repository is being
 performed. In Figure \ref{fig:commit2} it is possible to see an example 
 of a commit operation, in which the only difference from the previous 
 commit is a removed file. This figure is 
 interesting because it shows which changes are made in the repository when a
-new (not RootCommit) is created. The new commit points to the previous commit and
-the branch and HEAD identifies to the created commit. As expected the new commit reflects
+new (non root) commit is created. The new commit points to the previous commit and
+the branch (which is identified by HEAD) points to the just created commit.
+As expected the new commit reflects
 the working directory's structure for the existing files.\\
 
 Figure \ref{fig:commit_pre} is just a concrete example of the second pre requisite
@@ -220,8 +225,8 @@ When creating a branch there are only two restrictions:
    \item There is not any branch with the same name.
 \end{itemize}
 The second pre-condition is kind of obvious. We cannot create a branch
-with the same same name as one already in the repository, otherwise we
-would have conflicts. The pre-conditions that could bring some doubts
+with the same name as one already in the repository, otherwise we
+would have conflicts. The pre-condition that could bring some doubts
 is the first one. \emph{Git} does not allow the creation of branches
 before the first commit is done. When the first commit is done, a
 branch called "master" is created and after that it is possible to
@@ -238,27 +243,26 @@ When removing a branch there are also some restrictions:
 
 The first pre-conditions says that it is only possible to remove a
 branch if it exists. The second says, that the branch being removed is
-not the one identified by HEAD, otherwise the HEAD would be point from
+not the one identified by HEAD, otherwise the HEAD would point from
 now on to some branch that does not exists anymore. Thus, there would
-not exist a current commit. The last pre-conditions exists to check
+not exist a current commit. The last pre-condition exists to enforce that
 the user does not deletes a branch that is not yet merged with the
 current branch, or in other words, the user does not delete a branch
 that is not accessible from the current commit, through the parent relation. 
-If this pre-condition did not exist it would be possible to loose the
-commit pointed by the branch, as well as, some commits from the parent
-relation.
+If this pre-condition did not exist it would be possible to loose all 
+commits only accessible from this branch.
 
 
 \subsection{Result}
-The result of performing this operations are expected. When creating a
-branch, the result is a new branching pointing to the same commit as
+The result of performing this operations are the expected. When creating a
+branch, the result is a new branch pointing to the same commit as
 the branch identified by the HEAD. When removing a branch, the result
-is that the branch removed does not exists anymore.
+is that the removed branch does not exists anymore.
 
 \subsection{Examples}
-As we wrote before the changes of creating a branch are minimal. The only thing
+As we wrote before, the changes of creating a branch are minimal. The only thing
 changing in the repository is the new branch pointing to the current commit, as
-it can be seen in figure \ref{fig:branch}. \\
+can be seen in Figure \ref{fig:branch}. \\
 
 When removing a branch the changes are also minimal. The only thing
 changing in the repository is that the 
@@ -273,7 +277,7 @@ it shows the case when a branch is removed. \\
 \end{figure}
 
 \section{Checkout}
-The checkout operations is used to update the working directory and
+The checkout operation is used to update the working directory and
 index with a set of files from a commit. In this project, we have
 explored only the case the checkout operation is used with a branch.
 In this case, all the files from the commit pointed by the branch are
@@ -289,7 +293,7 @@ opinion this operation should have as pre-condition something like
 "Everything that is in index should be committed". Instead \emph{git}
 tries to relax this pre-condition and we have the following:
 \begin{itemize}
-   \item The branch we are checking out, exists;
+   \item The branch we are checking out exists;
    \item Everything that is in the index has to be in the current commit with the
       same content, except if:
       \begin{enumerate}
@@ -302,7 +306,7 @@ tries to relax this pre-condition and we have the following:
       \end{enumerate}
 \end{itemize}
 
-About the pre-condition there are not much to say. If we want to
+About the first pre-condition there are not much to say. If we want to
 checkout a branch, the branch should exist.\\
 
 The problem here is the second pre-condition. There are a lot of
@@ -312,7 +316,7 @@ we have a file f, which is not in current commit, or at least it is not
 with the same content. All other files from index are in the current commit, with
 the same content. Relatively to f, if at least one of the exceptions enumerated above
 is satisfied, then the checkout operation will proceed. Now lets
-analyse each one of the exceptions. The first says that, f can 
+analyse each one of the exceptions. The last says that f can 
 be in the commit we are checking out with the same content. So, even
 if f is not commit, but it is in the commit we are checking out, git
 will proceed with the operation. The exception marked as 2, says that
@@ -322,7 +326,7 @@ checkout operation is performed then if the file does not exists in
 the commit being checked out, the operation will proceed. The last
 exception says that if there exists a file with the same path and the
 same content in the commit being checked out, then the operation will
-proceed. In this last case does not warns the user.
+proceed. In this last case git does not warns the user.
 
 \subsection{Result}
 As we have said before, in this manual we have
@@ -337,7 +341,7 @@ HEAD, after a checkout is performed, identifies the branch which was
 checked out.\\
 
 There is one more alteration. The index when a checkout is performed
-has to be updated to reflect the operation. The result of it is not intuitive. To
+has to be updated to reflect the target commit object. The result of it is not intuitive. To
 understand it lets assume that the checkout operation has not yet been 
 performed. Consider three relations from file to content. 
 \begin{itemize}
@@ -367,8 +371,7 @@ files that are marked as removed will not be in index.
 \subsection{Examples}
 As referred above checkout behaves in a non-intuitive way. We recommend that
 before performing a checkout, the user ensures that all the files from
-the index are committed, otherwise there is a risk to pass content to other branches or even
-to loose information. \\
+the index are committed, otherwise it is not be easy to guess what will happen.\\
 
 Thus, the example shown in figure \ref{fig:checkout}, contains an
 example in which all content in the index and working directory are committed (the safe case).
@@ -407,18 +410,18 @@ Thus, it has three types of merge:
 
 \begin{itemize}
    \item \textbf{Fast-forward merge} (figure \ref{fig:fast_forward}):
-   It happens when the commit being merged, can achieve the current commit by the 
+   It happens when the commit being merged is accessible from the current commit by the 
    parent relation. If that happens, then the commit being merged is more recent
    than the current commit. The result will be the HEAD pointing to
-   the commit being merged. It is not created a new commit; 
+   the commit being merged. A new commit is not created;
    
    \item \textbf{3-way merge} (figure \ref{fig:3mergecase}): 
-   It happens when a fast-forward is not possible, but, both commits have a common
+   It happens when a fast-forward is not possible, but both commits have a common
    ancestor. \emph{Git} will use the common ancestor to minimize potential
    merge conflicts.
    
    \item \textbf{2-way merge} (figure \ref{fig:2mergecase}): 
-   It happens when both types above are not possible. In this case there are no
+   It happens when there is no
    common ancestor, thus it will be more likely that conflicts will
    appear.
 \end{itemize}
@@ -443,7 +446,7 @@ Thus, it has three types of merge:
 
 \subsection{Pre requisites}
 The merge operation, as all other operations, has some pre conditions that
-must be satisfied in order to perform it. As in the checkout operation,
+must be satisfied in order to be performed. As in the checkout operation,
 \emph{git} lets the user to perform a merge without all information in the index 
 being committed: 
 
@@ -462,7 +465,7 @@ being committed:
    conflict with files from the resulting merge.
    
    \item When it is detected that a 2-way or 3-way merge will take
-   place, then it is not possible to exist uncommitted files in index.
+   place, then uncommitted files cannot exist in the index.
 \end{itemize}
 
 \subsection{Result}
@@ -474,7 +477,7 @@ be resolved automatically because conflicts are found. Next, we give a
 small description of what changes after a merge operation is called.
 
 \begin{itemize}
-\item If it is the case of a fast-forward merge. The index and the working directory
+\item If it is the case of a fast-forward merge, the index and the working directory
 will contain the information of the newest commit. Also, they will contain all 
 information prior to the merge that was uncommitted, as long as there
 are no conflicts. Of course, the current branch and HEAD will point to the
@@ -484,7 +487,7 @@ newest commit.
 index and the working directory will reflect the new
 commit (the created commit). Here, the question of 
 uncommitted changes does not exists because \emph{git} 
-does not allow uncommitted files when applying this tactics. 
+does not allow uncommitted files when applying these tactics. 
 In the repository a new commit is created that has the combined
 changes of the two (possibly three, if it is a 3-way merge) 
 commits involved in the merge. That new commit will have as 
@@ -519,7 +522,7 @@ it would turn much more tricky to understand and much less intuitive. \\
 Figure \ref{fig:ffmerge1} is a simple case of a merge operation with
 the branch ''Foo''. The figure
 shows that the Master branch (which is identified by HEAD) points to
-a commit that is achievable by the commit pointed by 'Foo' and the
+a commit that is accessible by the commit pointed by 'Foo' by the
 parent relation. So this is
 a case eligible for a fast-forward commit.  We can see that the result
 is that the working directory and index will be updated accordingly to
