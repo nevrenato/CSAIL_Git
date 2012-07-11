@@ -426,6 +426,13 @@ Thus, it has three types of merge:
    appear.
 \end{itemize}
 
+The reason why a 3-way merge can solve automatically more conflicts than a 2-way
+merge is because it can verify if one of the versions was not modified
+relatively to the common ancestor. For example, if we have a file in
+both commits with diferrent content, but one of them is equal to the
+common ancestor, then the 3-way tactic assumes the file was not modified. Thus,
+the file from the other commit takes precedence.
+
 \begin{figure}[tp]
    \centering
    \includegraphics[width=0.5\textwidth]{images/fast_forward.png}
