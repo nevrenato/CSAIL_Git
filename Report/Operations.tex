@@ -380,12 +380,23 @@ that the repository and index are updated to reflect the branch checked out, mor
 concretely the commit pointed by the branch. Something the reader can
 also observe is that, after the checkout is performed, the HEAD
 identifies the branch that was checked out.\\
-
+The last example in figure \ref{fig:checkout2}, shows the case where the file
+'bar.txt' is in the index, but it's not committed. What happens is that the file
+will travel to the branch 'Foo' and will stay in the working directory and in the
+index. As if the file were created and added to the index there. So we have were
+a case where a file it's in the index but not committed and a checkout is
+permitted. The file, in fact, is passed to the other branch. In our opinion this
+is a behaviour that could lead to some problems when checking out. \\
 
 \begin{figure}[!t]
    \centering
    \includegraphics[width=0.6\textwidth]{images/checkout.png}
    \caption{A simple checkout}\label{fig:checkout}
+\end{figure}
+\begin{figure}[!t]
+   \centering
+   \includegraphics[width=0.6\textwidth]{images/notsosimplecheckout.png}
+   \caption{A checkout with a file not committed}\label{fig:checkout2}
 \end{figure}
 
 \section{Merge}
