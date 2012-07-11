@@ -47,15 +47,11 @@ Formal Methods in Software Engineering}
 \section{Project Motivation and Objectives}
 \begin{frame}
 	\frametitle{Project Motivation}
-	\begin{block}{Gap in the description of Git}
+	\begin{block}{Gap in existing Git documentation}
 		\begin{itemize}
 		\item Lack of precise descriptions
 		\item Contradictions between manuals
-		\end{itemize}
-	\end{block}
-	\begin{block}{An opportunity  appears}
-	\begin{itemize}
-	\item Git users could benefit from a manual that is precise and rigorous
+		\item Git users could benefit from a manual that is precise and rigorous
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -84,7 +80,8 @@ Formal Methods in Software Engineering}
 			\item Build a precise model of how Git works using Alloy
 			\item Analyze the model and verify which properties it
 			does (not) guarantee
-			\item Help others understanding Git, building a manual
+			\item Help others understanding Git, writing a new
+			(hopefully more precise) manual
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -100,28 +97,14 @@ Formal Methods in Software Engineering}
    \end{figure}
 \end{frame}
 
-\begin{frame}
-   \frametitle{Repository}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.4\textwidth]{images/workflow2.png}
-   \end{figure}
-\end{frame}
 
-\begin{frame}
-\frametitle{Repository}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.5\textwidth]{images/legenda2.png}
-   \end{figure}
-\end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Blob and Tree}
    \begin{block}{Blob}
       \begin{itemize}
          \item Represents the content of a file
-         \item The identifier is calculated from its content
+         \item The identifier is an hash calculated from its content
          \item Files with same content will be represented by the same blob
       \end{itemize}
       \tiny
@@ -134,7 +117,7 @@ Formal Methods in Software Engineering}
       \begin{itemize}
          \item Contains Blobs or other Trees 
          \item Used to represent the file system structure
-	      \item The identifier is calculated in a similar way to the Blobs
+	      \item The identifier is an hash calculated in a similar way to the Blobs
          \item Sharing is done as in Blobs - Same content, same Tree
       \end{itemize}
       \tiny
@@ -146,9 +129,6 @@ Formal Methods in Software Engineering}
       \end{lstlisting}
    \end{block}
 \end{frame}
-
-
-
 
 \begin{frame}[fragile]
    \frametitle{Commit}
@@ -199,6 +179,14 @@ Formal Methods in Software Engineering}
                         lone sig Master extends Branch{}
    \end{lstlisting}
 \end{frame}
+\begin{frame}
+
+\frametitle{Repository}
+   \begin{figure}
+      \centering
+      \includegraphics[width=0.5\textwidth]{images/legenda2.png}
+   \end{figure}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Repository}
@@ -208,13 +196,6 @@ Formal Methods in Software Engineering}
 	\end{figure}
 \end{frame}
 
-\begin{frame}
-   \frametitle{Working Directory}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.4\textwidth]{images/workflow3.png}
-   \end{figure}
-\end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Working Directory}
@@ -238,13 +219,6 @@ Formal Methods in Software Engineering}
    \end{lstlisting}
 \end{frame}
 
-\begin{frame}
-   \frametitle{Index}
-   \begin{figure}
-      \centering
-      \includegraphics[width=0.4\textwidth]{images/workflow1.png}
-   \end{figure}
-\end{frame}
 
 \begin{frame}[fragile]
    \frametitle{Index}
@@ -369,22 +343,22 @@ Formal Methods in Software Engineering}
 
 \begin{frame}
 	\frametitle{Checkout pre-conditions}
-	\begin{block}{Pre condition expected}
+	\begin{block}{Expected pre-condition}
 	\begin{itemize}
 		\item No uncommitted files
 	\end{itemize}
 	\end{block}
-	\begin{block}{Pre conditions found}
+	\begin{block}{Real pre-condition}
 	\begin{itemize}
 		\item Everything that is in the index has to be
-		in the current commit with the same content, except if
+		committed, except if
 		\begin{itemize}
 		\item The content of a file is the same in the current
 		and destination commit (warning is thrown)
-		\item Exists a file in the index, and that file doest not
+		\item A file in the index does not
 		exist neither in the current nor in the destination commit
 		(warning is thrown)
-		\item Content of the file in the index is the same as in the
+		\item Content of a file in the index is the same as in the
 		destination commit (no warning is thrown)
 		\end{itemize}
 	\end{itemize}
@@ -400,7 +374,7 @@ Formal Methods in Software Engineering}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Merge - The Last Operation Modeled}
+	\frametitle{Merge }
 	\begin{block}{Merge}
 	   \begin{itemize}
 	      \item The current commit and the commit pointed by the specified branch
@@ -408,16 +382,16 @@ Formal Methods in Software Engineering}
 	   \end{itemize}
 	\end{block}
 	\small
-   \begin{block}{Merge Tactics}
+   \begin{block}{Merge variants}
 	   \begin{itemize}
 		   \item The commit being merged is more recent than
-		   the current commit - It is not created a new commit because the
+		   the current commit - A new commit is not created because the
          commit being merged takes precedence - \textbf{Fast-Forward Merge}
 		   \item The typical \textbf{2-way merge} will create a new commit
 		   resulting from both commits
 		   \item The \textbf{3-way merge} will also create a new commit, however 
          it uses the most recent common ancestor to solve automatically 
-         some conflicts that not solved with 2-way merge
+         some conflicts that cannot be solved with 2-way merge
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -468,7 +442,7 @@ Formal Methods in Software Engineering}
 		\item The current commit cannot be more recent than the commit
 		being merged
 		\item There cannot be an unfinished merge
-		\item When the fast-forward tactic is applied, the index cannot have
+		\item When the fast-forward variant is applied, the index cannot have
 		uncommitted files that would conflict with files from the 
 		resulting merge
 		\item When a 2-way or 3-way merge is applied, it is not possible
@@ -507,7 +481,8 @@ Formal Methods in Software Engineering}
 	\frametitle{Conclusions}
 	\begin{itemize}
 	\item Not enough time (not even close) to specify the whole Git
-	\item It would be nice to have completeness in the model verification
+	\item It would be nice to check the properties in a theorem prover, in
+	order to have completeness
 	\item Model is stable and documented enough to be extended with other operations by outsiders
 	\end{itemize}
 \end{frame}
