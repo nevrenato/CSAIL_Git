@@ -1,31 +1,31 @@
 \chapter{Conclusion}
 In this project we started by modeling the git internals using Alloy
 \cite{Jackson:2006:SAL:1146359}. When we reached
-a stable model, we started modeling the most used operations: git
-add, git rm, git commit, git checkot...Such model and such
-operations were modeled based on \cite{gitComm}, \cite{progit}, git man
-pages and performing tests on \emph{git}. After some operations were
+a stable model, we started modeling the most used operations:
+add, rm, commit, and checkot. Such model was defined based on the
+documentation in some popular git manuals \cite{gitComm,progit}, the git man pages,
+and by performing additional tests using git. After some operations were
 modeled, we checked for some properties, like invariant
-preservation, idempotence...\\
+preservation or idempotence.\\
 
-When the operations were being modeled many
-difficulties were faced due to the lack of precise descriptions. 
+We had many difficulties when modeling the operations due to the lack of precise descriptions. 
 Many tests had to be performed to find a general behavior for each
 operation. During those tests a bug in git was found. In appendix
-\ref{bugappend}, we describe a
+\ref{bugappend} and \ref{bugappend2}, we describe a
 sequence of operations to reach a state were information is lost in the
 checkout operation. This
 bug was reported in the \href{mailto:git@vger.kernel.org}{Git Mailing
-List} and by the replies we received many people seemed confused with the
-exact operation behavior. First, we received some answers saying it
+List} and by the replies we received many people seemed confused about
+the intended behavior of this operation. First, we received some answers saying it
 was the normal behavior and then the \emph{git} maintainer concluded that
-it looked like a bug.\\
+it was indeed a bug.\\
 
-This report as well as
+This report, as well as
 \href{http://nevrenato.github.com/CSAIL_Git/}{http://nevrenato.github.com/CSAIL\_Git/},
 show a detailed description from the work we have done analysing the
-model we built. We tried to write it without using Alloy, so
-everybody can read it, even if, they have never heard about Alloy.\\
+model we built. We wrote the report without presenting the Alloy
+formalization, so that readers not familiar with Alloy can also
+benefit from it. The full Alloy model can be found in the above URL.\\
 
 The time we had to work on this project was not enough (not even close) to
 go through the whole \emph{git}. Some choices were made trying to

@@ -7,13 +7,12 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{xcolor}
-\usepackage{draftwatermark}
+%\usepackage{draftwatermark}
 \usepackage[normalem]{ulem}
 \usepackage{hyperref}
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{appendix}
-
 
 \lstset{
 	basicstyle=\footnotesize,
@@ -29,7 +28,8 @@ Kang \\ Manuel Alcino Cunha \\ José Bernardo Barros}
 \begin{document}
 
 \date{\today}
-\maketitle
+\input{title_page_1}
+%\maketitle
 \input{Abstract}
 \tableofcontents
 \newpage
@@ -40,9 +40,10 @@ Kang \\ Manuel Alcino Cunha \\ José Bernardo Barros}
 
 \input{Operations}
 
+\input{Properties}
+
 \input{Conclusion}
 
-\input{Properties}
 \bibliographystyle{plain}
 
 \bibliography{biblio}

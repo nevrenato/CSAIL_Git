@@ -22,7 +22,7 @@ fun files : State -> Path {
 -- trees (folders) with no sons.
 -- Two commits that are direct relatives cannot have the same content
 pred invariant[s:State]{	
---		some Commit & objects.s <=> some marks.s && one head.s
+		some Commit & objects.s <=> some marks.s && one head.s
 		head.s in branches.s & (marks.s).Commit
 		(objects.s - Commit) in (objects.s).points.*(contents.Name)
 		all t : objects.s & Tree | t.contents.Name in objects.s
