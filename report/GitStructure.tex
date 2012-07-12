@@ -60,11 +60,10 @@ opinion, the
 fact that it is possible to compare two objects only by comparing the hash and
 if two objects have the same content then only one of them is kept.
 
-\begin{figure}[!h]
+\begin{figure}[h]
    \centering
    \includegraphics[width=0.4\textwidth]{images/object_assoc.png}
-   \caption{A Snapshot\color{red}se isto for alterado, tem que se
-   alterar a descrição\color{black}}
+   \caption{A Snapshot}
    \label{fig:snapshot}
 \end{figure}
 
@@ -170,17 +169,18 @@ repository. It has mainly two functions: to control which files are
 being tracked, and to stage a file with the respective content to be
 committed.\\
 
-When a file is created if the user wants that file to be
+When a file is created, if the user wants that file to be
 tracked it has to be added to the index. Each time the user modifies
 the file's content and does not add it to index, the content in
 index will diverge from the content in the working directory. The
 file staged in index (file and respective content) is what is stored 
-when a commit is created, independently if it is the same as in the
+when a commit is created, irrespective of its current content in the
 working directory.\\
 
 It is important to notice that the index contains
 just files. Directories are not tracked or staged, even if, the user
 can still use the add operation with a
-folder as parameter: instead of adding the folder to index, \emph{git} adds the files
-from that folder to index.
+folder as parameter: instead of adding the folder to index, \emph{git}
+recursively adds all the files
+inside that folder to index.
 
