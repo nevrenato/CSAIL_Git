@@ -1,0 +1,58 @@
+\documentclass[a4paper,11pt]{report}
+
+\usepackage{xspace}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{draftwatermark}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{appendix}
+
+
+\lstset{
+	basicstyle=\footnotesize,
+	frame=none,
+	backgroundcolor=\color{white}
+}
+
+
+\title{The Truth About Git}
+\author{Cláudio Lourenço \\ Renato Neves \\ \\ \emph{Supervisors:} \\ Eunsuk
+Kang \\ Manuel Alcino Cunha \\ José Bernardo Barros}
+
+\begin{document}
+
+\date{\today}
+\maketitle
+\input{Abstract}
+\tableofcontents
+\newpage
+%----- Sections ------
+\input{Introduction}
+
+\input{GitStructure}
+
+\input{Operations}
+
+\input{Conclusion}
+
+\input{Properties}
+\bibliographystyle{plain}
+
+\bibliography{biblio}
+
+
+\appendix 
+
+\appendixpage
+\addappheadtotoc
+
+\input{AppendixBug}
+
+\end{document}

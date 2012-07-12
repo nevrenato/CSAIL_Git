@@ -1,0 +1,34 @@
+\chapter{Conclusion}
+In this project we started by modeling the git internals using Alloy
+\cite{Jackson:2006:SAL:1146359}. When we reached
+a stable model, we started modeling the most used operations: git
+add, git rm, git commit, git checkot...Such model and such
+operations were modeled based on \cite{gitComm}, \cite{progit}, git man
+pages and performing tests on \emph{git}. After some operations were
+modeled, we checked for some properties, like invariant
+preservation, idempotence...\\
+
+When the operations were being modeled many
+difficulties were faced due to the lack of precise descriptions. 
+Many tests had to be performed to find a general behavior for each
+operation. During those tests a bug in git was found. In appendix
+\ref{bugappend}, we describe a
+sequence of operations to reach a state were information is lost in the
+checkout operation. This
+bug was reported in the \href{mailto:git@vger.kernel.org}{Git Mailing
+List} and by the replies we received many people seemed confused with the
+exact operation behavior. First, we received some answers saying it
+was the normal behavior and then the \emph{git} maintainer concluded that
+it looked like a bug.\\
+
+This report as well as
+\href{http://nevrenato.github.com/CSAIL_Git/}{http://nevrenato.github.com/CSAIL\_Git/},
+show a detailed description from the work we have done analysing the
+model we built. We tried to write it without using Alloy, so
+everybody can read it, even if, they have never heard about Alloy.\\
+
+The time we had to work on this project was not enough (not even close) to
+go through the whole \emph{git}. Some choices were made trying to
+simplify the model and choosing the most important operations. The
+model is considered by us, to be stable and ready to be extended with
+more operations.\\
