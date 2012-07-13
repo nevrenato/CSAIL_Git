@@ -7,7 +7,7 @@ properties. This analysis is bounded, which means that it is not a
 complete analysis, but instead it analyses the model up to
 \emph{''n''} objects.\\
 
-In the next sections we present some properties checked. We start with
+In the next sections we present some of the verified properties. We start with
 the invariant preservation, then we show which operations are
 idempotent and then we check for operation's specific properties.
 
@@ -20,7 +20,7 @@ when they are performed. Our invariant says the following:
    and HEAD is known;
    %some Commit & objects.s <=> some marks.s && one head.s
    \item The HEAD identifies an existing branch;
-   \item Every existing branch points to an existing commit;
+   \item Every branch points to a commit;
    %head.s in branches.s & (marks.s).Commit
    \item Each branch identifies only and only one commit;
    %marks.s in branches.s -> one objects.s
@@ -35,37 +35,36 @@ when they are performed. Our invariant says the following:
    \item Every commit object points to an existing tree and if it has
    a parent it exists in the repository;
    %all c:objects.s & Commit | c.points in objects.s and c.parent in objects.s
-   \item There is not two consecutive commits pointing to the same tree.
+   \item There are not two consecutive commits pointing to the same tree.
    %all c,c': Commit & objects.s | c' in c.parent => c.points != c'.points  
 \end{enumerate}
 
-The most of the properties are trivial. The first property exists,
-because before the first commit is created, it is not possible to
-create branches and after that, it is never possible to remove the branch
+Most of the properties are trivial. The first property holds
+because before the first commit is created it is not possible to
+create branches, and after that it is never possible to remove the branch
 identified by HEAD. The property number 
-\ref{item:treeContainsSome} exists, because
+\ref{item:treeContainsSome} holds because
 \emph{git} does not allow empty Trees and every object contained in a
 tree exists in the repository. The last property guarantees
-that each existing commit has a different snapshot when comparing to
-its parent.\\
+that each existing commit has a different snapshot from its parent.\\
 
-To check if an operation preserves an invariant, the invariant must be
-valid before performing the operation and after it is performed, the
-invariant must still be valid. We have checked for each operation and
+To check if an operation preserves an invariant, that invariant must
+be valid after the operation is performed, assuming that is valid
+before. We have checked for each operation and
 we conclude that our operations preserve the invariant.
 
 
 \section{Idempotent Operations}
 An operation is said idempotent if after being performed, repeating it
-does not changes the state of the system. It does not make sense to
+does not change the state of the system. It does not make sense to
 check if this property holds for some operations. For example after
 removing a file or a branch, it cannot be removed again. The
 idempotent operations in our model are: commit, add, and checkout.
 Next we try to justify such property.\\
 
 The commit operation is idempotent because, if we perform a commit which 
-is equal to the previous, git will not create a new commit (not
-allowed) and anything is changed in the repository.\\
+is equal to the previous, git will not create a new commit and nothing 
+is changed in the repository.\\
 
 The add operation is also idempotent because while the file in the
 working directory keeps its content the add operation, after performed
@@ -80,7 +79,7 @@ operation is still idempotent.
 
 \section{Add, Remove and Commit Operations}
 For this operations we have checked the following properties, which
-were valid. To notice that when we write ''new file'', we mean a file
+were valid. Notice that when we write ''new file'', we mean a file
 that does not exists in index.
 \begin{enumerate}
    \item Adding a new file to the index and removing it, brings us to the
@@ -96,7 +95,7 @@ that does not exists in index.
    commit will point to different Trees;
    \item Assuming that the invariant is verified and the following operations are
    performed: commit, add a new file, commit, remove the file added
-   previously, and commit. The first commit created and the last one
+   previously, and commit, then the first commit created and the last one
    will point to the same Tree object;
 \end{enumerate}
 
@@ -115,14 +114,14 @@ Relatively to the checkout operation it was shown the following:
    performed and after this a checkout from the initial branch is
    performed then we reach a state where the HEAD identifies the same
    branch as in begin;
+   \item if when the invariant is
+   true and a checkout from a branch ''b'' is performed, then all content
+   from the commit pointed by ''b'' will be in index. Such property is
+   not true, due, the strange pre-condition we described in
+   \ref{sec:checkout:pre}.
    \item If a commit is performed, a checkout from a random branch is
    performed and after that a new checkout from the initial branch is also
    performed, then the index content after the commit will be the same
    as in the end.
 \end{enumerate}
 
-Besides this two properties, we have also checked: if when the invariant is
-true and a checkout from a branch ''b'' is performed, then all content
-from the commit pointed by ''b'' will be in index. Such property is
-not true, due, the strange pre-condition we wrote in
-\ref{sec:checkout:pre}.
