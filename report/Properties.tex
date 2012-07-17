@@ -39,7 +39,7 @@ when they are performed. Our invariant says the following:
    %all c,c': Commit & objects.s | c' in c.parent => c.points != c'.points  
 \end{enumerate}
 
-Most of the properties are trivial. The first property holds
+Most of these properties are trivial. The first property holds
 because before the first commit is created it is not possible to
 create branches, and after that it is never possible to remove the branch
 identified by HEAD. The property number 
@@ -108,17 +108,14 @@ We have also checked if when a branch is created it points to the same
 commit as the branch identified by HEAD. In both cases no counter
 examples were found.\\
 
-Relatively to the checkout operation it was shown the following:
+Relatively to the checkout operation it was verified the following:
 \begin{enumerate}
-   \item If the invariant is true, a checkout from a branch is
-   performed and after this a checkout from the initial branch is
-   performed then we reach a state where the HEAD identifies the same
-   branch as in begin;
-   \item if when the invariant is
+   \item If when the invariant is
    true and a checkout from a branch ''b'' is performed, then all content
    from the commit pointed by ''b'' will be in index. Such property is
    not true, due, the strange pre-condition we described in
-   \ref{sec:checkout:pre}.
+   \ref{sec:checkout:pre}. As it is shown next, if the checkout
+   operation is performed exactly after a commit, the property holds.
    \item If a commit is performed, a checkout from a random branch is
    performed and after that a new checkout from the initial branch is also
    performed, then the index content after the commit will be the same
