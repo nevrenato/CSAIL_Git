@@ -28,6 +28,7 @@
 		<li><a href="Merge.html"> Git Merge </a></li>
 	</ul>
 	<li><a href="Conclusion.html"> Conclusion </a></li>
+	<li><a href="Properties.html"> Properties </a></li>
 	<li><a href="ABugInGit.html"> Appendix </a></li> 
 
 	</nav>
@@ -147,9 +148,28 @@
 		</p>
 		<!-- A image block -->
 		<p>
-		<img src = "../images/checkout.png" width=380 height=400 label="A simple checkout"/> 
+		<img src = "../images/checkout.png" width=350 height=400 label="A simple checkout"/> 
 		<font size="1" style="float:right;"> Figure 12 </font>
-	</p>
+		</p>
+
+		<p>
+		
+		The last example in figure 12.a, shows the case where the file
+		'bar.txt' is in the index, but it's not committed. What happens is that the file
+		will travel to the branch 'Foo' and will stay in the working directory and in the
+		index. As if the file were created and added to the index there. So we have were
+		a case where a file it's in the index but not committed and a checkout is
+		permitted. The file, in fact, is passed to the other branch. In our opinion this
+		is a behaviour that could lead to some problems when checking
+		out. Thus try to avoid this type of situation.
+
+		</p>
+
+		<p>
+		<img src = "../images/notsosimplecheckout.png" width=350 height=400 label="A simple checkout"/> 
+		<font size="1" style="float:right;"> Figure 12.a</font>
+		</p>
+
 
 	</section>
 

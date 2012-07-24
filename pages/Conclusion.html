@@ -28,6 +28,7 @@
 		<li><a href="Merge.html"> Git Merge </a></li>
 	</ul>
 	<li><a href="Conclusion.html"> Conclusion </a></li>
+	<li><a href="Properties.html"> Properties </a></li>
 	<li><a href="ABugInGit.html"> Appendix </a></li> 
 
 	</nav>
@@ -51,17 +52,20 @@
 	When we reached a stable model, we started modeling the most used
 	operations: git add, git rm, git commit, git checkout...
 	Such model and such operations were modeled based on online manuals, git man pages and performing tests on git. 
-	After some operations were modeled, we checked for some properties, like
+	After some operations were modeled, we checked some properties, like
 	invariant preservation, idempotence...</p>
 	<p>When the operations were being modeled many difficulties were faced due to the lack of precise descriptions. Many 
 	tests had to be performed to find a general behavior for each operation.
 	During those tests a bug in git was found. We describe a sequence of operations to reach a state were information is lost 
-	in the checkout operation. This bug was reported in the Git Mailing List 
+	in the Appendix. This bug was reported in the Git Mailing List 
 	and by the replies we received many people seemed confused with the exact operation behavior. First
 	, we received some answers saying it was the normal behavior and then
-	the git maintainer concluded that it looked like a bug.</p><p>
-	This manual as well the project report, show a detailed description from the work we have done analysing the model we built. We tried to write it without using Alloy, so 
-	everybody can read it, even if, they have never heard about Alloy.
+	the git maintainer concluded that it was indeed a bug.</p><p>
+	This manual as well the project report, show a detailed description from
+	the work we have done analysing the model we built. We wrote it without
+	using Alloy formalization, so that reader nos familiar with Alloy can
+	also benefit from it. The full Alloy model can be found in the project
+	documentation.
 	</p><p>The time we had to work on this project was not enough (not even close) to go through the whole git. 
 	Some choices were made trying to simplify the model and choosing the most important operations. The model is 
 	considered by us, to be stable and ready to be extended with more operations.
